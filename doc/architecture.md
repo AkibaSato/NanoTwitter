@@ -1,4 +1,4 @@
 Authentication Node
   Login/Logout
-Saerch Node
+Search Node
   Read only

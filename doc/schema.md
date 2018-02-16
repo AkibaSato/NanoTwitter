@@ -5,7 +5,7 @@ table Users
 	primary key id: integer
 	name: string
 	email: string
-	password: string
+	password: string 
 	handle: string
 
 table Hashtags
@@ -35,55 +35,6 @@ table Mentions
 	foreign key user_id: integer
 	foreign key tweet_id: integer
 ```
-=======
-Kevin Wang, Meg Kobashi, Akiba Sato
-## Schema
-
-### Users
-| Name        | Type       | Primary Key        | Foreign Key        |
-| ------------|------------|--------------------|--------------------|
-| id          | Integer    | :heavy_check_mark: |                    |
-| name        | String     |                    |                    |
-| email       | String     |                    |                    |
-| password    | String     |                    |                    |
-| handle      | String     |                    |                    |
-
-### Hashtags
-| Name        | Type       | Primary Key        | Foreign Key        |
-| ------------|------------|--------------------|--------------------|
-| id          | Integer    | :heavy_check_mark: |                    |
-| content     | String     |                    |                    |
-
-### Hashtag_Tweets
-| Name        | Type       | Primary Key        | Foreign Key        |
-| ------------|------------|--------------------|--------------------|
-| id          | Integer    | :heavy_check_mark: |                    |
-| tweet_id    | Integer    |                    | :heavy_check_mark: |
-| hashtag_id  | Integer    |                    | :heavy_check_mark: |
-
-### Relationships
-| Name        | Type       | Primary Key        | Foreign Key        |
-| ------------|------------|--------------------|--------------------|
-| id          | Integer    | :heavy_check_mark: |                    |
-| follower_id | Integer    |                    | :heavy_check_mark: |
-| followee_id | Integer    |                    | :heavy_check_mark: |
-| create_time | Datetime   |                    |                    |
-
-### Tweets
-| Name        | Type       | Primary Key        | Foreign Key        |
-| ------------|------------|--------------------|--------------------|
-| id          | Integer    | :heavy_check_mark: |                    |
-| user_id     | Integer    |                    | :heavy_check_mark: |
-| parent_id   | Integer    |                    | :heavy_check_mark: |
-| content     | String     |                    |                    |
-| create_time | Datetime   |                    |                    |
-
-### Mentions
-| Name        | Type       | Primary Key        | Foreign Key        |
-| ------------|------------|--------------------|--------------------|
-| id          | Integer    | :heavy_check_mark: |                    |
-| user_id     | Integer    |                    | :heavy_check_mark: |
-| tweet_id    | Integer    |                    | :heavy_check_mark: |
 
 ## Constraints
 
@@ -143,7 +94,8 @@ Mentions
 
 ## Design
 
-### Self-referential models
+### Are intervening models necessary?
+#### Self-referential models
 Instead of having a Relationships table, we can probably enforce this with a self-referential Users model as follows:
 
 ```
@@ -160,5 +112,8 @@ Tweets
 	has_one :parent, :class_name => “Tweets”, :foreign_key => “parent_id”
 ```
 
-
 Something else I found: https://stackoverflow.com/questions/18473844/has-many-of-itself-through-something
+
+#### Referencing other models
+The many-to-many relationship between Hashtags and Tweets can be modeled without having a intervening model like Hashtag_Tweets using has-and-belongs-to-many association...Again not sure about the performance.
+http://guides.rubyonrails.org/association_basics.html#the-has-and-belongs-to-many-association
