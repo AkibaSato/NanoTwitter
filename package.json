@@ -15,5 +15,11 @@
   "bugs": {
     "url": "https://github.com/AkibaSato/NanoTwitter/issues"
   },
-  "homepage": "https://github.com/AkibaSato/NanoTwitter#readme"
+  "engines": {
+    "node": "0.12.7"
+  },
+  "homepage": "https://github.com/AkibaSato/NanoTwitter",
+  "dependencies": {
+    "express": "^4.16.2"
+  }
 }
