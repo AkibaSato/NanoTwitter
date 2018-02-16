@@ -1,6 +1,9 @@
-var http = require('http');
+const express = require('express');
+const app = express();
+const port = process.env.PORT || 3000
 
-http.createServer(function (req, res) {
-    res.writeHead(200, {'Content-Type': 'text/plain'});
-    res.end('Hello World!');
-}).listen(8080);
+app.get("/", function (req, res) {
+  res.send("Welcome to Team Japan & Kevin's NanoTwitter!");
+});
+
+app.listen(port);
