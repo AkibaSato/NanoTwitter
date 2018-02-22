@@ -17,8 +17,6 @@ app.use(function (req, res, next) {
 })
 app.set('view engine', 'ejs')
 
-
-
 // routes
 app.get('/',function(req,res){
     res.render('index');
@@ -26,4 +24,47 @@ app.get('/',function(req,res){
 app.get('/login',function(req,res){
     res.render('login');
 });
+app.get('/user/register',function(req,res){
+    res.render('signup');
+});
+app.get('/user/:user_id',function(req,res){
+    res.render('');
+});
+app.get('/user/:user_id/tweets',function(req,res){
+    res.render('');
+});
+app.get('/user/:user_id/tweets',function(req,res){
+    res.render('');
+});
+app.get('/user/:user_id/followers',function(req,res){
+    res.render('');
+});
+app.get('/user/:user_id/followee_tweets',function(req,res){
+    res.render('');
+});
+app.get('/search',function(req,res){
+    res.render('');
+});
+app.get('/search/results',function(req,res){
+    res.render('');
+});
+app.get('/tweets/:tweet_id',function(req,res){
+    res.render('');
+});
+app.post('/login',function(req,res){
+    res.render('');
+});
+app.post('/user/register',function(req,res){
+    res.render('');
+});
+app.post('/user/:user_id/follow',function(req,res){
+    res.render('');
+});
+app.post('/search',function(req,res){
+    res.render('');
+});
+app.post('/tweets/new',function(req,res){
+    res.render('');
+});
+
 app.listen(port);
