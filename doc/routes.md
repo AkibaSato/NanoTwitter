@@ -66,7 +66,7 @@ POST '/user/register'
 	Create new account/user
 	Logs in user => Redirects to '/'
 
-POST ‘/user/id/follower/new’
+POST ‘/user/id/follow’
 	User newly follows another user
 
 POST '/tweets/new'
