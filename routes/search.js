@@ -1,7 +1,7 @@
 var express = require('express');
-var index = require('../controllers/index');
+var search = require('../controllers/search');
 var router = express.Router();
 
-router.get('/', index.index);
+router.post('/', search.search);
 
 module.exports = router;
