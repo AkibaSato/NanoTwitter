@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const User = mongoose.model('User');
+const User = require('./user');
 
 var Tweet = new Schema({
   content: String,
@@ -9,4 +9,4 @@ var Tweet = new Schema({
   created_at: Date
 });
 
-mongoose.model('Tweet', Tweet);
+module.exports = mongoose.model('Tweet', Tweet);

@@ -1,24 +1,25 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const Relationship = mongoose.model('Relationship');
-const Tweet = mongoose.model('Tweet');
+const Relationship = require('./relationship');
+const Tweet = require('./tweet');
 
 var User = new Schema({
-  name: String,
+  fname: String,
+  lname: String,
   email: String,
   password: String,
-  handle: String,
+  username: String,
   tweets: [
     {type: Schema.Types.ObjectId, ref: 'Tweet'}
   ],
   followees: {
-    type: [Relationship],
+    type: [Relationship.schema],
     default: []
   },
   followers: {
-    type: [Relationship],
+    type: [Relationship.schema],
     default: []
   }
 });
 
-mongoose.model('User', User);
+module.exports = mongoose.model('User', User);

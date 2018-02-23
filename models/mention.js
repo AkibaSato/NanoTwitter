@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const User = mongoose.model('User');
-const Tweet = mongoose.model('Tweet');
+const User = require('./user');
+const Tweet = require('./tweet');
 
 var Mention = new Schema({
   user: {type: Schema.Types.ObjectId, ref: 'User'},
@@ -10,4 +10,4 @@ var Mention = new Schema({
   ]
 });
 
-mongoose.model('Mention', Mention);
+module.exports = mongoose.model('Mention', Mention);

@@ -5,7 +5,7 @@ const path    = require("path");
 const bodyParser = require('body-parser')
 const mongoose = require('mongoose');
 
-mongoose.connect("mongodb://localhost/benchmark");
+mongoose.connect("mongodb://localhost/nntwitter-dev");
 
 // Get Mongoose to use the global promise library
 mongoose.Promise = global.Promise;
@@ -15,8 +15,13 @@ var db = mongoose.connection;
 //Bind connection to error event (to get notification of connection errors)
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
+var Tweet = require('./models/tweet');
+var User = require('./models/user');
+var Hashtag = require('./models/hashtag');
+var Tweet = require('./models/mention');
+
 // parse application/x-www-form-urlencoded
-app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.urlencoded({ extended: true }))
 // parse application/json
 app.use(bodyParser.json())
 // parse application/vnd.api+json as json
@@ -66,6 +71,13 @@ app.post('/login',function(req,res){
     res.render('');
 });
 app.post('/user/register',function(req,res){
+    var body = req.body.user;
+    var user = new User({
+      username: body.username,
+      fname: body.fname,
+      lname: body.lname,
+      password: body.password});
+    user.save(function(err) { console.log(err) });
     res.render('');
 });
 app.post('/user/:user_id/follow',function(req,res){

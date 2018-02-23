@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const Tweet = mongoose.model('Tweet');
+const Tweet = require('./tweet');
 
 var Hashtag = new Schema({
   content: String,
@@ -9,4 +9,4 @@ var Hashtag = new Schema({
   ]
 });
 
-mongoose.model('Hashtag', Hashtag);
+module.exports = mongoose.model('Hashtag', Hashtag);
