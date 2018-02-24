@@ -62,7 +62,8 @@ function signupCallback(req, username, password, done) {
 
     // Find a user whose email is the same as the forms email.
     // We are checking to see if the user trying to login already exists.
-    User.findOne({'username': username}).then(function(user) {
+    User.findOne({ $or:[ {'username': username}, {'email': req.body.email} ]})
+    .then(function(user) {
       // Check to see if theres already a user with that email.
       if (user) {
         return done(null, false, req.flash('signupMessage', 'That email or username is already taken.'));
