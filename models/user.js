@@ -22,4 +22,9 @@ var User = new Schema({
   }
 });
 
+// Check if the password is the same. TODO: Use encryption.
+User.methods.validPassword = function(password) {
+    return password == this.password;
+};
+
 module.exports = mongoose.model('User', User);
