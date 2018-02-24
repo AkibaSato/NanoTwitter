@@ -6,7 +6,7 @@ var Tweet = new Schema({
   content: String,
   user: {type: Schema.Types.ObjectId, ref: 'User'},
   parent: {type: Schema.Types.ObjectId, ref: 'Tweet'},
-  created_at: Date
+  createdAt: Date
 });
 
 module.exports = mongoose.model('Tweet', Tweet);
