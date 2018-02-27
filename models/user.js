@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const Relationship = require('./relationship');
 const Tweet = require('./tweet');
+const bcrypt = require('bcrypt');
 
 var User = new Schema({
   fname: String,
@@ -22,9 +23,14 @@ var User = new Schema({
   }
 });
 
-// Check if the password is the same. TODO: Use encryption.
+// Generate hash for password.
+User.methods.generateHash = function(password) {
+    return bcrypt.hashSync(password, bcrypt.genSaltSync(8), null);
+};
+
+// Check if the password is the same.
 User.methods.validPassword = function(password) {
-    return password == this.password;
+  return bcrypt.compareSync(password, this.local.password);
 };
 
 module.exports = mongoose.model('User', User);
