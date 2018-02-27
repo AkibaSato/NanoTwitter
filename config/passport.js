@@ -60,35 +60,35 @@ function loginCallback(req, username, password, done) {
 function signupCallback(req, username, password, done) {
   // Asynchronous. User.findOne wont fire unless data is sent back
   process.nextTick(function() {
+    if (req.body.email != req.body.confirm_email) {
+      return done(null, false, req.flash('signupMessage', 'Passwords don\'t match.'));
+    }
 
     // Find a user whose email is the same as the forms email.
     // We are checking to see if the user trying to login already exists.
-    User.findOne({'username': username}, function(err, user) {
+    User.findOne({ $or:[ {'username': username}, {'email': req.body.email} ]}, function(err, user) {
       if (err) {
-        console.log("here1");
         return done(err);
       }
-      // Check to see if theres already a user with that email.
+      // Check to see if theres already a user with that username or email.
       if (user) {
-        console.log("here2");
-
         return done(null, false, req.flash('signupMessage', 'That email or username is already taken.'));
       }
       // If there is no user with that email, create the user.
       var newUser = new User();
 
       // Set the user's local credentials
-      newUser.username = username;
-      newUser.password = newUser.generateHash(password);
       newUser.fname = req.body.fname;
       newUser.lname = req.body.lname;
+      newUser.username = username;
+      newUser.email = req.body.email;
+      newUser.password = newUser.generateHash(password);
 
       // Save the user
       newUser.save(function(err) {
         if (err) {
           return done(err);
         }
-        console.log("saved");
         return done(null, newUser);
       });
     })

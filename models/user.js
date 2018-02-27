@@ -7,9 +7,9 @@ const bcrypt = require('bcrypt');
 var User = new Schema({
   fname: String,
   lname: String,
+  username: String,
   email: String,
   password: String,
-  username: String,
   tweets: [
     {type: Schema.Types.ObjectId, ref: 'Tweet'}
   ],

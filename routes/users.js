@@ -1,7 +1,7 @@
 var express = require('express');
 var users = require('../controllers/users');
-var router = express.Router();
 var passport = require('passport');
+var router = express.Router();
 
 router.get('/register', users.getSignup);
 router.get('/:id', users.getUser);
