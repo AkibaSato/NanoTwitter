@@ -7,12 +7,16 @@ const path    = require("path");
 //
 /* =============MONGODB============= */
 const mongoose = require('mongoose');
-const dbconfig = require('./config/database')(app, mongoose)
+const dbconfig = require('./config/database');
 // Get Mongoose to use the global promise library.
 mongoose.Promise = global.Promise;
 // Get the default connection.
-var db = mongoose.connection;
+// process.env.NODE_ENV is by default 'undefined' for local,
+// and 'production' for Heroku.
+mongoose.connect(
+  process.env.NODE_ENV == 'production' ? dbconfig.herokuURL : dbconfig.localURL);
 // Bind connection to error event (to get notification of connection errors).
+var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
 /* ===========BODY_PARSER=========== */
@@ -23,7 +27,6 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 // Parse application/vnd.api+json as json
 app.use(bodyParser.json({ type: 'application/vnd.api+json' }));
-
 
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }))
@@ -85,7 +88,7 @@ app.use(function (req, res, next) {
 app.use(function (err, req, res, next) {
   // Set locals, only providing error in development.
   res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
+  res.locals.error = process.env.NODE_ENV === 'development' ? err : {};
 
   // Render the error page.
   res.status(err.status || 500);
