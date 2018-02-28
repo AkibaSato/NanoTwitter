@@ -5,7 +5,7 @@ module.exports = function(app, mongoose){
   if (app.get('env') === 'development') {
     mongoose.connect(process.env.LOCAL_URL);
   } else {
-    mongoose.connect(process.env.MONGODB_URI);
+    mongoose.connect(process.env.HEROKU_URL);
   }
 
 }
