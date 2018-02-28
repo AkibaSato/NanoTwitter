@@ -3,10 +3,11 @@ const app = express();
 const port = process.env.PORT || 3000
 const path    = require("path");
 
+
+//
 /* =============MONGODB============= */
 const mongoose = require('mongoose');
-const dbconfig = require('./config/database')
-mongoose.connect(dbconfig.localURL);
+const dbconfig = require('./config/database')(app, mongoose)
 // Get Mongoose to use the global promise library.
 mongoose.Promise = global.Promise;
 // Get the default connection.
