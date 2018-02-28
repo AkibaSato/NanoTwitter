@@ -60,7 +60,8 @@ function loginCallback(req, username, password, done) {
 function signupCallback(req, username, password, done) {
   // Asynchronous. User.findOne wont fire unless data is sent back
   process.nextTick(function() {
-    if (req.body.email != req.body.confirm_email) {
+    if (password != req.body.password_confirm) {
+
       return done(null, false, req.flash('signupMessage', 'Passwords don\'t match.'));
     }
 
