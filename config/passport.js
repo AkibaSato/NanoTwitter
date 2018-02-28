@@ -41,7 +41,10 @@ function loginCallback(req, username, password, done) {
     return done(null, req.user);
   }
   //  Look up the user by username
-  User.findOne({'username': username}).then(function(user) {
+  User.findOne({'username': username}, function(err, user) {
+    if (!err) {
+      return done(err);
+    }
     if (!user) {
       return done(null, false, req.flash('loginUsernameMessage', 'Wrong username.'));
     }
@@ -49,22 +52,26 @@ function loginCallback(req, username, password, done) {
     if (!user.validPassword(password)) {
       return done(null, false, req.flash('loginPasswordMessage', 'Wrong password.'));
     }
+
     return done(null, user);
-  }).catch(function(err) {
-    console.log('Error finding user', err);
-    done(err);
   });
 }
 
 function signupCallback(req, username, password, done) {
   // Asynchronous. User.findOne wont fire unless data is sent back
   process.nextTick(function() {
+    if (password != req.body.password_confirm) {
+
+      return done(null, false, req.flash('signupMessage', 'Passwords don\'t match.'));
+    }
 
     // Find a user whose email is the same as the forms email.
     // We are checking to see if the user trying to login already exists.
-    User.findOne({ $or:[ {'username': username}, {'email': req.body.email} ]})
-    .then(function(user) {
-      // Check to see if theres already a user with that email.
+    User.findOne({ $or:[ {'username': username}, {'email': req.body.email} ]}, function(err, user) {
+      if (err) {
+        return done(err);
+      }
+      // Check to see if theres already a user with that username or email.
       if (user) {
         return done(null, false, req.flash('signupMessage', 'That email or username is already taken.'));
       }
@@ -72,22 +79,19 @@ function signupCallback(req, username, password, done) {
       var newUser = new User();
 
       // Set the user's local credentials
-      newUser.username = username;
-      newUser.password = password;
       newUser.fname = req.body.fname;
       newUser.lname = req.body.lname;
+      newUser.username = username;
+      newUser.email = req.body.email;
+      newUser.password = newUser.generateHash(password);
 
       // Save the user
       newUser.save(function(err) {
         if (err) {
-          throw err;
+          return done(err);
         }
         return done(null, newUser);
       });
-
-    }).catch(function(err) {
-      console.log('Error finding user', err);
-      done(err);
-    });
+    })
   });
 }
