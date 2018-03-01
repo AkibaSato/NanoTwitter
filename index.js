@@ -7,11 +7,14 @@ const path    = require("path");
 /* =============MONGODB============= */
 const mongoose = require('mongoose');
 const dbconfig = require('./config/database');
+
+
 // Get Mongoose to use the global promise library.
 mongoose.Promise = global.Promise;
 // Get the default connection.
 // process.env.NODE_ENV is by default 'undefined' for local,
 // and 'production' for Heroku.
+
 mongoose.connect(
   process.env.NODE_ENV == 'production' ? dbconfig.herokuURL : dbconfig.localURL);
 // Bind connection to error event (to get notification of connection errors).
@@ -36,17 +39,22 @@ const passport = require('passport');
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const flash = require('connect-flash');
+const MongoStore = require('connect-mongo')(session);
 
 require('./config/passport')(passport);
 
-app.use(cookieParser());
 // Show flash messages to the user.
 app.use(flash());
 // required for passport
+app.use(cookieParser());
 app.use(session({
     // secret: process.env.SECRET || 'enteryoursecrethere',
     secret: 'enteryoursecrethere',
-    cookie: { maxAge: 3600000 }
+    cookie: {
+      maxAge: 3600000},
+    store: new MongoStore({ mongooseConnection: db }),
+    saveUninitialized: true,
+    resave: false
 }));
 
 app.use(passport.initialize());
@@ -59,6 +67,7 @@ const users = require('./routes/users');
 const search = require('./routes/search');
 const tweets = require('./routes/tweets');
 const index = require('./routes/index');
+const test_interface=require('./routes/test_routes/routes')(app)
 
 app.use('/login', login);
 app.use('/logout', logout);
@@ -66,6 +75,8 @@ app.use('/user', users);
 app.use('/search', search);
 app.use('/tweets', tweets);
 app.use('/', index);
+
+
 
 /* ===========ERROR HANDLER=========== */
 // Catch 404 and forward to error handler.
