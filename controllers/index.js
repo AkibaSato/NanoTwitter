@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const Tweet = mongoose.model('Tweet');
 const User = mongoose.model('User');
 
-module.exports.index = function (req, res, next) {
+module.exports.index = (req, res) => {
 
 
   res.render('index', {
