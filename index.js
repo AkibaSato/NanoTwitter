@@ -31,6 +31,8 @@ app.use(bodyParser.json());
 app.use(bodyParser.json({ type: 'application/vnd.api+json' }));
 
 /* =============VIEWS============= */
+app.use(express.static("public"));
+
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
@@ -68,6 +70,8 @@ const search = require('./routes/search');
 const tweets = require('./routes/tweets');
 const index = require('./routes/index');
 const test_interface=require('./routes/test_routes/routes')(app)
+
+app.engine('ejs', require('express-ejs-extend'));
 
 app.use('/login', login);
 app.use('/logout', logout);
