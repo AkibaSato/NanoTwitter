@@ -38,18 +38,24 @@ module.exports = function(passport) {
 
 function loginCallback(req, username, password, done) {
   if (req.isAuthenticated) {
+    console.log('Error');
     return done(null, req.user);
   }
   //  Look up the user by username
   User.findOne({'username': username}, function(err, user) {
     if (!err) {
+      console.log('Error 1');
+
       return done(err);
     }
     if (!user) {
+      console.log('Error 2');
+
       return done(null, false, req.flash('loginUsernameMessage', 'Wrong username.'));
     }
 
     if (!user.validPassword(password)) {
+      console.log('Error 3');
       return done(null, false, req.flash('loginPasswordMessage', 'Wrong password.'));
     }
 
