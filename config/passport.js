@@ -12,7 +12,7 @@ module.exports = function(passport) {
     done(null, user.id);
   });
 
-  //  Converts user id to user, stored in req.user.
+  // Converts user id to user, stored in req.user.
   passport.deserializeUser(function(id, done) {
     User.findById(id).then(function(user) {
       done(null, user);
@@ -40,7 +40,7 @@ function loginCallback(req, username, password, done) {
   if (req.isAuthenticated()) {
     return done(null, req.user);
   }
-  //  Look up the user by username
+  // Look up the user by username.
   User.findOne({
     where: {
       username: username
@@ -62,7 +62,7 @@ function loginCallback(req, username, password, done) {
 }
 
 function signupCallback(req, username, password, done) {
-  // Asynchronous. User.findOne wont fire unless data is sent back
+  // Asynchronous. User.findOne wont fire unless data is sent back.
   process.nextTick(function() {
     if (password != req.body.password_confirm) {
       return done(null, false, req.flash('signupMessage', 'Passwords don\'t match.'));

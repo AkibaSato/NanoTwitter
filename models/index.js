@@ -2,14 +2,13 @@ const fs = require('fs');
 const path = require('path');
 const Sequelize = require('sequelize');
 const basename = path.basename(module.filename);
-console.log("basename is ", basename);
 const env = process.env.NODE_ENV || 'development';
 const config = require(`${__dirname}/../config/config.json`)[env];
 const db = {};
 
 var sequelize;
 if (config.use_env_variable) {
-  sequelize = new Sequelize(process.env[config.use_env_variable]);
+  sequelize = new Sequelize(process.env[config.use_env_variable], config);
 } else {
   sequelize = new Sequelize(config.database, config.username, config.password, config);
 }
@@ -32,13 +31,11 @@ fs
     (file.slice(-3) === '.js'))
   .forEach(file => {
     const model = sequelize.import(path.join(__dirname, file));
-    console.log("loading ", model.name);
     db[model.name] = model;
   });
 
 Object.keys(db).forEach(modelName => {
   if (db[modelName].associate) {
-    console.log("associating ", modelName);
     db[modelName].associate(db);
   }
 });
