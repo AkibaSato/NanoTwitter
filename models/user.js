@@ -1,36 +1,59 @@
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
-const Relationship = require('./relationship');
-const Tweet = require('./tweet');
 const bcrypt = require('bcrypt');
 
-var User = new Schema({
-  fname: String,
-  lname: String,
-  username: String,
-  email: String,
-  password: String,
-  tweets: [
-    {type: Schema.Types.ObjectId, ref: 'Tweet'}
-  ],
-  followees: {
-    type: [Relationship.schema],
-    default: []
-  },
-  followers: {
-    type: [Relationship.schema],
-    default: []
-  }
-});
+'use strict';
+module.exports = (sequelize, DataTypes) => {
+  const User = sequelize.define('User', {
+    fname: { type: DataTypes.STRING },
+    lname: { type: DataTypes.STRING },
+    email: {
+      type: DataTypes.STRING,
+      allowEmpty: false,
+      unique: true,
+      allowNull: false,
+      validate: {
+        isEmail: true
+      }
+    },
+    password: {
+      type: DataTypes.STRING,
+      allowEmpty: false,
+      allowNull: false,
+      validate: {
+        len: {
+          args: 3
+        }
+      }
+    },
+    username:  {
+      type: DataTypes.STRING,
+      allowEmpty: false,
+      unique: true,
+      allowNull: false,
+    }
+  } , {
+    getterMethods: {
+      fullName: function() {
+        return this.fname + ' ' + this.lname
+      }
+    }
+  });
 
-// Generate hash for password.
-User.methods.generateHash = function(password) {
-  return bcrypt.hashSync(password, bcrypt.genSaltSync(8), null);
+  User.associate = function (models) {
+    User.hasMany(models.Tweet);
+    User.hasMany(models.Relationship);
+    User.hasMany(models.Mention);
+  };
+
+  // Generate hash for password.
+  User.generateHash = function (password) {
+    return bcrypt.hashSync(password, bcrypt.genSaltSync(8), null);
+  };
+
+  // Check if the password is the same.
+  User.prototype.validatePassword = function (password) {
+    return bcrypt.compareSync(password, this.password);
+  };
+
+  return User;
+
 };
-
-// Check if the password is the same.
-User.methods.validPassword = function(password) {
-  return bcrypt.compareSync(password, this.password);
-};
-
-module.exports = mongoose.model('User', User);

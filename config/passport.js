@@ -1,5 +1,5 @@
 const LocalStrategy = require('passport-local').Strategy;
-const User = require('../models/user');
+const User = require('../models').User;
 
 module.exports = function(passport) {
   // The login request establishes a session maintained in a browser cookie.
@@ -37,11 +37,15 @@ module.exports = function(passport) {
 };
 
 function loginCallback(req, username, password, done) {
-  if (req.isAuthenticated) {
+  if (req.isAuthenticated()) {
     return done(null, req.user);
   }
   //  Look up the user by username
-  User.findOne({'username': username}, function(err, user) {
+  User.findOne({
+    where: {
+      username: username
+    }
+  }).then(function(err, user) {
     if (!err) {
       return done(err);
     }
@@ -61,13 +65,17 @@ function signupCallback(req, username, password, done) {
   // Asynchronous. User.findOne wont fire unless data is sent back
   process.nextTick(function() {
     if (password != req.body.password_confirm) {
-
       return done(null, false, req.flash('signupMessage', 'Passwords don\'t match.'));
     }
 
     // Find a user whose email is the same as the forms email.
     // We are checking to see if the user trying to login already exists.
-    User.findOne({ $or:[ {'username': username}, {'email': req.body.email} ]}, function(err, user) {
+    User.findOne({
+      where: {
+        // $or: [ { username: username }, { email: req.body.email }]
+        username: username
+      }
+    }).then(function(err, user) {
       if (err) {
         return done(err);
       }
@@ -75,18 +83,16 @@ function signupCallback(req, username, password, done) {
       if (user) {
         return done(null, false, req.flash('signupMessage', 'That email or username is already taken.'));
       }
-      // If there is no user with that email, create the user.
-      var newUser = new User();
+      // Create the user.
+      var data = {
+        fname: req.body.fname,
+        lname: req.body.lname,
+        username: username,
+        email: req.body.email,
+        password: User.generateHash(password)
+      }
 
-      // Set the user's local credentials
-      newUser.fname = req.body.fname;
-      newUser.lname = req.body.lname;
-      newUser.username = username;
-      newUser.email = req.body.email;
-      newUser.password = newUser.generateHash(password);
-
-      // Save the user
-      newUser.save(function(err) {
+      User.create(data).then(function(newUser, err) {
         if (err) {
           return done(err);
         }

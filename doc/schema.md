@@ -5,7 +5,7 @@ table Users
 	primary key id: integer
 	name: string
 	email: string
-	password: string 
+	password: string
 	handle: string
 
 table Hashtags
@@ -43,7 +43,6 @@ Users
 	has_many relationships, dependent: destroy
 	has_many users through relationships
 	has_many mentions
-	has_many users through mentions
 	has_many tweets, dependent: destroy
 	validates :password, presence: true
 	validates :name, presence: true

@@ -1,12 +1,18 @@
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
-const Tweet = require('./tweet');
+'use strict';
+module.exports = (sequelize, DataTypes) => {
+  var Hashtag = sequelize.define('Hashtag', {
+    content: {
+      type: DataTypes.STRING,
+      unique: true,
+      validate: {
+        notEmpty: true
+      }
+    }
+  }, {});
 
-var Hashtag = new Schema({
-  content: String,
-  tweets: [
-    {type: Schema.Types.ObjectId, ref: 'Tweet'}
-  ]
-});
+  Hashtag.associate = function (models) {
+    models.Hashtag.hasMany(models.HashtagTweet);
+  };
 
-module.exports = mongoose.model('Hashtag', Hashtag);
+  return Hashtag;
+};

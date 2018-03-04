@@ -1,11 +1,19 @@
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
-const User = require('./user');
+'use strict';
+module.exports = (sequelize, DataTypes) => {
+  var Relationship = sequelize.define('Relationship', {}, {});
 
-var Relationship = new Schema({
-  follower: {type: Schema.Types.ObjectId, ref: 'User'},
-  followee: {type: Schema.Types.ObjectId, ref: 'User'},
-  createdAt: Date
-});
+  Relationship.associate = function (models) {
+    Relationship.belongsTo(models.User, {
+      foreignKey: 'followerId',
+      as: 'follower',
+      onDelete: 'cascade'
+    });
+    Relationship.belongsTo(models.User, {
+      foreignKey: 'followeeId',
+      as: 'followee',
+      onDelete: 'cascade'
+    });
+  };
 
-module.exports = mongoose.model('Relationship', Relationship);
+  return Relationship;
+};

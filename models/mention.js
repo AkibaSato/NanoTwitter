@@ -1,13 +1,18 @@
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
-const User = require('./user');
-const Tweet = require('./tweet');
+'use strict';
+module.exports = (sequelize, DataTypes) => {
+  var Mention = sequelize.define('Mention', {}, {});
 
-var Mention = new Schema({
-  user: {type: Schema.Types.ObjectId, ref: 'User'},
-  tweets: [
-    {type: Schema.Types.ObjectId, ref: 'Tweet'}
-  ]
-});
-
-module.exports = mongoose.model('Mention', Mention);
+  Mention.associate = function (models) {
+    Mention.belongsTo(models.User, {
+      foreignKey: 'userId',
+      as: 'user',
+      onDelete: 'cascade'
+    });
+    Mention.belongsTo(models.Tweet, {
+      foreignKey: 'tweetId',
+      as: 'tweet',
+      onDelete: 'cascade'
+    });
+  };
+  return Mention;
+};
