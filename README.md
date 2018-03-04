@@ -1,3 +1,4 @@
+
 # nanoTwitter
 
 Team Japan and Kevin
@@ -8,23 +9,23 @@ These are required for your local development environment:
 
 * [NPM](https://www.npmjs.com/)
 * [NodeJS](https://nodejs.org/)
-* [Mysql Server](https://www.mysql.com/)
+* [Postgres Server](https://www.postgresql.org/)
 
 ### STEP 1: Clone the repository
 ```sh
 $ git clone https://github.com/AkibaSato/NanoTwitter
 ```
 
-### Step 2: Install the necessary modules
-Install `sequelize` to global directory to just use `sequelize` prefix instead of specifying path name to binary for commands.
+### STEP 2: Install the necessary modules
+Install `sequelize` to global directory to just use `sequelize` prefix instead of specifying path name to binary for commands:
 ```sh
 $ npm install
 $ npm install -g sequelize-cli
 ```
 
 ### STEP 3: Start the Postgres server
+Postgres directory might be: /usr/local/var/postgres
 ```sh
-// Postgres directory might be: /usr/local/var/postgres
 $ pg_ctl -D <Postgres directory> start
 ```
 
@@ -48,16 +49,20 @@ To connect to the Postgres shell:
 $ psql ntdev
 ```
 
-To create migrations:
+#### Create migrations
+First create a boilerplate migration and model file with the basic columns. This example creates a new model:
 ```sh
-// Example of creating a new model. This creates a boilerplate
-// migration and model file with the basic columns.
-$ sequelize model:create --name Tweet \
-  --attributes fname:string,bio:text
-// Further modify the migration file and model file if necessary.
-// Any changes to either file must be reflected in the other manually.
+$ sequelize model:create --name Tweet --attributes fname:string,bio:text
+```
+
+Further modify the migration file and model file if necessary. Any changes to either file must be reflected in the other manually.
+
+To migrate:
+```sh
 $ sequelize db:migrate
-// If you want to undo the migration.
+```
+If you want to undo the migration:
+```
 $ sequelize db:migrate:undo
 ```
 
@@ -65,7 +70,9 @@ $ sequelize db:migrate:undo
 To migrate Postgres models on Heroku:
 ```sh
 $ heroku sequelize db:migrate --env production
-// Check results of change in Postgres shell.
+```
+Check results of change in Postgres shell.
+```sh
 $ heroku pg:psql
 ```
 
