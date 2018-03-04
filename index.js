@@ -13,6 +13,9 @@ app.use(bodyParser.json());
 app.use(bodyParser.json({ type: 'application/vnd.api+json' }));
 
 /* =============VIEWS============= */
+app.use(express.static("public"));
+app.engine('ejs', require('express-ejs-extend'));
+
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
@@ -24,10 +27,10 @@ const flash = require('connect-flash');
 
 require('./config/passport')(passport);
 
-app.use(cookieParser());
 // Show flash messages to the user.
 app.use(flash());
 // required for passport
+app.use(cookieParser());
 app.use(session({
     // secret: process.env.SECRET || 'enteryoursecrethere',
     secret: 'enteryoursecrethere',
@@ -46,6 +49,7 @@ const users = require('./routes/users');
 const search = require('./routes/search');
 const tweets = require('./routes/tweets');
 const index = require('./routes/index');
+const test_interface=require('./routes/test_routes/routes')(app)
 
 app.use('/login', login);
 app.use('/logout', logout);

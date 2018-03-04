@@ -48,6 +48,8 @@ function loginCallback(req, username, password, done) {
     }
   }).then(function(user) {
     if (!user) {
+      console.log('Error 2');
+
       return done(null, false, req.flash('loginUsernameMessage', 'Wrong username.'));
     }
 
