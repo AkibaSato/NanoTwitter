@@ -31,7 +31,9 @@ app.use(flash());
 app.use(session({
     // secret: process.env.SECRET || 'enteryoursecrethere',
     secret: 'enteryoursecrethere',
-    cookie: { maxAge: 3600000 }
+    cookie: { maxAge: 3600000 },
+    resave: true,
+    saveUninitialized: true
 }));
 
 app.use(passport.initialize());

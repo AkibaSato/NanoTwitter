@@ -1,5 +1,6 @@
 const LocalStrategy = require('passport-local').Strategy;
 const User = require('../models').User;
+const Sequelize = require('sequelize');
 
 module.exports = function(passport) {
   // The login request establishes a session maintained in a browser cookie.
@@ -45,19 +46,18 @@ function loginCallback(req, username, password, done) {
     where: {
       username: username
     }
-  }).then(function(err, user) {
-    if (!err) {
-      return done(err);
-    }
+  }).then(function(user) {
     if (!user) {
       return done(null, false, req.flash('loginUsernameMessage', 'Wrong username.'));
     }
 
-    if (!user.validPassword(password)) {
+    if (!user.validatePassword(password)) {
       return done(null, false, req.flash('loginPasswordMessage', 'Wrong password.'));
     }
 
-    return done(null, user);
+    return done(null, user.get());
+  }).catch(function(err) {
+    return done(err);
   });
 }
 
@@ -72,13 +72,9 @@ function signupCallback(req, username, password, done) {
     // We are checking to see if the user trying to login already exists.
     User.findOne({
       where: {
-        // $or: [ { username: username }, { email: req.body.email }]
-        username: username
+        [Sequelize.Op.or]: [ { username: username }, { email: req.body.email }]
       }
-    }).then(function(err, user) {
-      if (err) {
-        return done(err);
-      }
+    }).then(function(user) {
       // Check to see if theres already a user with that username or email.
       if (user) {
         return done(null, false, req.flash('signupMessage', 'That email or username is already taken.'));
@@ -92,12 +88,13 @@ function signupCallback(req, username, password, done) {
         password: User.generateHash(password)
       }
 
-      User.create(data).then(function(newUser, err) {
-        if (err) {
-          return done(err);
-        }
+      User.create(data).then(function(newUser) {
         return done(null, newUser);
+      }).catch(function(err) {
+        return done(err);
       });
-    })
+    }).catch(function(err) {
+      return done(err);
+    });
   });
 }
