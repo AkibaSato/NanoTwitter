@@ -2,8 +2,7 @@
 
 <%- include layouts/header.ejs %>
 <h1>Welcome To Twitter!</h1>
-<a href="/login">Login</a>
-<a href="/user/register">Signup</a>
+
 
 <% if (req.isAuthenticated()) { %>
   <% if (req.user !== null) { %>
@@ -12,4 +11,7 @@
     <br>
     <%= req.user.password %>
   <% } %>
-<% } %>
+<% } else { %>
+  <a href="/login">Login</a>
+  <a href="/user/register">Signup</a>
+<% } %>  
