@@ -5,4 +5,10 @@
 <h1>Welcome To Twitter!</h1>
 <a href="/login">Login</a>
 <a href="/user/register">Signup</a>
-<!-- <%= req.user.username %> -->
+
+<br>
+<% if (req.isAuthenticated()) { %>
+<%= req.user.username %>
+<br>
+<%= req.user.password %>
+<% } %>
