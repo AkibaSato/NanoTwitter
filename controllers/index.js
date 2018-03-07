@@ -1,5 +1,9 @@
-module.exports.index = function (req, res, next) {
+const User = require('../models').User;
+
+module.exports.index = (req, res, next) => {
+  console.log(req.user.username);
   res.render('index', {
-    title: 'List of Tweets',
+    req: req
+    // title: 'List of Tweets',
   });
 };
