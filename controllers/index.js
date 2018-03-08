@@ -4,4 +4,5 @@ module.exports.index = (req, res, next) => {
   res.render('index', {
     req: req
   });
+  console.log('index');
 };
