@@ -1,9 +1,8 @@
 var Hashtag = require('../models/hashtag');
 var Mention = require('../models/mention');
 var Relationship = require('../models/relationship');
-var User = require('../models/user');
+var User = require('../models/').User;
 var Tweet = require('../models/tweet');
-
 module.exports.follow = function (req, res, next) {
   // var targetId = req.params.id;
   // var requesterId = req.user._id;
@@ -128,3 +127,31 @@ module.exports.getFolloweeTweets = function (req, res, next) {
   res.send("NOT YET IMPLEMENTED");
 
 };
+
+
+module.exports.getAll=function(req, res, next) {
+  users=[];
+  User.findAll({
+    attributes: ['id']
+  }).then(function (users) {
+    users=users
+  }).catch(function(err) {
+      console.log(err)
+  });
+  return users;
+};
+
+module.exports.getAllCount=function(req, res, next) {
+  return this.getAll().length
+}
+
+module.exports.destroyAll=function(req, res, next) {
+  User.destroy({where: {}}).then(function () {});
+}
+
+module.exports.destory=function(req, res, next) {
+  User.destroy({where: {
+    id: req.id
+  }}).then(function () {});
+
+}

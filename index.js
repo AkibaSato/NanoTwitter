@@ -2,6 +2,9 @@ const express = require('express');
 const app = express();
 const port = process.env.PORT || 3000;
 const path    = require('path');
+var controller_dir = path.resolve("./controllers");
+var routing = require('resource-routing');
+routing.resources(app, controller_dir, "users");
 
 /* ===========BODY_PARSER=========== */
 const bodyParser = require('body-parser')

@@ -2,7 +2,7 @@ var Hashtag = require('../models/hashtag');
 var Mention = require('../models/mention');
 var Relationship = require('../models/relationship');
 var User = require('../models/user');
-var Tweet = require('../models/tweet');
+var Tweet = require('../models').Tweet;
 
 module.exports.tweet = function (req, res, next) {
   // var tweet = new Tweet({
@@ -35,3 +35,24 @@ module.exports.getTweet = function (req, res, next) {
   // });
   res.send("NOT YET IMPLEMENTED");
 };
+
+module.exports.getAll=function(req, res, next) {
+  tweets=[];
+  Tweet.findAll({
+    attributes: ['id']
+  }).then(function (tweets) {
+    tweets=tweets
+  }).catch(function(err) {
+      console.log(err)
+  });
+  return tweets;
+};
+
+module.exports.getAllCount=function(req, res, next) {
+  return this.getAll().length
+}
+module.exports.destroyAll=function(req, res, next) {
+  Tweet.destroy({where: {
+    id: req.id
+  }}).then(function () {});
+}
