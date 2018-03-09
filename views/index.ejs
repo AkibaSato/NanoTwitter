@@ -6,10 +6,52 @@
 
 <% if (req.isAuthenticated()) { %>
   <% if (req.user !== null) { %>
-    <br>
-    <%= req.user.username %>
-    <br>
-    <%= req.user.password %>
+    <div class="row">
+        <div class="col-xl-3 col-lg-4 first-column">
+            <div class="user-information">
+                <div class="row">
+                  <div class="col-8 user-information__text">
+                    <a href="/user/<%= req.user.id %>">
+                      <h4><%= req.user.username %></h4>
+                    </a>
+                      <ul>
+                        <li><span class="user-information__stat-title">Tweets:</span>
+                          <span><a href="/user/<%= req.user.id %>"><%=req.user.getTweets %></a></span>
+                        </li>
+                        <li><span class="user-information__stat-title">Following:</span>
+                          <span><a href="/user/<%= req.user.id %>/following"><%=req.user.getFollowees %></a></span>
+                        </li>
+                        <li><span class="user-information__stat-title">Followers:</span>
+                          <span><a href="/user/<%= req.user.id %>/followers"><%=req.user.getFollowers %></a></span>
+                        </li>
+                      </ul>
+                    </div>
+
+                    <!-- <div class="col-md-12.user-information__stats.user-information__stats_large">
+                      <ul>
+                        <li><span class="user-information__stat-title">Tweets:</span>
+                          <span><a href="/user/<%= req.user.id %>"><%=req.user.getTweets %></span>
+                        </li>
+                        <li><span class="user-information__stat-title">Following:</span>
+                          <span><a href="/user/<%= req.user.id %>/following"><%=req.user.getFollowees %></span>
+                        </li>
+                        <li><span class="user-information__stat-title">Followers:</span>
+                          <span><a href="/user/<%= req.user.id %>/followers"><%=req.user.getFollowers %></span>
+                        </li>
+                      </ul>
+                    </div> -->
+
+
+
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-6.col-lg-8.second-column">
+          <%- include components/tweet.ejs %>
+        </div>
+        <%= console.log(tweets); %>
+
+    </div>
   <% } %>
 <% } else { %>
   <br>
