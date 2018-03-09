@@ -127,6 +127,34 @@ module.exports.getFolloweeTweets = function (req, res, next) {
   res.send("NOT YET IMPLEMENTED");
 
 };
+module.exports.create=function(req, res, next){
+  var data = {
+    fname: req.fname,
+    lname: req.lname,
+    username: req.username,
+    email: req.email,
+    password: User.generateHash(req.password)
+  };
+
+  User.create(data).then(function(newUser) {
+    return done(null, newUser);
+  }.catch(function(err){
+    console.log(err)
+    return;
+  }));
+};
+
+module.exports.destroy=function(req, res, next) {
+  User.destroy({where: {
+    id: req.id
+  }}).then(function (user) {
+    console.log("user deleted")
+    return;
+  }
+).catch(function(err) {
+  console.log(err)
+});
+};
 
 
 module.exports.getAll=function(req, res, next) {
@@ -135,6 +163,7 @@ module.exports.getAll=function(req, res, next) {
     attributes: ['id']
   }).then(function (users) {
     users=users
+    console.log(users)
   }).catch(function(err) {
       console.log(err)
   });
@@ -143,7 +172,7 @@ module.exports.getAll=function(req, res, next) {
 
 module.exports.getAllCount=function(req, res, next) {
   return this.getAll().length
-}
+};
 
 module.exports.destroyAll=function(req, res, next) {
   User.destroy({where: {}}).then(function () {});
@@ -153,5 +182,4 @@ module.exports.destory=function(req, res, next) {
   User.destroy({where: {
     id: req.id
   }}).then(function () {});
-
 }

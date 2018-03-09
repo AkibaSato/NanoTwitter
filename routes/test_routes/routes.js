@@ -1,52 +1,65 @@
 const User = require('../../controllers/users');
 const Tweet = require('../../controllers/tweets');
 const Follower = require('../../controllers/relationships');
-const faker=require('faker')
-module.exports = function(app){
-  // TODO:add test User and id
+const Loader=require('../../data_loader')
+const testuser=null;
 
+
+module.exports = function(app){
+  // creates new test user and returns json with number users, follows, tweets, and the test user's id
     app.get('/test/status',  function (req, res) {
+      const data={fname: "testuser",lname: "testuser", username: "testuser", email: "testuser@sample.com", password: "password"};
+      this.testuser=User.create(data);
+      console.log("created")
       res.json({
         users: User.getAllCount(),
         follows: Follower.getAllCount(),
         tweets: Tweet.getAllCount(),
-        test_user_id: 2
+        test_user_id: this.testuser.id
     });
   });
 
-    app.get('/test/version',  function (req, res) {
+  app.get('/test/version',  function (req, res) {
       var config = require('./../../package.json');
       res.json({
         version: config.version
     });
   });
 
-    app.post('/test/reset/all', function (req, res) {
-      // TODO: deleteions being tied up
+  app.post('/test/reset/all', function (req, res) {
+      // TODO: fix the delete All methods that are being tied up
       User.destroyAll()
       Tweet.destroyAll()
       Follower.destroyAll()
-
-      // TODO: create test User
+      console.log("deleted")
+      const data={fname: "testuser",lname: "testuser", username: "testuser", email: "testuser@sample.com", password: "password"};
+      u=User.create(data);
+      console.log("created")
+      res.json({
+      });
+      // TODO: create test User and fix destory methods
     });
+
     app.post('/test/reset/testuser', function (req, res) {
-      var config = require('./../../package.json');
-      res.send({
-        version: config.version
+      console.log("wow")
+      User.destroy({id: this.testuser.id})
+      console.log("destoryed")
+      const data={fname: "testuser",lname: "testuser", username: "testuser", email: "testuser@sample.com", password: "password"};
+      u=User.create(data);
+      conosole.log("created")
     });
-      // TODO: Deletes and recreates TestUser, including all his tweets, follows, and removes him from any other users’ follow list.
 
-    });
 
     app.post('/test/reset/standard', function (req, res) {
-
 //  if contains tweets paramter in url
+
       if(req.query['tweets']){
         const n=req.query['tweets']
-
-        // TODO: load n tweets from seed data
         console.log(n)
+        Loader.load_tweets({tweets: n})
       } else {
+        console.log("nah fam")
+        Loader.load_follows()
         // TODO: load all tweets from seed data
       };
 
@@ -56,29 +69,29 @@ module.exports = function(app){
       const count=req.query['count']
       const tweets=req.query['tweets']
       if(count && tweets) {
-        console.log(count)
-        console.log(tweets)
-
-        // TODO: create u fake users defaults to 1. Each user gets c fake tweets
-
+        loader.create_fake(count, tweets)
+      } else {
+        loader.create_fake(1, 0)
       }
-      // create u (integer) fake Users using faker. Defaults to 1.
-      // each of those users gets c (integer) fake tweets. Defaults to zero.
-      // Example: /test/users/create?count=100&tweets=5
     });
+
     app.post('/test/user/:id/tweets', function (req, res) {
-      const count=req.query['count']
-      if (count) {
-        // user u generates t(integer) new fake tweets
-        // if u=”testuser” then this refers to the TestUser
-        // Example: /test/user/testuser/tweets?tweets=100
+      console.log(req)
+      const tweets=req.query['tweets']
+      const id=req.query['id']
+      console.log(id)
+      if (id==testuser && tweets) {
+        const user=testuser
+        loader.user_generateTweets(user, count)
+      } else if(id && tweets){
+        const user=User.getUser(req.params.id)
+        loader.user_generateTweets(user, count)
       }
     });
 
     app.post('/test/user/:id/follow', function (req, res) {
       const f_count=req.query['count']
       const id=req.params.id
-
       if (f_count) {
         const size=User.getAllCount
         followee=User.getUser(id)
