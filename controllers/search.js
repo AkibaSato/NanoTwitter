@@ -1,22 +1,59 @@
-var Hashtag = require('../models/hashtag');
-var Mention = require('../models/mention');
-var Relationship = require('../models/relationship');
-var User = require('../models/user');
-var Tweet = require('../models/tweet');
+var models = require('../models')
 
+// [{
+//  "content": "hey",
+//  "createdAt": "2018-03-09T04:30:08.385Z",
+//  "user": {
+//   "username": "bob_builder"
+//  }
+// },
+// {
+//  "content": "hey bob_builder",
+//  "createdAt": "2018-03-09T04:30:08.385Z",
+//  "user": {
+//   "username":"dora_explorer"
+//  }
+// }]
 module.exports.search = function (req, res, next) {
-  var term = req.body.term;
-  if (term.startsWith("#")) {
-    searchHashtag(term);
-  } else if (term.startsWith("@")) {
-    searchMention(term);
+  var term = req.params.term;
+  console.log("entered")
+  console.log(term)
+  var searchPromise;
+  if (term.startsWith('#')) {
+    searchPromise = searchHashtag(term);
+  } else if (term.startsWith('@')) {
+    searchPromise = searchMention(term);
   } else {
-    searchWord(term);
+    searchPromise = searchWord(term);
   };
+
+  searchPromise
+  .then(function(tweets) {
+    console.log(JSON.stringify(tweets));
+    res.render("NOT YET IMPLEMENTED", JSON.parse(JSON.stringify(tweets)));
+  }).catch(function(err) {
+    res.status(404).send(err);
+  });
 };
 
 function searchHashtag(term) {
-
+  console.log(term)
+  return models.Hashtag.findAll({
+    where: {
+      content: term
+    },
+    include: [{
+      model: models.Tweet,
+      as: 'tweet',
+      attributes: ['content', 'createdAt'],
+      include: [{
+        model: models.User,
+        as: 'user',
+        attributes: ['username']
+      }]
+    }],
+    attributes: ['createdAt']
+  });
 };
 
 function searchMention(term) {
@@ -24,7 +61,7 @@ function searchMention(term) {
 };
 
 function searchWord(term) {
-  models.Tweet.findAll({
+  return models.Tweet.findAll({
     where: {
       content: {
         $like: '%' + term + '%'
@@ -36,9 +73,5 @@ function searchWord(term) {
       attributes: ['username']
     }],
     attributes: ['content', 'createdAt']
-  }).then(function(tweets) {
-    res.render("NOT YET IMPLEMENTED", JSON.stringify(tweets));
-  }).catch(function(err) {
-    res.status(404).send(err);
   });
 };

@@ -25,8 +25,8 @@ module.exports.follow = function (req, res) {
     followeeId: followeeId
   }
   models.Relationship.create(relationship).then(function(newRelationship) {
-    console.log(JSON.stringify(newRelationship));
-    res.render("NOT YET IMPLEMENTED", JSON.stringify(newRelationship));
+    res.render(
+      "NOT YET IMPLEMENTED", JSON.parse(JSON.stringify(newRelationship)));
   }).catch(function(err) {
     res.status(404).send(err);
   });
@@ -54,14 +54,14 @@ module.exports.getUser = function (req, res) {
 
 // Example return JSON:
 // [{
-//  "content":"hello",
+//  "content": "hello",
 //  "createdAt":"2018-03-08T19:00:17.085Z",
 //  "user": {
 //   "username":"bob_builder"
 //  }
 // },
 // {
-//  "content":"yo",
+//  "content": "yo",
 //  "createdAt":"2018-03-08T19:00:17.085Z",
 //  "user": {
 //   "username":"bob_builder"
@@ -84,6 +84,19 @@ module.exports.getTweets = function (req, res) {
   });
 };
 
+// Example return JSON:
+// [{
+//  "createdAt": "2018-03-08T22:51:09.277Z",
+//  "followee": {
+//    "username":"bob_builder"
+//  }
+// },
+// {
+//  "createdAt": "2018-03-08T22:52:09.442Z",
+//  "followee": {
+//    "username":"dora_explorer"
+//  }
+// }]
 module.exports.getFollowees = function (req, res) {
   models.Relationship.findAll({
     where: {followerId: parseInt(req.params.id)},
@@ -92,14 +105,27 @@ module.exports.getFollowees = function (req, res) {
       as: 'followee',
       attributes: ['username']
     }],
-    attributes: ['username']
+    attributes: ['createdAt']
   }).then(function(followees) {
-    res.render("NOT YET IMPLEMENTED", JSON.stringify(followees));
+    res.render("NOT YET IMPLEMENTED", JSON.parse(JSON.stringify(followees)));
   }).catch(function(err) {
     res.status(404).send(err);
   });
 };
 
+// Example return JSON:
+// [{
+//  "createdAt": "2018-03-08T22:51:09.277Z",
+//  "follower": {
+//    "username":"bob_builder"
+//  }
+// },
+// {
+//  "createdAt": "2018-03-08T22:52:09.442Z",
+//  "follower": {
+//    "username":"dora_explorer"
+//  }
+// }]
 module.exports.getFollowers = function (req, res) {
   models.Relationship.findAll({
     where: {followeeId: parseInt(req.params.id)},
@@ -107,9 +133,10 @@ module.exports.getFollowers = function (req, res) {
       model: models.User,
       as: 'follower',
       attributes: ['username']
-    }]
+    }],
+    attributes: ['createdAt']
   }).then(function(followers) {
-    res.render("NOT YET IMPLEMENTED", JSON.stringify(followers));
+    res.render("NOT YET IMPLEMENTED", JSON.parse(JSON.stringify(followers)));
   }).catch(function(err) {
     res.status(404).send(err);
   });
