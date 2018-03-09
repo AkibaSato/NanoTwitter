@@ -5,18 +5,40 @@ var User = require('../models/user');
 var Tweet = require('../models/tweet');
 
 module.exports.search = function (req, res, next) {
-  // // TODO: Find in Hashtag/Mention coll. for hashtags and mentions.
-  // //       For regular words, do regex matching in Tweet coll.
-  // var term = req.body.term;
-  // Tweet.find({ content: {$regex: new RegExp(term), $options: 'i' }})
-  // .sort({'created_at': -1})
-  // .limit(1000)
-  // .exec(function(err, tweets) {
-  //   if (err) {
-  //     res.status(404).send(err);
-  //     return;
-  //   }
-  //   res.send("NOT YET IMPLEMENTED");
-  // });
-  res.send("NOT YET IMPLEMENTED");
+  var term = req.body.term;
+  if (term.startsWith("#")) {
+    searchHashtag(term);
+  } else if (term.startsWith("@")) {
+    searchMention(term);
+  } else {
+    searchWord(term);
+  };
+};
+
+function searchHashtag(term) {
+
+};
+
+function searchMention(term) {
+
+};
+
+function searchWord(term) {
+  models.Tweet.findAll({
+    where: {
+      content: {
+        $like: '%' + term + '%'
+      }
+    },
+    include: [{
+      model: models.User,
+      as: 'user',
+      attributes: ['username']
+    }],
+    attributes: ['content', 'createdAt']
+  }).then(function(tweets) {
+    res.render("NOT YET IMPLEMENTED", JSON.stringify(tweets));
+  }).catch(function(err) {
+    res.status(404).send(err);
+  });
 };

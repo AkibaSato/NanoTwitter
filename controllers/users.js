@@ -1,117 +1,122 @@
-var Hashtag = require('../models/hashtag');
-var Mention = require('../models/mention');
-var Relationship = require('../models/relationship');
-var User = require('../models/').User;
-var Tweet = require('../models/tweet');
-module.exports.follow = function (req, res, next) {
-  // var targetId = req.params.id;
-  // var requesterId = req.user._id;
-  //
-  // if(targetId == requesterId) {
-  //   res.send("Can't follow myself");
-  //   return;
-  // }
-  //
-  // Relationship.findOne({'follower': requesterId, 'followee': targetId},
-  //   function(err, relation) {
-  //     if (err) {
-  //       res.status(404).send(err);
-  //       return;
-  //     }
-  //     if (relation) {
-  //       res.send("Already followed");
-  //       return;
-  //     }
-  //     var newRelation = new Relationship({
-  //       follower: requesterId,
-  //       followee: targetId,
-  //       createdAt: req.body.timestamp
-  //     });
-  //     User.findOne({'_id': requesterId}, function(err, requester) {
-  //       if(err) {
-  //         res.status(404).send(err);
-  //         return;
-  //       }
-  //       requester.followees.push(targetId);
-  //       User.findOne({'_id': targetId}, function(err, target) {
-  //         if(err) {
-  //           res.status(404).send(err);
-  //           return;
-  //         }
-  //         target.followers.push(requesterId);
-  //         requester.save();
-  //         target.save();
-  //         newRelation.save();
-  //         res.send("NOT YET IMPLEMENTED");
-  //       });
-  //     });
-  //   });
-  res.send("NOT YET IMPLEMENTED");
-
-};
-
-module.exports.getSignup = function (req, res, next) {
+var models = require('../models');
+module.exports.getSignup = function (req, res) {
+  
   res.render('signup');
 };
 
-module.exports.getUser = function (req, res, next) {
-  // User.findOne({_id: req.params.id}, {password: 0, email: 0},
-  //   function (err, user) {
-  //      if (err) {
-  //        res.status(404).send(err);
-  //        return;
-  //      }
-  //      res.send("NOT YET IMPLEMENTED");
-  // });
-  res.send("NOT YET IMPLEMENTED");
+// Example return JSON:
+// {
+//  "id": 1,
+//  "followerId": 1,
+//  "followeeId": 2,
+//  "updatedAt": "2018-03-08T22:52:09.442Z",
+//  "createdAt":"2018-03-08T22:52:09.442Z"
+// }
+module.exports.follow = function (req, res) {
+  var followeeId = parseInt(req.params.id);
+  var followerId = parseInt(req.user.id);
+
+  if(followeeId == followerId) {
+    res.send("Can't follow myself");
+    return;
+  }
+  var relationship = {
+    followerId: followerId,
+    followeeId: followeeId
+  }
+  models.Relationship.create(relationship).then(function(newRelationship) {
+    console.log(JSON.stringify(newRelationship));
+    res.render("NOT YET IMPLEMENTED", JSON.stringify(newRelationship));
+  }).catch(function(err) {
+    res.status(404).send(err);
+  });
 };
 
-module.exports.getTweets = function (req, res, next) {
-  // User.findOne({ _id: req.params.id })
-  // .populate('tweets')
-  // .exec(function (err, user) {
-  //   if (err) {
-  //     res.status(404).send(err);
-  //     return;
-  //   }
-  //   var tweets = user.tweets;
-  //   res.send("NOT YET IMPLEMENTED");
-  // });
-  res.send("NOT YET IMPLEMENTED");
-
+// Example return JSON:
+// {
+//  "name": "Bob Builder"
+//  "username": "bob_builder",
+// }
+module.exports.getUser = function (req, res) {
+  models.User.findOne({
+    where: {id: parseInt(req.params.id)},
+    attributes: ['fname', 'lname', 'username']
+  }).then(function(user) {
+    var userData = {
+      name: user.fullName,
+      username: user.username,
+    }
+    res.render("NOT YET IMPLEMENTED", userData);
+  }).catch(function(err) {
+    res.status(404).send(err);
+  });
 };
 
-module.exports.getFollowees = function (req, res, next) {
-  // User.findOne({ '_id': req.params.id })
-  // .populate('followees', {_id: 0, username: 1})
-  // .exec(function (err, user) {
-  //   if (err) {
-  //     res.status(404).send(err);
-  //     return;
-  //   }
-  //   var followees = user.followees;
-  //   res.send("NOT YET IMPLEMENTED");
-  // });
-  res.send("NOT YET IMPLEMENTED");
-
+// Example return JSON:
+// [{
+//  "content":"hello",
+//  "createdAt":"2018-03-08T19:00:17.085Z",
+//  "user": {
+//   "username":"bob_builder"
+//  }
+// },
+// {
+//  "content":"yo",
+//  "createdAt":"2018-03-08T19:00:17.085Z",
+//  "user": {
+//   "username":"bob_builder"
+//  }
+// }]
+// TODO: Set a limit for the results retrieved. (e.g. pagination)
+module.exports.getTweets = function (req, res) {
+  models.Tweet.findAll({
+    where: {userId: parseInt(req.params.id)},
+    include: [{
+      model: models.User,
+      as: 'user',
+      attributes: ['username']
+    }],
+    attributes: ['content', 'createdAt']
+  }).then(function(tweets) {
+    res.render("NOT YET IMPLEMENTED", JSON.parse(JSON.stringify(tweets)));
+  }).catch(function(err) {
+    res.status(404).send(err);
+  });
 };
 
-module.exports.getFollowers = function (req, res, next) {
-  // User.findOne({ '_id': req.params.id })
-  // .populate('followers', {_id: 0, username: 1})
-  // .exec(function (err, user) {
-  //   if (err) {
-  //     res.status(404).send(err);
-  //     return;
-  //   }
-  //   var followers = user.followers;
-  //   res.send("NOT YET IMPLEMENTED");
-  // });
-  res.send("NOT YET IMPLEMENTED");
+module.exports.getFollowees = function (req, res) {
+  models.Relationship.findAll({
+    where: {followerId: parseInt(req.params.id)},
+    include: [{
+      model: models.User,
+      as: 'followee',
+      attributes: ['username']
+    }],
+    attributes: ['username']
+  }).then(function(followees) {
+    res.render("NOT YET IMPLEMENTED", JSON.stringify(followees));
+  }).catch(function(err) {
+    res.status(404).send(err);
+  });
+};
+
+module.exports.getFollowers = function (req, res) {
+  models.Relationship.findAll({
+    where: {followeeId: parseInt(req.params.id)},
+    include: [{
+      model: models.User,
+      as: 'follower',
+      attributes: ['username']
+    }]
+  }).then(function(followers) {
+    res.render("NOT YET IMPLEMENTED", JSON.stringify(followers));
+  }).catch(function(err) {
+    res.status(404).send(err);
+  });
 };
 
 // TODO: Fix this.
-module.exports.getFolloweeTweets = function (req, res, next) {
+module.exports.getFolloweeTweets = function (req, res) {
   // User.findOne({ '_id':  req.params.id})
   // .populate({
   //   path: 'followees',
@@ -125,7 +130,6 @@ module.exports.getFolloweeTweets = function (req, res, next) {
   //   res.send("NOT YET IMPLEMENTED");
   // });
   res.send("NOT YET IMPLEMENTED");
-
 };
 module.exports.create=function(req, res, next){
   var data = {

@@ -1,0 +1,5 @@
+<form method="post" action="/tweets/new">
+  <%= req.user.id %>
+  <textarea type="text" name="content" placeholder="Enter your tweet here" maxlength="280"></textarea>
+  <button class="btn new-tweet__button" type="submit">Tweet</button>
+</form>
