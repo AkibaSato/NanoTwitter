@@ -1,7 +1,7 @@
 const User = require('../../controllers/users');
 const Tweet = require('../../controllers/tweets');
 const Follower = require('../../controllers/relationships');
-const Loader=require('../../data_loader')
+const Loader=require('../../data_loader');
 const testuser=null;
 
 
