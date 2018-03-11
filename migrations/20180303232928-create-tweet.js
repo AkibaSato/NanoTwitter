@@ -29,6 +29,16 @@ module.exports = {
           deferrable: Sequelize.Deferrable.INITIALLY_IMMEDIATE
         }
       },
+      originalId: {
+        type: Sequelize.INTEGER,
+        allowNull: true,
+        references: {
+          model: 'Tweets',
+          key: 'id',
+          as: 'originalId',
+          deferrable: Sequelize.Deferrable.INITIALLY_IMMEDIATE
+        }
+      },
       content: {
         type: Sequelize.STRING,
         allowNull: false
@@ -45,6 +55,7 @@ module.exports = {
       }
     }).then(function() {
       queryInterface.addIndex('Tweets', ['userId']);
+      queryInterface.addIndex('Tweets', ['originalId']);
     });
   },
   down: (queryInterface, Sequelize) => {

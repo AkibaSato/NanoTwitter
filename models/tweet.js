@@ -7,7 +7,7 @@ module.exports = (sequelize, DataTypes) => {
     }
   }, {
     indexes: [
-      { fields: ['userId'] }
+      { fields: ['userId', 'originalId'] }
     ],
     defaultScope: {
       order: [['createdAt', 'desc']]
@@ -23,6 +23,10 @@ module.exports = (sequelize, DataTypes) => {
     Tweet.belongsTo(models.Tweet, {
       foreignKey: 'parentId',
       as: 'parent'
+    });
+    Tweet.belongsTo(models.Tweet, {
+      foreignKey: 'originalId',
+      as: 'original'
     });
     Tweet.hasMany(models.Mention);
     Tweet.hasMany(models.HashtagTweet);

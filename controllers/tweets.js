@@ -7,7 +7,8 @@ var models  = require('../models');
 //  "userId": 1,
 //  "updatedAt": "2018-03-09T04:30:08.385Z",
 //  "createdAt":"2018-03-09T04:30:08.385Z",
-//  "parentId": null
+//  "parentId": null,
+//  "originalId": null
 // }
 // TODO: Parse tweet content in background and insert into Hashtag and Mention.
 module.exports.tweet =  function (req, res) {
@@ -28,7 +29,7 @@ module.exports.tweet =  function (req, res) {
 //  "content": "hello",
 //  "createdAt": "2018-03-08T19:00:17.085Z",
 //  "user": {
-//   "username":"meg"
+//   "username": "bob_builder"
 //  }
 // }
 module.exports.getTweet = function (req, res) {
@@ -98,6 +99,59 @@ module.exports.getLikes = function (req, res) {
   }).then(function(users) {
     console.log(JSON.stringify(users));
     res.render("NOT YET IMPLEMENTED", JSON.parse(JSON.stringify(users)));
+  }).catch(function(err) {
+    console.log(err)
+    res.status(404).send(err);
+  });
+};
+
+// Example return JSON:
+// {
+//  "id": 4,
+//  "content": "",
+//  "userId": 1,
+//  "updatedAt": "2018-03-09T04:30:08.385Z",
+//  "createdAt":"2018-03-09T04:30:08.385Z",
+//  "parentId": null,
+//  "originalId": 2
+// }
+module.exports.retweet = function (req, res) {
+  models.Tweet.create({
+      content: "",
+      userId: req.user.id,
+      originalId: req.params.id
+  }).then(function(tweet) {
+    console.log(JSON.stringify(tweet));
+    res.render("NOT YET IMPLEMENTED", JSON.parse(JSON.stringify(tweet)));
+  }).catch(function(err) {
+    res.status(404).send(err);
+  });
+};
+
+// Example return JSON:
+// [{
+//  "createdAt": "2018-03-11T07:56:36.176Z",
+//  "user": {
+//    "username": "bob_builder"
+//  }
+// },
+// {
+//  "createdAt": "2018-03-11T07:56:36.176Z",
+//  "user": {
+//    "username": "dora_explorer"
+//  }
+// }]
+module.exports.getRetweets = function (req, res) {
+  models.Tweet.findAll({
+    where: { originalId: parseInt(req.params.id) },
+    include: [{
+      model: models.User,
+      as: 'user',
+      attributes: ['username']
+    }],
+    attributes: ['createdAt']
+  }).then(function(retweets) {
+    res.render("NOT YET IMPLEMENTED", JSON.parse(JSON.stringify(retweets)));
   }).catch(function(err) {
     console.log(err)
     res.status(404).send(err);
