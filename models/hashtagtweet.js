@@ -1,6 +1,10 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
-  var HashtagTweet = sequelize.define('HashtagTweet', {}, {});
+  var HashtagTweet = sequelize.define('HashtagTweet', {}, {
+    indexes: [
+      { fields: ['hashtagId'] }
+    ]
+  });
 
   HashtagTweet.associate = function (models) {
     HashtagTweet.belongsTo(models.Tweet, {

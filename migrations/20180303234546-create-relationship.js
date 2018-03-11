@@ -40,6 +40,9 @@ module.exports = {
         type: 'TIMESTAMP',
         defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
       }
+    }).then(function() {
+      queryInterface.addIndex('relationshipIndex', ['followerId']);
+      queryInterface.addIndex('relationshipIndex', ['followeeId']);
     });
   },
   down: (queryInterface, Sequelize) => {

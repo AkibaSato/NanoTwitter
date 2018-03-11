@@ -5,7 +5,14 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false
     }
-  }, {});
+  }, {
+    indexes: [
+      { fields: ['userId'] }
+    ],
+    defaultScope: {
+      order: [['createdAt', 'desc']]
+    }
+  });
 
   Tweet.associate = function (models) {
     Tweet.belongsTo(models.User, {

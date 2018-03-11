@@ -31,6 +31,9 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
     }
   } , {
+    defaultScope: {
+      order: [['createdAt', 'desc']]
+    },
     getterMethods: {
       fullName: function() {
         return this.fname + ' ' + this.lname
