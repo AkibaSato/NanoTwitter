@@ -1,5 +1,6 @@
 var models = require('../models')
 
+// Example return JSON:
 // [{
 //  "content": "hey",
 //  "createdAt": "2018-03-09T04:30:08.385Z",
@@ -16,50 +17,97 @@ var models = require('../models')
 // }]
 module.exports.search = function (req, res, next) {
   var term = req.params.term;
-  console.log("entered")
-  console.log(term)
   var searchPromise;
   if (term.startsWith('#')) {
-    searchPromise = searchHashtag(term);
+    searchPromise = searchHashtag(term.substring(1));
   } else if (term.startsWith('@')) {
-    searchPromise = searchMention(term);
+    searchPromise = searchMention(term.substring(1));
   } else {
     searchPromise = searchWord(term);
   };
 
   searchPromise
   .then(function(tweets) {
-    console.log(JSON.stringify(tweets));
     res.render("NOT YET IMPLEMENTED", JSON.parse(JSON.stringify(tweets)));
   }).catch(function(err) {
     res.status(404).send(err);
   });
 };
 
+// Return promise to search for term through Hashtag table.
+// TODO: Crazy four-table join.
 function searchHashtag(term) {
-  console.log(term)
-  return models.Hashtag.findAll({
-    where: {
-      content: term
-    },
-    include: [{
-      model: models.Tweet,
-      as: 'tweet',
-      attributes: ['content', 'createdAt'],
-      include: [{
-        model: models.User,
-        as: 'user',
-        attributes: ['username']
-      }]
-    }],
+  return models.HashtagTweet.findAll({
+    include: [
+      {
+        model: models.Hashtag,
+        as: 'hashtag',
+        attributes: ['content'],
+        where: { 'content': term }
+      },
+      {
+        model: models.Tweet,
+        as: 'tweet',
+        attributes: ['content', 'createdAt'],
+        include: [{
+          model: models.User,
+          as: 'user',
+          attributes: ['username']
+        }]
+      }
+    ],
     attributes: ['createdAt']
+  }).then(function(tweets) {
+    return tweets.map(x => flattenHashtagJson(x));
   });
 };
 
-function searchMention(term) {
+// JSONify a single row in the joined table from searchHashtag().
+function flattenHashtagJson(x) {
+  return {
+    createdAt: x.tweet.createdAt,
+    content: x.tweet.content,
+    user: x.user
+  };
+}
 
+// Return promise to search for term through Mention table.
+function searchMention(term) {
+  return models.Mention.findAll({
+    include: [
+      {
+        model: models.User,
+        as: 'user',
+        where: { 'username': term },
+        attributes: ['createdAt']
+      },
+      {
+        model: models.Tweet,
+        as: 'tweet',
+        attributes: ['content', 'createdAt'],
+        include: [{
+          model: models.User,
+          as: 'user',
+          attributes: ['username']
+        }]
+      }
+    ],
+    attributes: ['createdAt']
+  }).then(function(tweets) {
+    return tweets.map(x => flattenMentionJson(x));
+  });
 };
 
+// JSONify a single row in the joined table from searchMention().
+function flattenMentionJson(x) {
+  return {
+    createdAt: x.tweet.createdAt,
+    content: x.tweet.content,
+    user: x.tweet.user
+  };
+}
+
+// Return promise to search for term through Tweet table.
 function searchWord(term) {
   return models.Tweet.findAll({
     where: {
