@@ -23,7 +23,8 @@ module.exports.follow = function (req, res) {
   var relationship = {
     followerId: followerId,
     followeeId: followeeId
-  }
+  };
+
   models.Relationship.create(relationship).then(function(newRelationship) {
     res.render(
       "NOT YET IMPLEMENTED", JSON.parse(JSON.stringify(newRelationship)));
@@ -39,7 +40,7 @@ module.exports.follow = function (req, res) {
 // }
 module.exports.getUser = function (req, res) {
   models.User.findOne({
-    where: {id: parseInt(req.params.id)},
+    where: { id: parseInt(req.params.id) },
     attributes: ['fname', 'lname', 'username']
   }).then(function(user) {
     var userData = {
@@ -70,7 +71,7 @@ module.exports.getUser = function (req, res) {
 // TODO: Set a limit for the results retrieved. (e.g. pagination)
 module.exports.getTweets = function (req, res) {
   models.Tweet.findAll({
-    where: {userId: parseInt(req.params.id)},
+    where: { userId: parseInt(req.params.id) },
     include: [{
       model: models.User,
       as: 'user',
@@ -99,7 +100,7 @@ module.exports.getTweets = function (req, res) {
 // }]
 module.exports.getFollowees = function (req, res) {
   models.Relationship.findAll({
-    where: {followerId: parseInt(req.params.id)},
+    where: { followerId: parseInt(req.params.id) },
     include: [{
       model: models.User,
       as: 'followee',
@@ -128,7 +129,7 @@ module.exports.getFollowees = function (req, res) {
 // }]
 module.exports.getFollowers = function (req, res) {
   models.Relationship.findAll({
-    where: {followeeId: parseInt(req.params.id)},
+    where: { followeeId: parseInt(req.params.id) },
     include: [{
       model: models.User,
       as: 'follower',

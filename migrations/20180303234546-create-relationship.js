@@ -41,8 +41,8 @@ module.exports = {
         defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
       }
     }).then(function() {
-      queryInterface.addIndex('relationshipIndex', ['followerId']);
-      queryInterface.addIndex('relationshipIndex', ['followeeId']);
+      queryInterface.addIndex('Relationships', ['followerId']);
+      queryInterface.addIndex('Relationships', ['followeeId']);
     });
   },
   down: (queryInterface, Sequelize) => {

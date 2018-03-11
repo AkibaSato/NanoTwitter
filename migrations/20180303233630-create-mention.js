@@ -41,7 +41,7 @@ module.exports = {
         defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
       }
     }).then(function() {
-      queryInterface.addIndex('mentionIndex', ['userId']);
+      queryInterface.addIndex('Mentions', ['userId']);
     });
   },
   down: (queryInterface, Sequelize) => {

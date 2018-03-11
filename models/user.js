@@ -45,6 +45,7 @@ module.exports = (sequelize, DataTypes) => {
     User.hasMany(models.Tweet);
     User.hasMany(models.Relationship);
     User.hasMany(models.Mention);
+    User.hasMany(models.Like);
   };
 
   // Generate hash for password.

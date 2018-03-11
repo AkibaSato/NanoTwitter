@@ -44,7 +44,7 @@ module.exports = {
         defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
       }
     }).then(function() {
-      queryInterface.addIndex('tweetIndex', ['userId']);
+      queryInterface.addIndex('Tweets', ['userId']);
     });
   },
   down: (queryInterface, Sequelize) => {

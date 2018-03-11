@@ -26,6 +26,7 @@ module.exports = (sequelize, DataTypes) => {
     });
     Tweet.hasMany(models.Mention);
     Tweet.hasMany(models.HashtagTweet);
+    Tweet.hasMany(models.Like);
   };
 
   return Tweet;

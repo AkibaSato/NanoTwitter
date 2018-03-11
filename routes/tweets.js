@@ -4,5 +4,7 @@ var router = express.Router();
 
 router.post('/new', tweets.tweet);
 router.get('/:id', tweets.getTweet);
+router.get('/:id/likes', tweets.getLikes);
+router.post('/:id/like', tweets.like);
 
 module.exports = router;
