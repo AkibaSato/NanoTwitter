@@ -1,6 +1,6 @@
 var models = require('../models');
 module.exports.getSignup = function (req, res) {
-  
+
   res.render('signup');
 };
 
@@ -32,26 +32,49 @@ module.exports.follow = function (req, res) {
   });
 };
 
+module.exports.followUser = function (req, res) {
+  var followeeId = parseInt(req.params.id);
+  var followerId = parseInt(req.user.id);
+
+  if(followeeId == followerId) {
+    res.send("Can't follow myself");
+    return;
+  }
+  var relationship = {
+    followerId: followerId,
+    followeeId: followeeId
+  }
+  models.Relationship.create(relationship).then(function(newRelationship) {
+    console.log(JSON.stringify(newRelationship));
+  }).catch(function(err) {
+    res.status(404).send(err);
+  });
+};
+
 // Example return JSON:
 // {
 //  "name": "Bob Builder"
 //  "username": "bob_builder",
 // }
 module.exports.getUser = function (req, res) {
-  models.User.findOne({
+  return models.User.findOne({
     where: {id: parseInt(req.params.id)},
-    attributes: ['fname', 'lname', 'username']
   }).then(function(user) {
-    var userData = {
-      name: user.fullName,
-      username: user.username,
-    }
-    res.render("NOT YET IMPLEMENTED", userData);
+    return JSON.parse(JSON.stringify(user))
   }).catch(function(err) {
     res.status(404).send(err);
   });
 };
 
+module.exports.getUserID = function (req, res) {
+  return models.User.findOne({
+    where: {id: parseInt(req.params.id)},
+  }).then(function(user) {
+  return user.dataValues
+  }).catch(function(err) {
+    res.status(404).send(err);
+  });
+};
 // Example return JSON:
 // [{
 //  "content":"hello",
@@ -131,47 +154,26 @@ module.exports.getFolloweeTweets = function (req, res) {
   // });
   res.send("NOT YET IMPLEMENTED");
 };
+
+//TODO: fix create
 module.exports.create=function(req, res, next){
-  var data = {
-    fname: req.fname,
-    lname: req.lname,
-    username: req.username,
-    email: req.email,
-    password: User.generateHash(req.password)
-  };
-
-  User.create(data).then(function(newUser) {
-    return done(null, newUser);
-  }.catch(function(err){
-    console.log(err)
-    return;
-  }));
+  return models.User.create(req.user).then(function(user) {
+    return JSON.stringify(user)
+  });
 };
 
-module.exports.destroy=function(req, res, next) {
-  User.destroy({where: {
-    id: req.id
-  }}).then(function (user) {
-    console.log("user deleted")
-    return;
-  }
-).catch(function(err) {
-  console.log(err)
-});
-};
 
 
 module.exports.getAll=function(req, res, next) {
-  users=[];
-  User.findAll({
-    attributes: ['id']
+    models.User.findAll({
+    attributes: ['id'],
+    plain: true,
   }).then(function (users) {
-    users=users
-    console.log(users)
+    console.log(JSON.stringify(users))
+    return users.dataValues
   }).catch(function(err) {
       console.log(err)
   });
-  return users;
 };
 
 module.exports.getAllCount=function(req, res, next) {
@@ -179,11 +181,20 @@ module.exports.getAllCount=function(req, res, next) {
 };
 
 module.exports.destroyAll=function(req, res, next) {
-  User.destroy({where: {}}).then(function () {});
+    models.User.destroy({where: {}}).then(function () {});
+}
+module.exports.all=function(req, res, next) {
+  return User.all;
 }
 
-module.exports.destory=function(req, res, next) {
-  User.destroy({where: {
-    id: req.id
-  }}).then(function () {});
-}
+module.exports.destroy=function(req, res, next) {
+    models.User.destroy({where: {
+      id: req.id
+    }}).then(function (user) {
+        return;
+
+    }).done(function() {
+  return;
+  })
+    return;
+};

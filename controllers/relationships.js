@@ -14,12 +14,11 @@ module.exports.getAll=function(req, res, next) {
 
 module.exports.getAllCount=function(req, res, next) {
   return this.getAll().length
-}
+};
 
-
-module.exports.getAllCount=function(req, res, next) {
+module.exports.destoryAll=function(req, res, next) {
   Relationship.destroy({where: {}}).then(function () {});
-}
+};
 
 
 module.exports.destory=function(req, res, next) {

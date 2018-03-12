@@ -18,6 +18,15 @@ module.exports.tweet =  function (req, res) {
   });
 };
 
+module.exports.bulkTweet=function(req, res) {
+  models.Tweet.bulkCreate(req.tweets).then(function(tweet) {
+
+  }).catch(function(err) {
+    console.log(err);
+    res.status(404).send(err);
+  });
+}
+
 module.exports.getTweet = function (req, res) {
   models.Tweet.findOne({
     where: {id: parseInt(req.params.id)},
@@ -36,7 +45,7 @@ module.exports.getTweet = function (req, res) {
 
 module.exports.getAll=function(req, res, next) {
   tweets=[];
-  Tweet.findAll({
+    models.Tweet.findAll({
     attributes: ['id']
   }).then(function (tweets) {
     tweets=tweets
@@ -50,7 +59,6 @@ module.exports.getAllCount=function(req, res, next) {
   return this.getAll().length
 }
 module.exports.destroyAll=function(req, res, next) {
-  Tweet.destroy({where: {
-    id: req.id
-  }}).then(function () {});
+  models.Tweet.destroy({where: {}}).then(function () {});
+
 }

@@ -1,125 +1,137 @@
-const User = require('../../controllers/users');
-const Tweet = require('../../controllers/tweets');
-const Follower = require('../../controllers/relationships');
-const Loader=require('../../data_loader');
-const testuser=null;
+var express = require('express');
+var router = express.Router();
+let User = require('../test_controllers/test_users');
+let Tweet = require('../test_controllers/test_tweets');
+var Relationship = require('../test_controllers/test_relationships');
+let Follower = require('../test_controllers/test_relationships');
+let Loader=require('../data_loader');
+testuser=null;
+const index=require('../test_controllers/test_index');
+test_param={fname: "testuser",lname: "testuser", username: "testuser", email: "testuser@sample.com", password: "password"};
 
+ //DONE
+router.post('/reset/all', function (req, res, next) {
+  resetAll(req, res, next)
+  user=resetTestUser(req, res, next)
+  res.json({})
+});
 
-module.exports = function(app){
-  // creates new test user and returns json with number users, follows, tweets, and the test user's id
-    app.get('/test/status',  function (req, res) {
-      const data={fname: "testuser",lname: "testuser", username: "testuser", email: "testuser@sample.com", password: "password"};
-      this.testuser=User.create(data);
-      console.log("created")
-      res.json({
-        users: User.getAllCount(),
-        follows: Follower.getAllCount(),
-        tweets: Tweet.getAllCount(),
-        test_user_id: this.testuser.id
-    });
+//DONE
+router.post('/reset/testuser', function (req, res, next) {
+  if(testuser) {
+    testuser.then(function(value) {
+    req.id=JSON.parse(value)['id']
+    User.destroy(req, res, next);
+    resetTestUser(req, res, next);
   });
+  }
+  res.json({})
+});
 
-  app.get('/test/version',  function (req, res) {
-      var config = require('./../../package.json');
-      res.json({
-        version: config.version
+//DONE
+router.get('/status', async function (req, res, next) {
+  res.json(await getStatus(req.id));
+});
+
+//DONE
+router.get('/version',  index.version);
+
+// DONE
+router.post('/reset/standard', function (req, res, next) {
+  resetAll(req, res, next);
+  resetTestUser(req, res, next);
+  tweetN=req.query['tweets']
+  if(tweetN) req.tweetN=tweetN
+  testuser.then(function(value){
+    req.params.id=value['id']
+      if(req.query['tweets']){ req.tweets=req.query['tweets']}
+      Loader.generateTweets(req, res, next)
     });
-  });
-
-  app.post('/test/reset/all', function (req, res) {
-      // TODO: fix the delete All methods that are being tied up
-      User.destroyAll()
-      Tweet.destroyAll()
-      Follower.destroyAll()
-      console.log("deleted")
-      const data={fname: "testuser",lname: "testuser", username: "testuser", email: "testuser@sample.com", password: "password"};
-      u=User.create(data);
-      console.log("created")
-      res.json({
-      });
-      // TODO: create test User and fix destory methods
-    });
-
-    app.post('/test/reset/testuser', function (req, res) {
-      console.log("wow")
-      User.destroy({id: this.testuser.id})
-      console.log("destoryed")
-      const data={fname: "testuser",lname: "testuser", username: "testuser", email: "testuser@sample.com", password: "password"};
-      u=User.create(data);
-      conosole.log("created")
-    });
+});
 
 
-    app.post('/test/reset/standard', function (req, res) {
-//  if contains tweets paramter in url
 
-      if(req.query['tweets']){
-        const n=req.query['tweets']
-        console.log(n)
-        Loader.load_tweets({tweets: n})
-      } else {
-        console.log("nah fam")
-        Loader.load_follows()
-        // TODO: load all tweets from seed data
-      };
+// DONE
+router.post('/users/create', function (req, res, next) {
+    const count=req.query['count'];
+    const tweets=req.query['tweets'];
+    if(count && tweets) {
+      req.count=count
+      req.tweets=tweets
+      Loader.fakeUserTweet(req, res, next)
+    } else {
+      req.count=1
+      req.tweets=0
+      Loader.fakeUserTweet(req, res, next)
+    }
+});
 
-    });
-
-    app.post('/test/users/create', function (req, res) {
-      const count=req.query['count']
+// FIX TIMEOUT ISSUES
+router.post('/user/:id/tweets', function (req, res, next) {
       const tweets=req.query['tweets']
-      if(count && tweets) {
-        loader.create_fake(count, tweets)
-      } else {
-        loader.create_fake(1, 0)
-      }
-    });
-
-    app.post('/test/user/:id/tweets', function (req, res) {
-      console.log(req)
-      const tweets=req.query['tweets']
-      const id=req.query['id']
-      console.log(id)
-      if (id==testuser && tweets) {
-        const user=testuser
-        loader.user_generateTweets(user, count)
-      } else if(id && tweets){
-        const user=User.getUser(req.params.id)
-        loader.user_generateTweets(user, count)
-      }
-    });
-
-    app.post('/test/user/:id/follow', function (req, res) {
-      const f_count=req.query['count']
       const id=req.params.id
-      if (f_count) {
-        const size=User.getAllCount
-        followee=User.getUser(id)
-        ids=[]
-        const curr_num=0;
-        while (curr_num<f_count) {
-          current_id=Math.getRandomInt(size)
-          if(!ids.contains(current_id)) {
-            follower=User.getUser(current_id)
-            follower.follow(current_id)
-            ids.append(current_id)
-            curr_num++;
-          }
-        }
-        // TODO: random n number users follow user u
+      if (id==testuser && tweets) {
+        req.tweets=tweets
+        req.params.id=testuser['id']
+        loader.randomUserTweet(req, res, next)
+      } else if(id && tweets){
+        req.tweets=tweets
+        req.params.id=id
+        Loader.randomUserTweet(req, res, next)
       }
-    });
-
-    app.post('/test/user/follow', function (req, res) {
-      const count=req.query['count']
-      if(count) {
-        const user_count=Math.getRandomInt(count)
-
-        // TODO: n randomly selected users follow ‘n’ (integer) different randomlt seleted users.
-
-      }
+});
 
 
-    });
+router.post('/user/:id/follow', function (req, res, next) {
+  req.params.limit=req.query['count']
+  Loader.randomFollow(req, res, next)
+});
+
+
+
+router.post('/user/follow', function (req, res, next) {
+    const n=req.query['count']
+    req.params.limit=req.query['count']
+    req.params.n=n
+    req.params.limit=n
+    Loader.numberFollow(req, res, next)
+});
+
+
+
+module.exports=router;
+
+
+
+
+async function getStatus() {
+  users = await User.getAll() // wait till the promise resolves (*)
+  tweets= await Tweet.getAll();
+  follows= await Relationship.getAll();
+  if(testuser) id=testuser['id']
+  else id=-1
+  return await {
+      users: users.length,
+      tweets: tweets.length,
+      follows: follows.length,
+      test_user_id: id
+  };
+}
+
+async function fakeUsers() {
+  return await User.getAll() // wait till the promise resolves (*)
 
 }
+
+function resetAll(req, res, next) {
+
+  User.destroyAll(req, res, next);
+  Tweet.destroyAll(req, res, next);
+  Relationship.destoryAll(req, res, next);
+};
+
+function resetTestUser(req, res, next) {
+  req.user=test_param;
+  user=User.create(req, res, next)
+  testuser=user
+};

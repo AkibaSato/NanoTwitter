@@ -2,12 +2,9 @@ const express = require('express');
 const app = express();
 const port = process.env.PORT || 3000;
 const path    = require('path');
-var controller_dir = path.resolve("./controllers");
-var routing = require('resource-routing');
-routing.resources(app, controller_dir, "users");
 
 /* ===========BODY_PARSER=========== */
-const bodyParser = require('body-parser')
+const bodyParser = require('body-parser');
 // Parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }));
 // Parse application/json
@@ -52,7 +49,7 @@ const users = require('./routes/users');
 const search = require('./routes/search');
 const tweets = require('./routes/tweets');
 const index = require('./routes/index');
-const test_interface=require('./routes/test_routes/routes')(app)
+const load=require('./routes/test');
 
 app.use('/login', login);
 app.use('/logout', logout);
@@ -60,6 +57,7 @@ app.use('/user', users);
 app.use('/search', search);
 app.use('/tweets', tweets);
 app.use('/', index);
+app.use('/test', load);
 
 
 /* ===========ERROR HANDLER=========== */

@@ -16,7 +16,7 @@ module.exports.search = function (req, res, next) {
 };
 
 function searchHashtag(term) {
-
+  
 };
 
 function searchMention(term) {
