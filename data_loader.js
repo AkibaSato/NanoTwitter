@@ -68,7 +68,7 @@ module.exports.randomFollow=async function(req, res, next){
 };
 
 module.exports.numberFollow = async function (req, res, next) {
-  n=req.params.n
+  num=req.params.n
   req.params.id=-1
   random=await User.randomUser(req, res, next)
   for(i=0; i<random.length; i++) {
