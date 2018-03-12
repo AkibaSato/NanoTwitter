@@ -17,7 +17,6 @@ module.exports.tweet =  function (req, res) {
       userId: req.user.id,
       parentId: req.body.parentId
   }).then(function(tweet) {
-    console.log(JSON.stringify(tweet));
     res.render("NOT YET IMPLEMENTED", JSON.parse(JSON.stringify(tweet)));
   }).catch(function(err) {
     res.status(404).send(err);
