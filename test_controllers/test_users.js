@@ -54,7 +54,7 @@ module.exports.getAll=async function(req, res, next) {
 
 
 module.exports.randomUser=async function(req, rex, next) {
-  return models.User.findAll({random: true, limit: req.params.limit, offset: 1, where: {
+  return models.User.findAll({ order: 'random()', limit: req.params.limit, offset: 1, where: {
     id: {not: req.params.id}
   } }).then(function(user) {
     return JSON.parse(JSON.stringify(user))
