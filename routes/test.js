@@ -66,7 +66,6 @@ router.post('/users/create', function (req, res, next) {
     }
 });
 
-// FIX TIMEOUT ISSUES
 router.post('/user/:id/tweets', function (req, res, next) {
       const tweets=req.query['tweets']
       const id=req.params.id

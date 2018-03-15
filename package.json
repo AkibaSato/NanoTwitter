@@ -44,6 +44,8 @@
     "pg-hstore": "^2.3.2",
     "pug": "^2.0.0-rc.4",
     "sequelize": "^4.35.2",
-    "sequelize-cli": "^4.0.0"
+    "sequelize-cli": "^4.0.0",
+    "sinon": "^4.4.5",
+    "supertest": "^3.0.0"
   }
 }
