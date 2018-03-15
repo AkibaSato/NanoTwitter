@@ -1,35 +1,39 @@
 var models  = require('../models');
 
+// Example return JSON:
+// {
+//  "id": 2,
+//  "content": "hey",
+//  "userId": 1,
+//  "updatedAt": "2018-03-09T04:30:08.385Z",
+//  "createdAt":"2018-03-09T04:30:08.385Z",
+//  "parentId": null,
+//  "originalId": null
+// }
+// TODO: Parse tweet content in background and insert into Hashtag and Mention.
 module.exports.tweet =  function (req, res) {
-  console.log("TEST");
   models.Tweet.create({
       content: req.body.content,
       userId: req.user.id,
       parentId: req.body.parentId
-      // content: "hello",
-      // userId: 1,
-      // parentId: null
   }).then(function(tweet) {
-    console.log("TEST2");
     res.render("NOT YET IMPLEMENTED", JSON.parse(JSON.stringify(tweet)));
   }).catch(function(err) {
-    console.log(err);
     res.status(404).send(err);
   });
 };
 
-module.exports.bulkTweet=function(req, res) {
-  models.Tweet.bulkCreate(req.tweets).then(function(tweet) {
-
-  }).catch(function(err) {
-    console.log(err);
-    res.status(404).send(err);
-  });
-}
-
+// Example return JSON:
+// {
+//  "content": "hello",
+//  "createdAt": "2018-03-08T19:00:17.085Z",
+//  "user": {
+//   "username": "bob_builder"
+//  }
+// }
 module.exports.getTweet = function (req, res) {
   models.Tweet.findOne({
-    where: {id: parseInt(req.params.id)},
+    where: { id: parseInt(req.params.id) },
     include: [{
       model: models.User,
       as: 'user',
@@ -37,28 +41,118 @@ module.exports.getTweet = function (req, res) {
     }],
     attributes: ['content', 'createdAt']
   }).then(function(tweet) {
-    res.render("NOT YET IMPLEMENTED", JSON.stringify(tweet));
+    res.render("NOT YET IMPLEMENTED", JSON.parse(JSON.stringify(tweet)));
   }).catch(function(err) {
     res.status(404).send(err);
   });
 };
 
-module.exports.getAll=function(req, res, next) {
-  tweets=[];
-    models.Tweet.findAll({
-    attributes: ['id']
-  }).then(function (tweets) {
-    tweets=tweets
+// Example return JSON:
+// {
+//  "id": 4,
+//  "userId": 1,
+//  "tweetId": 3,
+//  "updatedAt": "2018-03-11T07:57:40.240Z",
+//  "createdAt":"2018-03-11T07:57:40.240Z"
+// }
+module.exports.like = function (req, res) {
+  var tweet = parseInt(req.params.id);
+  var user = 1;
+
+  var like = {
+    userId: user,
+    tweetId: tweet
+  };
+
+  models.Like.create(like).then(function(newLike) {
+    console.log(JSON.stringify(newLike));
+    res.render(
+      "NOT YET IMPLEMENTED", JSON.parse(JSON.stringify(newLike)));
   }).catch(function(err) {
-      console.log(err)
+    res.status(404).send(err);
   });
-  return tweets;
 };
 
-module.exports.getAllCount=function(req, res, next) {
-  return this.getAll().length
-}
-module.exports.destroyAll=function(req, res, next) {
-  models.Tweet.destroy({where: {}}).then(function () {});
+// Example return JSON:
+// [{
+//  "createdAt": "2018-03-11T07:56:36.176Z",
+//  "user": {
+//    "username": "bob_builder"
+//  }
+// },
+// {
+//  "createdAt": "2018-03-11T07:56:36.176Z",
+//  "user": {
+//    "username": "dora_explorer"
+//  }
+// }]
+module.exports.getLikes = function (req, res) {
+  models.Like.findAll({
+    where: { tweetId: parseInt(req.params.id) },
+    include: [{
+      model: models.User,
+      as: 'user',
+      attributes: ['username']
+    }],
+    attributes: ['createdAt']
+  }).then(function(users) {
+    console.log(JSON.stringify(users));
+    res.render("NOT YET IMPLEMENTED", JSON.parse(JSON.stringify(users)));
+  }).catch(function(err) {
+    console.log(err)
+    res.status(404).send(err);
+  });
+};
 
-}
+// Example return JSON:
+// {
+//  "id": 4,
+//  "content": "",
+//  "userId": 1,
+//  "updatedAt": "2018-03-09T04:30:08.385Z",
+//  "createdAt":"2018-03-09T04:30:08.385Z",
+//  "parentId": null,
+//  "originalId": 2
+// }
+module.exports.retweet = function (req, res) {
+  models.Tweet.create({
+      content: "",
+      userId: req.user.id,
+      originalId: req.params.id
+  }).then(function(tweet) {
+    console.log(JSON.stringify(tweet));
+    res.render("NOT YET IMPLEMENTED", JSON.parse(JSON.stringify(tweet)));
+  }).catch(function(err) {
+    res.status(404).send(err);
+  });
+};
+
+// Example return JSON:
+// [{
+//  "createdAt": "2018-03-11T07:56:36.176Z",
+//  "user": {
+//    "username": "bob_builder"
+//  }
+// },
+// {
+//  "createdAt": "2018-03-11T07:56:36.176Z",
+//  "user": {
+//    "username": "dora_explorer"
+//  }
+// }]
+module.exports.getRetweets = function (req, res) {
+  models.Tweet.findAll({
+    where: { originalId: parseInt(req.params.id) },
+    include: [{
+      model: models.User,
+      as: 'user',
+      attributes: ['username']
+    }],
+    attributes: ['createdAt']
+  }).then(function(retweets) {
+    res.render("NOT YET IMPLEMENTED", JSON.parse(JSON.stringify(retweets)));
+  }).catch(function(err) {
+    console.log(err)
+    res.status(404).send(err);
+  });
+};
