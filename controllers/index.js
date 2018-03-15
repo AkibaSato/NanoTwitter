@@ -11,6 +11,11 @@ module.exports.index = (req, res, next) => {
   let tweets
 
   Tweet.findAll({
+    include: [{
+      model: User,
+      as: 'user',
+      attributes: ['username', 'fname', 'lname']
+    }],
     attributes: ['content', 'createdAt']
   }).then(result => {
     tweets = result;

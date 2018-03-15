@@ -4,13 +4,14 @@
   <% for(var i=0; i<tweets.length; i++) { %>
     <div class="tweets">
       <div class="row">
-        <h2>(FNAME LNAME) </h2>
-        <h3>@(USERNAME) • <%= tweets[i].createdAt.getDate() %> <%= tweets[i].createdAt.getMonth() %> <%= tweets[i].createdAt.getFullYear() %></h3>
+        <h2><%= tweets[i].user.fname %> <%= tweets[i].user.lname %></h2>
+
+        <h3>@<%= tweets[i].user.username %> • <%= tweets[i].createdAt.getDate() %> <%= tweets[i].createdAt.getMonth() %> <%= tweets[i].createdAt.getFullYear() %></h3>
       </div>
       <div class="row">
         <h4><%= tweets[i].content %></h4>
       </div>
     </div>
-    <div class="tweet-border">_____________________________________________________________________________________________</div>
+    <div class="tweet-border">____________________________________________________________________</div>
   <% } %>
 </div>

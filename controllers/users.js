@@ -61,7 +61,7 @@ module.exports.getUser = function (req, res) {
     include: [{
       model: models.User,
       as: 'user',
-      attributes: ['username']
+      attributes: ['username', 'fname', 'lname']
     }],
     attributes: ['content', 'createdAt']
   }).then(result => {
