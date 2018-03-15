@@ -91,10 +91,10 @@ $ heroku pg:psql
 - [x] Configured Heroku and deployed skeleton.
 
 ### nanoTwitter 0.3: Core functionality
-- [ ] Write unit tests.
-- [ ] Implement test interface.
-- [ ] Setup automatic deployment.
-- [ ] Load seed data.
+- [x] Write unit tests.
+- [x] Implement test interface.
+- [x] Setup automatic deployment.
+- [x] Load seed data.
 - [x] Migrated to Postgres and configured Heroku accordingly.
 
 ## Mockups
