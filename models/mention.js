@@ -1,6 +1,10 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
-  var Mention = sequelize.define('Mention', {}, {});
+  var Mention = sequelize.define('Mention', {}, {
+    indexes: [
+      { fields: ['userId'] }
+    ]
+  });
 
   Mention.associate = function (models) {
     Mention.belongsTo(models.User, {
@@ -14,6 +18,6 @@ module.exports = (sequelize, DataTypes) => {
       onDelete: 'cascade'
     });
   };
-  
+
   return Mention;
 };

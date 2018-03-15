@@ -1,6 +1,13 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
-  var Relationship = sequelize.define('Relationship', {}, {});
+  var Relationship = sequelize.define('Relationship', {}, {
+    indexes: [
+      { fields: ['followerId', 'followeeId'] }
+    ],
+    defaultScope: {
+      order: [['createdAt', 'desc']]
+    }
+  });
 
   Relationship.associate = function (models) {
     Relationship.belongsTo(models.User, {

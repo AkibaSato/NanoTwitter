@@ -31,6 +31,9 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
     }
   } , {
+    defaultScope: {
+      order: [['createdAt', 'desc']]
+    },
     getterMethods: {
       fullName: function() {
         return this.fname + ' ' + this.lname
@@ -42,6 +45,7 @@ module.exports = (sequelize, DataTypes) => {
     User.hasMany(models.Tweet);
     User.hasMany(models.Relationship);
     User.hasMany(models.Mention);
+    User.hasMany(models.Like);
   };
 
   // Generate hash for password.

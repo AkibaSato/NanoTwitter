@@ -32,12 +32,17 @@ module.exports = {
       },
       createdAt: {
         allowNull: false,
-        type: Sequelize.DATE
+        type: 'TIMESTAMP',
+        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
       },
       updatedAt: {
         allowNull: false,
-        type: Sequelize.DATE
+        type: 'TIMESTAMP',
+        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
       }
+    }).then(function() {
+      queryInterface.addIndex('Relationships', ['followerId']);
+      queryInterface.addIndex('Relationships', ['followeeId']);
     });
   },
   down: (queryInterface, Sequelize) => {

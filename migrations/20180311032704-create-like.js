@@ -1,7 +1,7 @@
 'use strict';
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('HashtagTweets', {
+    return queryInterface.createTable('Likes', {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -19,13 +19,13 @@ module.exports = {
         },
         allowNull: false
       },
-      hashtagId: {
+      userId: {
         type: Sequelize.INTEGER,
         onDelete: 'cascade',
         references: {
-          model: 'Hashtags',
+          model: 'Users',
           key: 'id',
-          as: 'hashtagId',
+          as: 'userId',
           deferrable: Sequelize.Deferrable.INITIALLY_IMMEDIATE
         },
         allowNull: false
@@ -41,10 +41,11 @@ module.exports = {
         defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
       }
     }).then(function() {
-      queryInterface.addIndex('HashtagTweets', ['hashtagId']);
+      queryInterface.addIndex('Likes', ['tweetId']);
+      queryInterface.addIndex('Likes', ['userId']);
     });
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('HashtagTweets');
+    return queryInterface.dropTable('Likes');
   }
 };
