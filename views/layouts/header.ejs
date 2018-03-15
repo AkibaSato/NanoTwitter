@@ -6,13 +6,22 @@
                 <ul class="navbar__main-navigation">
                     <li><a href="/" title="Home"><i class="fa fa-home" aria-hidden="true"></i><span>Home</span></a></li>
                     <% if (req.isAuthenticated()) { %>
-                      <% if (req.user !== null) { %>
-                        <li><a href="/user/<%= req.user.id %>" title="Profile"><i class="fa fa-user" aria-hidden="true"></i><span>Profile</span></a></li>
-                      <% } %>
+                      <li><a href="/user/<%= req.user.id %>" title="Profile"><i class="fa fa-user" aria-hidden="true"></i><span>Profile</span></a></li>
                     <% } %>
                 </ul>
             </div>
             <span class="navbar__logo"><a href="/"><img src="/img/kevin_flag_2.png"/></a></span>
+            <% if (req.isAuthenticated()) { %>
+              <div class="navbar__group navbar__group_right">
+                <div class="navbar__profile">
+                  <a class="navbar__profile-logout" href="/logout" title="logout">
+                    <i class="fa fa-sign-out" aria-hidden="true"></i>
+                    <img class="tweet__image chat-image logout-image"/>
+                    <span>Logout</span>
+                  </a>
+                </div>
+              </div>
+            <% } %>
         </div>
     </header>
 </body>

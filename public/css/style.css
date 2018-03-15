@@ -29,27 +29,22 @@ hr {
   border-color: #141D26; }
 
 .btn {
-  border-radius: 5px;
-  font-size: 11px;
-  padding: 3px 8px;
+  border-radius: 18px;
+  font-size: 14px;
+  font-weight: bold;
   color: #ffffff;
+  line-height: 20px;
+  padding: 6px 16px;
+  position: relative;
+  text-align: center;
+  white-space: nowrap;
   background-color: #1DA1F2; }
   .btn:hover {
-    background-color: #35abf3;
+    background-color: #67B3EB;
     cursor: pointer;
     color: #ffffff; }
 
-textarea {
-  color: #8899A6;
-  padding: 5px 10px;
-  width: 100%;
-  background-color: #141D26;
-  border: solid 1px #000;
-  border-radius: 8px; }
-  textarea::placeholder {
-    color: #8899A6; }
-  textarea:focus {
-    color: #ffffff; }
+
 
 pre {
   white-space: pre-wrap;
@@ -176,13 +171,42 @@ pre code {
 
 /* Home Page */
 
+.user-information__border {
+  background-color: #4AA0ED;
+  padding: 40px;
+  margin-left: 20px;
+}
+.user-information {
+  background-color: #FFFFFF;
+  padding: 15px;
+  border-radius: 2px;
+  border: 1px solid $black;
+  margin-bottom: 20px;
+  margin-left: 20px;
+}
+
+.user-information > .row {
+  align-items: center;
+}
+
 .user-information__text {
-  text-align: center;
+  text-align: left;
+  margin-left: 10px;
 }
 
 .user-information h4 {
-  color: #fff;
+  color: #000000;
+  font-weight: bold;
+  font-size: 18px;
+  line-height: 25px;
+  margin: -1px 0 -2px 0;
 }
+
+.user-information h2 {
+  font-size: 14px;
+  color: #657786;
+}
+
 
 .user-information__stats {
     margin-top: 10px;
@@ -193,26 +217,67 @@ pre code {
     width: 100%;
 }
 
-.first-column .recent-visits,
-.first-column .useful-links {
-  display: none; }
-  @media (min-width: 992px) {
-    .first-column .recent-visits,
-    .first-column .useful-links {
-      display: block; } }
-
-@media (min-width: 1200px) {
-  .first-column .recent-visits {
-    display: none; } }
-
-@media (min-width: 992px) {
-  .third-column .recent-visits,
-  .third-column .useful-links {
-    display: none; } }
-
-@media (min-width: 1200px) {
-  .third-column .recent-visits {
-    display: block; } }
+@media (min-width:992px) {
+    .row.col-centered > [class*='col-'] {
+        display: inline-block;
+        float: none;
+    }
+}
 
 
-/*# sourceMappingURL=style.css.map */
+
+/* Tweet Box */
+
+.box {
+  padding-top: 20px;
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-bottom: 60px;
+  background-color: #E9F3FC;
+  color: 	#C4DCF4;
+}
+
+textarea {
+  color: black;
+  padding: 5px 10px;
+
+  width: 100%;
+  background-color: #FFFFFF;
+  border: solid 2px #67B3EB;
+  border-radius: 8px; }
+  textarea::placeholder {
+    color: #8899A6; }
+  textarea:focus {
+    color: black; }
+
+/* List of Tweets */
+
+.tweet-list {
+  margin-top: -20px;
+  background-color: #FFFFFF;
+  padding: 20px;
+
+}
+
+.tweet-border {
+  color: #C4C6C9;
+  border: 1px #C4C6C9;
+}
+
+.tweets h2 {
+  padding-left: 10px;
+  color: #14171a;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.tweets h3 {
+  font-size: 14px;
+  color: #657786;
+}
+
+.tweets h4 {
+  padding: 10px;
+  font-size: 14px;
+  line-height: 20px;
+}

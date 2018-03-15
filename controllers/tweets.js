@@ -17,7 +17,9 @@ module.exports.tweet =  function (req, res) {
       userId: req.user.id,
       parentId: req.body.parentId
   }).then(function(tweet) {
-    res.render("NOT YET IMPLEMENTED", JSON.parse(JSON.stringify(tweet)));
+    // res.render("NOT YET IMPLEMENTED", JSON.parse(JSON.stringify(tweet)));
+    var redirectURL = '../user/' + req.user.id;
+    res.redirect(redirectURL);
   }).catch(function(err) {
     res.status(404).send(err);
   });

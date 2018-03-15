@@ -1,0 +1,13 @@
+<%- include layouts/icon.ejs %>
+
+<%- include layouts/header.ejs %>
+
+
+<%= userData.username %>
+
+
+<% for(var i=0; i<tweets.length; i++) { %>
+  <li><%= tweets[i].content %></li>
+<% } %>
+
+<%= tweetCount %>

@@ -4,6 +4,7 @@ var passport = require('passport');
 var router = express.Router();
 
 router.get('/register', users.getSignup);
+router.get('/logout', users.logout);
 router.get('/:id', users.getUser);
 router.get('/:id/tweets', users.getTweets);
 router.get('/:id/followees', users.getFollowees);

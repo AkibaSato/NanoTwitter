@@ -33,6 +33,15 @@ module.exports = (sequelize, DataTypes) => {
     Tweet.hasMany(models.Like);
   };
 
+  // Tweet.statics = {
+  //   countUserTweets: function(id, callback) {
+  //     return this.find({ user: id })
+  //               .count()
+  //               .exec(callback);
+  //   }
+  // }
+
+
 
   return Tweet;
 };

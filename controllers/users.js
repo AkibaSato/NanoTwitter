@@ -4,6 +4,11 @@ module.exports.getSignup = function (req, res) {
   res.render('signup');
 };
 
+module.exports.logout = (req, res) => {
+  req.logout();
+  res.redirect('/');
+};
+
 // Example return JSON:
 // {
 //  "id": 1,
@@ -38,20 +43,57 @@ module.exports.follow = function (req, res) {
 //  "name": "Bob Builder"
 //  "username": "bob_builder",
 // }
+
+
+
 module.exports.getUser = function (req, res) {
+  var userData;
+  var tweets;
   models.User.findOne({
     where: { id: parseInt(req.params.id) },
     attributes: ['fname', 'lname', 'username']
-  }).then(function(user) {
-    var userData = {
-      name: user.fullName,
-      username: user.username,
-    }
-    res.render("NOT YET IMPLEMENTED", userData);
+  }).then(result => {
+    userData = result;
+  });
+
+  models.Tweet.findAll({
+    where: { userId: parseInt(req.params.id) },
+    include: [{
+      model: models.User,
+      as: 'user',
+      attributes: ['username']
+    }],
+    attributes: ['content', 'createdAt']
+  }).then(result => {
+    tweets = result;
+    res.render('user', {
+      req: req,
+      userData: userData,
+      tweets: tweets,
+      tweetCount: tweets.length,
+      test2: 2
+    });
   }).catch(function(err) {
     res.status(404).send(err);
   });
 };
+
+// module.exports.getUser = function (req, res) {
+//   models.User.findOne({
+//     where: { id: parseInt(req.params.id) },
+//     attributes: ['fname', 'lname', 'username']
+//   }).then(function(user) {
+//     var userData = {
+//       name: user.fullName,
+//       username: user.username,
+//       req: req,
+//       test: 1
+//     }
+//     res.render("user", userData);
+//   }).catch(function(err) {
+//     res.status(404).send(err);
+//   });
+// };
 
 // Example return JSON:
 // [{
@@ -70,6 +112,7 @@ module.exports.getUser = function (req, res) {
 // }]
 // TODO: Set a limit for the results retrieved. (e.g. pagination)
 module.exports.getTweets = function (req, res) {
+
   models.Tweet.findAll({
     where: { userId: parseInt(req.params.id) },
     include: [{
@@ -79,11 +122,18 @@ module.exports.getTweets = function (req, res) {
     }],
     attributes: ['content', 'createdAt']
   }).then(function(tweets) {
-    res.render("NOT YET IMPLEMENTED", JSON.parse(JSON.stringify(tweets)));
+    res.render('user', JSON.parse(JSON.stringify(tweets)), {
+      req: req,
+      tweets: tweets,
+      test2: 2
+    });
   }).catch(function(err) {
     res.status(404).send(err);
   });
 };
+
+
+
 
 // Example return JSON:
 // [{
