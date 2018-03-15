@@ -18,8 +18,8 @@ module.exports.generateTweets= async function(req, res, next) {
   });
 };
 
-module.exports.fakeUserTweet = async function (req, res, next) {
 
+module.exports.fakeUserTweet = async function (req, res, next) {
   for(i=0; i<req.count; i++) {
     req.user={fname: faker.name.firstName(),lname: faker.name.lastName(), username: faker.internet.userName(), email: faker.internet.email(), password: faker.internet.password()};
     user=await User.create(req, res, next)
