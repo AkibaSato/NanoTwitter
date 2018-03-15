@@ -9,5 +9,12 @@
   "production": {
     "use_env_variable": "DATABASE_URL",
     "dialect": "postgres"
+  },
+  "test": {
+    "username": "",
+    "password": "",
+    "database": "nttest",
+    "host": "localhost",
+    "dialect": "postgres"
   }
 }

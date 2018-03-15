@@ -4,8 +4,9 @@ var server = require('../index');
 var should = chai.should();
 
 chai.use(chaiHttp);
-
+process.env.NODE_ENV="test"
 // TEST VIEWS
+
 it('HomePage Status', function(done) {
   chai.request(server)
     .get('/')
