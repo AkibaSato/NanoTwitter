@@ -16,23 +16,28 @@ module.exports.generateTweets= async function(req, res, next) {
       t=  Tweet.generate(req, res, next);
     }
   });
-}
+};
 
 module.exports.fakeUserTweet = async function (req, res, next) {
+
   for(i=0; i<req.count; i++) {
     req.user={fname: faker.name.firstName(),lname: faker.name.lastName(), username: faker.internet.userName(), email: faker.internet.email(), password: faker.internet.password()};
     user=await User.create(req, res, next)
+    console.log(user)
     u_id=user['id']
     fs.readFile('./seeds/tweets.csv', 'utf8', function (err, data) {
       const dataArray = data.split(/\r?\n/);  //Be careful if you are in a \r\n world...
-      for(i=0; i<req.tweets; i++) {
-        line=dataArray[i]
+      for(j=0; j<req.tweets; j++) {
+        line=dataArray[j]
         req.body.content=line[0]
         req.user.id=u_id
         t= Tweet.generate(req, res, next);
+        console.log(t)
       }
     });
   };
+  res.json({})
+
 };
 
 
