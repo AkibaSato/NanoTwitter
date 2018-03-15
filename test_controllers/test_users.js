@@ -2,10 +2,12 @@ var models = require('../models');
 
 
 module.exports.followUser = function (req, res, next) {
-  var followeeId = parseInt(req.params.id);
+  // person you want to follow
+  var followeeId = parseInt(req.params.id)
+// person that is following a person
   var followerId = parseInt(req.params.follow_id);
-  console.log(followeeId)
-  console.log(followerId)
+  // console.log(followeeId)
+  // console.log(followerId)
   if(followeeId == followerId) {
     res.send("Can't follow myself");
     return;

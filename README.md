@@ -42,6 +42,10 @@ $ node index.js
 Point your browser to http://localhost:3000 and voila!
 
 ## Notes for developers
+```sh
+  sequelize db: [create/migrate/drop] --env [development/test]
+```
+
 
 ### Local Development
 To connect to the Postgres shell:
