@@ -3,27 +3,29 @@ var chai = require('chai');
 var chaiHttp = require('chai-http');
 var server = require('../../index');
 var should = chai.should();
+const faker=require('faker');
 
 chai.use(chaiHttp);
-describe('test suite goes here', function () {
-    before(function () {
+var tweets=require("../../test_controllers/test_tweets")
+var users=require("../../test_controllers/test_users")
+var follows=require("../../test_controllers/test_relationships")
 
+
+describe('POST /test/reset/testuser Test Data', function () {
+  before(function () {
+      tweets.destroyAll()
+      users.destroyAll()
+      follows.destoryAll()
     });
-    after(function () {
-        core.deinit();
-    });
-});
 
-
-// TEST VERSION GET
-it('Test Version Status', function(done) {
-  chai.request(server)
-    .get('/test/version')
-    .end(function(err, res){
-      res.should.have.status(200);
-      res.body.should.be.a('object')
-      res.body['version'].should.not.equal(null);
-      res.body['version'].should.equal("1.0.0");
-      done();
+    // TEST VERSION GET
+    it('Test Version Status', function(done) {
+      var req=chai.request(server)
+      req.post('/test/reset/testuser').end(function(err, res2){
+        req.get('/test/status').end(function(err2, res){
+          console.log(res.body)
+          done();
+        });
+      });
     });
 });

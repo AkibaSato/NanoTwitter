@@ -8,11 +8,11 @@ let Loader=require('../data_loader');
 testuser=null;
 const index=require('../test_controllers/test_index');
 test_param={fname: "testuser",lname: "testuser", username: "testuser", email: "testuser@sample.com", password: "password"};
-
+test_id=-1;
  //DONE
 router.post('/reset/all', function (req, res, next) {
   resetAll(req, res, next)
-  user=resetTestUser(req, res, next)
+  resetTestUser(req, res, next)
   res.json({})
 });
 
@@ -21,6 +21,7 @@ router.post('/reset/testuser', function (req, res, next) {
   if(testuser) {
     testuser.then(function(value) {
     req.id=JSON.parse(value)['id']
+    test_id=req.id
     User.destroy(req, res, next);
     resetTestUser(req, res, next);
   });
@@ -107,13 +108,13 @@ async function getStatus() {
   users = await User.getAll() // wait till the promise resolves (*)
   tweets= await Tweet.getAll();
   follows= await Relationship.getAll();
-  if(testuser) id=testuser['id']
-  else id=-1
+  console.log(test_id)
+
   return await {
       users: users.length,
       tweets: tweets.length,
       follows: follows.length,
-      test_user_id: id
+      test_user_id: test_id
   };
 }
 
@@ -128,9 +129,15 @@ function resetAll(req, res, next) {
   Tweet.destroyAll(req, res, next);
   Relationship.destoryAll(req, res, next);
 };
+function deleteTestUser(req, res, next) {
+
+};
 
 function resetTestUser(req, res, next) {
   req.user=test_param;
   user=User.create(req, res, next)
   testuser=user
+  user.then(function(value){
+    test_id=JSON.parse(JSON.stringify(value))['id']
+  })
 };

@@ -1,4 +1,4 @@
-require('./test2.js')
+require('./test3.js')
 // require('./test2.js')
 // require('./test3.js')
 // require('./test4.js')

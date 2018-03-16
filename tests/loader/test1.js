@@ -5,17 +5,18 @@ var server = require('../../index');
 var should = chai.should();
 
 chai.use(chaiHttp);
+var tweets=require("../../test_controllers/test_tweets")
+var users=require("../../test_controllers/test_users")
+var follows=require("../../test_controllers/test_relationships")
 
-describe('Pre Added Data Test Suite', function () {
+
+
+describe('No Database Data Tests', function () {
   before(function () {
-      var tweets=require("../../test_controllers/test_tweets")
-      var users=require("../../test_controllers/test_users")
-      var follows=require("../../test_controllers/test_relationships")
       tweets.destroyAll()
       users.destroyAll()
       follows.destoryAll()
     });
-
     // TEST VERSION GET
     it('Test Version Status', function(done) {
       chai.request(server)
@@ -28,7 +29,6 @@ describe('Pre Added Data Test Suite', function () {
           done();
         });
     });
-
     it('Test Status Page', function(done) {
       chai.request(server)
         .get('/test/status')
@@ -37,16 +37,12 @@ describe('Pre Added Data Test Suite', function () {
           res.body.should.be.a('object')
           res.body['users'].should.not.equal(null);
           res.body['users'].should.equal(0);
-
           res.body['tweets'].should.not.equal(null);
           res.body['tweets'].should.equal(0);
-
           res.body['follows'].should.not.equal(null);
           res.body['follows'].should.equal(0);
-
           res.body['test_user_id'].should.not.equal(null);
           res.body['test_user_id'].should.equal(-1);
-
           done();
         });
     });
