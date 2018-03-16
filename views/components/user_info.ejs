@@ -1,0 +1,26 @@
+
+<div class="row">
+  <div class="col-8 user-information__text">
+    <h4><%= userData.fname %> <%=userData.lname %></h4>
+
+    <a href="/user/<%= userData.id %>">
+      <h2>@<%= userData.username %></h2>
+    </a>
+    <div class="user-information__stats user-information__stats">
+      <div class="row">
+        <div class="col-4">
+          <span class="user-information__stat-title">Tweets:</span>
+          <span><a href="/user/<%= userData.id %>"><%= tweetCount %></a></span>
+        </div>
+        <div class="col-4">
+          <span class="user-information__stat-title">Following:</span>
+          <span><a href="/user/<%= userData.id %>/following"><%= followingCount %></a></span>
+        </div>
+        <div class="col-4">
+          <span class="user-information__stat-title">Followers:</span>
+          <span><a href="/user/<%= userData.id %>/followers"><%= followerCount %></a></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

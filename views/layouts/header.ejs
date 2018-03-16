@@ -11,17 +11,28 @@
                 </ul>
             </div>
             <span class="navbar__logo"><a href="/"><img src="/img/kevin_flag_2.png"/></a></span>
-            <% if (req.isAuthenticated()) { %>
-              <div class="navbar__group navbar__group_right">
-                <div class="navbar__profile">
+            <div class="navbar__group navbar__group_right">
+              <div class="navbar__profile">
+                <% if (req.isAuthenticated()) { %>
                   <a class="navbar__profile-logout" href="/logout" title="logout">
                     <i class="fa fa-sign-out" aria-hidden="true"></i>
                     <img class="tweet__image chat-image logout-image"/>
                     <span>Logout</span>
                   </a>
-                </div>
-              </div>
-            <% } %>
+                <% } else { %>
+                  <a class="navbar__profile-login" href="/login" title="login">
+                    <i class="fa fa-sign-in" aria-hidden="true"></i>
+                    <img class="tweet__image chat-image login-image"/>
+                    <span>Login</span>
+                  </a>
+                  <a class="navbar__profile-logout" href="/user/register" title="signup">
+                    <i class="fa fa-user-plus" aria-hidden="true"></i>
+                    <img class="tweet__image chat-image logout-image"/>
+                    <span>Sign Up</span>
+                  </a>
+                <% } %>
+            </div>
+          </div>
         </div>
     </header>
 </body>

@@ -1,17 +1,47 @@
 
-
 <div class="tweet-list">
   <% for(var i=0; i<tweets.length; i++) { %>
     <div class="tweets">
-      <div class="row">
-        <h2><%= tweets[i].user.fname %> <%= tweets[i].user.lname %></h2>
+      <% if (atIndex === true) { %>
+        <% if (req.isAuthenticated()) { %>
+          <% if (tweets[i].user.id !== req.user.id) { %>
+            <div class="row">
+              <h2><%= tweets[i].user.fname %> <%= tweets[i].user.lname %></h2>
+              <h3><span><a href="/user/<%= tweets[i].user.id %>"> @<%= tweets[i].user.username %></a></span> • <%= tweets[i].createdAt.getDate() %> <%= tweets[i].createdAt.getMonth() %> <%= tweets[i].createdAt.getFullYear() %></h3>
+            </div>
+            <div class="row">
+              <h4><%= tweets[i].content %></h4>
+            </div>
+            <br>
+            <div class="tweet-border"></div>
+            <br>
+          <% } %>
+        <% } else { %>
+          <div class="row">
+            <h2><%= tweets[i].user.fname %> <%= tweets[i].user.lname %></h2>
+            <h3><span><a href="/user/<%= tweets[i].user.id %>"> @<%= tweets[i].user.username %></a></span> • <%= tweets[i].createdAt.getDate() %> <%= tweets[i].createdAt.getMonth() %> <%= tweets[i].createdAt.getFullYear() %></h3>
+          </div>
+          <div class="row">
+            <h4><%= tweets[i].content %></h4>
+          </div>
+          <br>
+          <div class="tweet-border"></div>
+          <br>
+        <% } %>
+      <% } else { %>
+        <div class="row">
+          <h2><%= tweets[i].user.fname %> <%= tweets[i].user.lname %></h2>
+          <h3><span><a href="/user/<%= tweets[i].user.id %>"> @<%= tweets[i].user.username %></a></span> • <%= tweets[i].createdAt.getDate() %> <%= tweets[i].createdAt.getMonth() %> <%= tweets[i].createdAt.getFullYear() %></h3>
+        </div>
+        <div class="row">
+          <h4><%= tweets[i].content %></h4>
+        </div>
+        <br>
+        <div class="tweet-border"></div>
+        <br>
 
-        <h3>@<%= tweets[i].user.username %> • <%= tweets[i].createdAt.getDate() %> <%= tweets[i].createdAt.getMonth() %> <%= tweets[i].createdAt.getFullYear() %></h3>
-      </div>
-      <div class="row">
-        <h4><%= tweets[i].content %></h4>
-      </div>
+      <% } %>
+
     </div>
-    <div class="tweet-border">____________________________________________________________________</div>
   <% } %>
 </div>

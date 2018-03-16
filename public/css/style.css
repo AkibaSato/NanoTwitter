@@ -140,6 +140,9 @@ pre code {
   margin-right: 20px; }
   .navbar__profile .navbar__profile-logout {
     display: flex; }
+  .navbar__profile .navbar__profile-login {
+    padding-right: 20px;
+    display: flex; }
   .navbar__profile .fa {
     font-size: 20px;
     padding-right: 10px; }
@@ -253,15 +256,18 @@ textarea {
 /* List of Tweets */
 
 .tweet-list {
-  margin-top: -20px;
+  /* margin-top: 1px; */
   background-color: #FFFFFF;
   padding: 20px;
 
 }
 
 .tweet-border {
+  height: 1px;
+  border: 0px;
   color: #C4C6C9;
-  border: 1px #C4C6C9;
+  background-color: #C4C6C9;
+  width: 100%;
 }
 
 .tweets h2 {
