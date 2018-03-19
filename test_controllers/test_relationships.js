@@ -11,6 +11,13 @@ module.exports.getAll=async function(req, res, next) {
 };
 
 
+module.exports.bulkFollow = function (req, relationship) {
+  models.Relationship.bulkCreate(relationship).then(function(newRelationship) {
+    return JSON.parse(JSON.stringify(newRelationship));
+  }).catch(function(err) {
+    // res.status(404).send(err);
+  });
+};
 
 module.exports.destoryAll=function(req, res, next) {
   models.Relationship.destroy({where: {}}).then(function () {});

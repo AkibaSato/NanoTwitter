@@ -1,9 +1,9 @@
 var models  = require('../models');
 
 
-module.exports.bulkTweet=function(req, res) {
-  models.Tweet.bulkCreate(req.tweets).then(function(tweet) {
-
+module.exports.bulkTweet=async function(res, tweets) {
+  return models.Tweet.bulkCreate(tweets, {individualHooks: true}).then(function(tweet) {
+    return JSON.parse(JSON.stringify(tweet))
   }).catch(function(err) {
     console.log(err);
     res.status(404).send(err);
@@ -11,16 +11,11 @@ module.exports.bulkTweet=function(req, res) {
 }
 
 
-module.exports.generate = async function (req, res, next) {
-  return await models.Tweet.create({
-      content: req.body.content,
-      userId: req.user.id,
-      parentId: req.body.parentId
-      // content: "hello",
-      // userId: 1,
-      // parentId: null
-  }).then(function(tweet) {
-      return tweet
+
+module.exports.generate = async function (res, tweetData) {
+  return models.Tweet.create(tweetData).then(function(tweet) {
+
+      return JSON.parse(JSON.stringify(tweet))
   }).catch(function(err) {
     console.log(err);
     res.status(404).send(err);
@@ -40,5 +35,4 @@ module.exports.getAll= async function(req, res, next) {
 
 module.exports.destroyAll=function(req, res, next) {
   models.Tweet.destroy({where: {}}).then(function () {});
-
 }
