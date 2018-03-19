@@ -2,6 +2,7 @@ const express = require('express');
 const app = express();
 const port = process.env.PORT || 3000;
 const path    = require('path');
+const async    = require('async');
 
 /* ===========BODY_PARSER=========== */
 const bodyParser = require('body-parser');
@@ -51,14 +52,17 @@ const tweets = require('./routes/tweets');
 const index = require('./routes/index');
 const load=require('./routes/test_interface');
 
-app.use('/login', login);
-app.use('/logout', logout);
-app.use('/user', users);
-app.use('/search', search);
-app.use('/tweets', tweets);
-app.use('/', index);
-app.use('/test', load);
-
+// parellelizes app routes
+app.use(parallel([
+  ('/login', login),
+  ('/logout', logout),
+  ('/user', users),
+  ('/search', search),
+  ('/tweets', tweets),
+  ('/', index),
+  ('/test', load)
+]));
+//
 
 /* ===========ERROR HANDLER=========== */
 // Catch 404 and forward to error handler.
@@ -77,6 +81,15 @@ app.use(function (err, req, res, next) {
   res.status(err.status || 500);
   res.render('error', { res : res });
 });
+
+function parallel(middlewares) {
+  return function (req, res, next) {
+    async.each(middlewares, function (mw, cb) {
+      mw(req, res, cb);
+    }, next);
+  };
+}
+
 
 app.listen(port);
 
