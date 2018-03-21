@@ -16,7 +16,16 @@
         <% if (req.user.id === userData.id) { %>
           <%- include components/new_tweet.ejs %>
         <% } else { %>
-          <%- include components/new_follow.ejs %>
+          <% for(var i = 0; i < followers.length; i++) { %>
+
+
+            <% if (followers[i].follower.id === req.user.id) { %>
+              <%- include components/unfollow.ejs %>
+              <% break; %>
+            <% } else if (i === followers.length - 1) { %>
+              <%- include components/new_follow.ejs %>
+            <% } %>
+          <% } %>
         <% } %>
       <% } %>
       <%- include components/tweets.ejs %>

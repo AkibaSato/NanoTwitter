@@ -18,9 +18,6 @@ module.exports.follow = function (req, res) {
   var followeeId = parseInt(req.params.id);
   var followerId = parseInt(req.user.id);
 
-  console.log(followeeId);
-  console.log(followerId);
-
   if(followeeId == followerId) {
     res.send("Can't follow myself");
     return;
@@ -29,9 +26,6 @@ module.exports.follow = function (req, res) {
     followerId: followerId,
     followeeId: followeeId
   };
-
-
-
 
   models.Relationship.create(relationship).then(function(newRelationship) {
     res.render(
@@ -43,25 +37,85 @@ module.exports.follow = function (req, res) {
   });
 };
 
+module.exports.unfollow = function (req, res) {
+  var followeeId = parseInt(req.params.id);
+  var followerId = parseInt(req.user.id);
+
+  models.Relationship.destroy({
+    where: {
+      followerId: followerId,
+      followeeId: followeeId
+    },
+    truncate: true
+  }).then(results => {
+    res.render(
+      // "NOT YET IMPLEMENTED2", JSON.parse(JSON.stringify(newRelationship)));
+    // var redirectURL = '../user/' + followeeId;
+    res.redirect('../user/' + followeeId));
+  }).catch(function(err) {
+    res.status(404).send(err);
+  });
+};
+
+
 // Example return JSON:
 // {
 //  "name": "Bob Builder"
 //  "username": "bob_builder",
 // }
 
-
-
 module.exports.getUser = function (req, res) {
   var userData;
-  let followingCount = 0;
-  let followerCount = 0;
+  // console.log(getFollowees(req, res));
+  var following;
+  var followers;
+  var followingCount = -1;
+  var followerCount = -1;
+
+
+  //
+
+
   var tweets;
   models.User.findOne({
     where: { id: parseInt(req.params.id) },
     attributes: ['id', 'username', 'fname', 'lname']
   }).then(result => {
     userData = result;
+  }).catch(function(err) {
+    res.status(404).send(err);
   });
+
+  models.Relationship.findAll({
+    where: { followerId: parseInt(req.params.id) },
+    include: [{
+      model: models.User,
+      as: 'followee',
+      attributes: ['id', 'username']
+    }],
+    attributes: ['createdAt']
+  }).then(result => {
+    following = result;
+    followingCount = following.length;
+  }).catch(function(err) {
+    res.status(404).send(err);
+  });
+
+  models.Relationship.findAll({
+    where: { followeeId: parseInt(req.params.id) },
+    include: [{
+      model: models.User,
+      as: 'follower',
+      attributes: ['id', 'username']
+    }],
+    attributes: ['createdAt']
+  }).then(result => {
+    followers = result;
+    followerCount = followers.length;
+  }).catch(function(err) {
+    res.status(404).send(err);
+  });
+
 
   models.Tweet.findAll({
     where: { userId: parseInt(req.params.id) },
@@ -79,6 +133,10 @@ module.exports.getUser = function (req, res) {
       // userData: tweets.user,
       tweets: tweets,
       tweetCount: tweets.length,
+
+      following: following,
+      followers: followers,
+
       followingCount: followingCount,
       followerCount: followerCount,
       atIndex: false,
@@ -89,6 +147,46 @@ module.exports.getUser = function (req, res) {
     res.status(404).send(err);
   });
 };
+
+
+// module.exports.getUser = function (req, res) {
+//   var userData;
+//   let followingCount = 0;
+//   let followerCount = 0;
+//   var tweets;
+//   models.User.findOne({
+//     where: { id: parseInt(req.params.id) },
+//     attributes: ['id', 'username', 'fname', 'lname']
+//   }).then(result => {
+//     userData = result;
+//   });
+//
+//   models.Tweet.findAll({
+//     where: { userId: parseInt(req.params.id) },
+//     include: [{
+//       model: models.User,
+//       as: 'user',
+//       attributes: ['id', 'username', 'fname', 'lname']
+//     }],
+//     attributes: ['content', 'createdAt']
+//   }).then(result => {
+//     tweets = result;
+//     res.render('user', {
+//       req: req,
+//       userData: userData,
+//       // userData: tweets.user,
+//       tweets: tweets,
+//       tweetCount: tweets.length,
+//       followingCount: followingCount,
+//       followerCount: followerCount,
+//       atIndex: false,
+//       currUser: false,
+//       test2: 2
+//     });
+//   }).catch(function(err) {
+//     res.status(404).send(err);
+//   });
+// };
 
 // module.exports.getUser = function (req, res) {
 //   models.User.findOne({
@@ -169,8 +267,9 @@ module.exports.getFollowees = function (req, res) {
       attributes: ['username']
     }],
     attributes: ['createdAt']
-  }).then(function(followees) {
-    res.render("NOT YET IMPLEMENTED", JSON.parse(JSON.stringify(followees)));
+  }).then(followees => {
+    return followees;
+    // res.render("NOT YET IMPLEMENTED", JSON.parse(JSON.stringify(followees)));
   }).catch(function(err) {
     res.status(404).send(err);
   });
@@ -198,8 +297,9 @@ module.exports.getFollowers = function (req, res) {
       attributes: ['username']
     }],
     attributes: ['createdAt']
-  }).then(function(followers) {
-    res.render("NOT YET IMPLEMENTED", JSON.parse(JSON.stringify(followers)));
+  }).then(followers => {
+    return followers;
+    // res.render("NOT YET IMPLEMENTED", JSON.parse(JSON.stringify(followers)));
   }).catch(function(err) {
     res.status(404).send(err);
   });

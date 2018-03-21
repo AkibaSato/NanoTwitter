@@ -10,6 +10,8 @@ router.get('/:id/followees', users.getFollowees);
 router.get('/:id/followers', users.getFollowers);
 router.get('/:id/followee_tweets', users.getFolloweeTweets);
 router.post('/:id/follow', users.follow);
+router.delete('/:id/follow', users.unfollow);
+
 router.post('/register', passport.authenticate('local-signup', {
   successRedirect: '/',
   failureRedirect: '/user/register',

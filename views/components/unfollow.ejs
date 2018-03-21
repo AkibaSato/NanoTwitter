@@ -1,0 +1,7 @@
+<form method="delete" action="/user/<%= userData.id %>/follow">
+  <div class="box">
+    <% if (req.isAuthenticated()) { %>
+      <button class="btn new-tweet__button" type="submit" style="float: right;">Unfollow</button>
+    <% } %>
+  </div>
+</form>
