@@ -15,7 +15,7 @@ module.exports.getSignup = (req, res) => {
 //  "createdAt":"2018-03-08T22:52:09.442Z"
 // }
 module.exports.follow = (req, res) => {
-  if (isNan(req.params.id)) {
+  if (isNaN(req.params.id)) {
     res.status(404).send(err);
     return
   }
@@ -47,7 +47,7 @@ module.exports.follow = (req, res) => {
 };
 
 module.exports.unfollow = (req, res) => {
-  if (isNan(req.params.id)) {
+  if (isNaN(req.params.id)) {
     res.status(404).send(err);
     return
   }
@@ -77,7 +77,7 @@ module.exports.unfollow = (req, res) => {
 };
 
 module.exports.getUser = (req, res) => {
-  if (isNan(req.params.id)) {
+  if (isNaN(req.params.id)) {
     res.status(404).send(err);
     return
   }
@@ -113,7 +113,7 @@ module.exports.getUser = (req, res) => {
 // }]
 // TODO: Set a limit for the results retrieved. (e.g. pagination)
 module.exports.getTweets = (req, res) => {
-  if (isNan(req.params.id)) {
+  if (isNaN(req.params.id)) {
     res.status(404).send(err);
     return
   }
@@ -146,7 +146,7 @@ module.exports.getTweets = (req, res) => {
 //  }
 // }]
 module.exports.getFollowees = (req, res) => {
-  if (isNan(req.params.id)) {
+  if (isNaN(req.params.id)) {
     res.status(404).send(err);
     return
   }
@@ -179,7 +179,7 @@ module.exports.getFollowees = (req, res) => {
 //  }
 // }]
 module.exports.getFollowers =  (req, res) => {
-  if (isNan(req.params.id)) {
+  if (isNaN(req.params.id)) {
     res.status(404).send(err);
     return
   }
@@ -200,7 +200,7 @@ module.exports.getFollowers =  (req, res) => {
 
 // TODO: Fix this.
 module.exports.getFolloweeTweets = (req, res) => {
-  if (isNan(req.params.id)) {
+  if (isNaN(req.params.id)) {
     res.status(404).send(err);
     return
   }
