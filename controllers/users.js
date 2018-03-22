@@ -1,5 +1,6 @@
 var models = require('../models');
 var sequelize = require('sequelize');
+var helper = require('./helper');
 
 module.exports.getSignup = (req, res) => {
   res.render('signup');
@@ -61,17 +62,11 @@ module.exports.unfollow = (req, res) => {
 
 module.exports.getUser = (req, res) => {
   id = parseInt(req.params.id)
-  sequelize.Promise.join(getUserMetadata(id), getUserTimeline(id),
+  sequelize.Promise.join(helper.getUserMetadata(id), helper.getUserTimeline(id),
     (metadata, timeline) => {
-      console.log(JSON.stringify({
-        user: JSON.parse(JSON.stringify(metadata)),
-        tweets: JSON.parse(JSON.stringify(timeline)),
-        me: req.user
-      }))
-      console.log("hello")
       res.render('user', {
-        user: JSON.parse(JSON.stringify(metadata)),
-        tweets: JSON.parse(JSON.stringify(timeline)),
+        user: metadata,
+        tweets: timeline,
         me: req.user
       })
     }
@@ -98,17 +93,11 @@ module.exports.getUser = (req, res) => {
 // TODO: Set a limit for the results retrieved. (e.g. pagination)
 module.exports.getTweets = (req, res) => {
   id = parseInt(req.params.id)
-  sequelize.Promise.join(getUserMetadata(id), getUserOriginalTimeline(id),
+  sequelize.Promise.join(helper.getUserMetadata(id), helper.getUserOriginalTimeline(id),
     (metadata, timeline) => {
-      console.log(JSON.stringify({
-        user: JSON.parse(JSON.stringify(metadata)),
-        timeline: JSON.parse(JSON.stringify(timeline)),
-        me: req.user
-      }))
-      console.log("hello")
       res.render("NOT YET IMPLEMENTED", {
-        user: JSON.parse(JSON.stringify(metadata)),
-        tweets: JSON.parse(JSON.stringify(timeline)),
+        user: metadata,
+        tweets: tweets,
         me: req.user
       })
     }
@@ -132,17 +121,11 @@ module.exports.getTweets = (req, res) => {
 // }]
 module.exports.getFollowees = (req, res) => {
   var id = req.params.id
-  sequelize.Promise.join(getUserMetadata(id), getUserFollowees(id),
+  sequelize.Promise.join(helper.getUserMetadata(id), helper.getUserFollowees(id),
     (metadata, followees) => {
-      console.log(JSON.stringify({
-        user: JSON.parse(JSON.stringify(metadata)),
-        timeline: JSON.parse(JSON.stringify(followees)),
-        me: req.user
-      }))
-      console.log("hello")
       res.render("NOT YET IMPLEMENTED", {
-        user: JSON.parse(JSON.stringify(metadata)),
-        followees: JSON.parse(JSON.stringify(followees)),
+        user: metadata,
+        followees: followees,
         me: req.user
       })
     }
@@ -166,17 +149,11 @@ module.exports.getFollowees = (req, res) => {
 // }]
 module.exports.getFollowers =  (req, res) => {
   var id = req.params.id
-  sequelize.Promise.join(getUserMetadata(id), getUserFollowers(id),
+  sequelize.Promise.join(helper.getUserMetadata(id), helper.getUserFollowers(id),
     (metadata, followers) => {
-      console.log(JSON.stringify({
-        user: JSON.parse(JSON.stringify(metadata)),
-        followers: JSON.parse(JSON.stringify(followers)),
-        me: req.user
-      }))
-      console.log("hello")
       res.render("NOT YET IMPLEMENTED", {
-        user: JSON.parse(JSON.stringify(metadata)),
-        followers: JSON.parse(JSON.stringify(followers)),
+        user: metadata,
+        followers: followers,
         me: req.user
       })
     }
@@ -188,17 +165,11 @@ module.exports.getFollowers =  (req, res) => {
 // TODO: Fix this.
 module.exports.getFolloweeTweets = (req, res) => {
   var id = req.params.id
-  sequelize.Promise.join(getUserMetadata(id), getUserFollowers(id),
+  sequelize.Promise.join(helper.getUserMetadata(id), helper.getUserFollowers(id),
     (metadata, followers) => {
-      console.log(JSON.stringify({
-        user: JSON.parse(JSON.stringify(metadata)),
-        followers: JSON.parse(JSON.stringify(followers)),
-        me: req.user
-      }))
-      console.log("hello")
       res.render("NOT YET IMPLEMENTED", {
-        user: JSON.parse(JSON.stringify(metadata)),
-        followers: JSON.parse(JSON.stringify(followers)),
+        user: metadata,
+        followers: followers,
         me: req.user
       })
     }
@@ -206,67 +177,3 @@ module.exports.getFolloweeTweets = (req, res) => {
     res.status(404).send(err);
   });
 };
-
-function getUserFollowers(id) {
-  return models.Relationship.findAll({
-    where: { followeeId: parseInt(id) },
-    include: [{
-      model: models.User,
-      as: 'follower',
-      attributes: ['username']
-    }],
-    attributes: ['createdAt']
-  }).catch(function(err) {
-    throw new Error("Error in finding followers for user.")
-  });
-}
-
-function getUserFollowees(id) {
-  return models.Relationship.findAll({
-    where: { followerId: parseInt(id) },
-    include: [{
-      model: models.User,
-      as: 'followee',
-      attributes: ['username']
-    }],
-    attributes: ['createdAt']
-  }).catch(function(err) {
-    throw new Error("Error in finding followers for user.")
-  });
-}
-
-function getUserOriginalTimeline (id) {
-  return models.Tweet.findAll({
-    where: { userId: parseInt(id), originalId: null },
-    attributes: ['content', 'createdAt']
-  }).catch(err => {
-    throw new Error('Error in retrieving user original tweets.')
-  });
-}
-
-// Example return JSON:
-// {
-//  "name": "Bob Builder"
-//  "username": "bob_builder",
-// }
-function getUserMetadata (id) {
-  return models.User.findOne({
-    where: { id: id },
-  }).catch(err => {
-    throw new Error('Error in retrieving user metadata.')
-  });
-}
-
-function getUserTimeline (id) {
-  return models.Tweet.findAll({
-    where: { userId: id },
-    include: [{
-      model: models.User,
-      as: 'user',
-      attributes: ['id', 'username']
-    }],
-    attributes: ['content', 'createdAt']
-  }).catch(err => {
-    throw new Error('Error in retrieving user tweets.')
-  });
-}

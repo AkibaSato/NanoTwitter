@@ -95,10 +95,8 @@ module.exports.getLikes = (req, res) => {
     }],
     attributes: ['createdAt']
   }).then(users => {
-    console.log(JSON.stringify(users));
-    res.render("NOT YET IMPLEMENTED", JSON.parse(JSON.stringify(users)));
+    res.render("NOT YET IMPLEMENTED", users);
   }).catch(err => {
-    console.log(err)
     res.status(404).send(err);
   });
 };
@@ -119,7 +117,6 @@ module.exports.retweet = (req, res) => {
       userId: req.user.id,
       originalId: req.params.id
   }).then(tweet => {
-    console.log(JSON.stringify(tweet));
     res.render("NOT YET IMPLEMENTED", JSON.parse(JSON.stringify(tweet)));
   }).catch(err => {
     res.status(404).send(err);
@@ -151,7 +148,6 @@ module.exports.getRetweets = (req, res) => {
   }).then(retweets => {
     res.render("NOT YET IMPLEMENTED", JSON.parse(JSON.stringify(retweets)));
   }).catch(err => {
-    console.log(err)
     res.status(404).send(err);
   });
 };
