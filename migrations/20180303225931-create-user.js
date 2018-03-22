@@ -44,6 +44,26 @@ module.exports = {
         allowNull: false,
         type: 'TIMESTAMP',
         defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
+      },
+      updatedAt: {
+        allowNull: false,
+        type: 'TIMESTAMP',
+        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
+      },
+      numFollowers: {
+        allowNull: false,
+        type: Sequelize.INTEGER,
+        defaultValue: '0'
+      },
+      numFollowees: {
+        allowNull: false,
+        type: Sequelize.INTEGER,
+        defaultValue: '0'
+      },
+      numTweets: {
+        allowNull: false,
+        type: Sequelize.INTEGER,
+        defaultValue: '0'
       }
     });
   },

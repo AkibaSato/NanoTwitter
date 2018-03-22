@@ -49,7 +49,7 @@ const users = require('./routes/users');
 const search = require('./routes/search');
 const tweets = require('./routes/tweets');
 const index = require('./routes/index');
-const load=require('./routes/test');
+const load=require('./test/test_routes');
 
 app.use('/login', login);
 app.use('/logout', logout);
@@ -75,7 +75,7 @@ app.use(function (err, req, res, next) {
 
   // Render the error page.
   res.status(err.status || 500);
-  res.render('error', { res : res });
+  res.render('error', { res : res, user: req.user });
 });
 
 app.listen(port);

@@ -1,10 +1,10 @@
 var models = require('../models');
+var sequelize = require('sequelize');
+var helper = require('./helper');
 
-module.exports.getSignup = function (req, res) {
+module.exports.getSignup = (req, res) => {
   res.render('signup');
 };
-
-
 
 // Example return JSON:
 // {
@@ -14,7 +14,11 @@ module.exports.getSignup = function (req, res) {
 //  "updatedAt": "2018-03-08T22:52:09.442Z",
 //  "createdAt":"2018-03-08T22:52:09.442Z"
 // }
-module.exports.follow = function (req, res) {
+module.exports.follow = (req, res) => {
+  if (isNan(req.params.id)) {
+    res.status(404).send(err);
+    return
+  }
   var followeeId = parseInt(req.params.id);
   var followerId = parseInt(req.user.id);
 
@@ -22,22 +26,31 @@ module.exports.follow = function (req, res) {
     res.send("Can't follow myself");
     return;
   }
-  var relationship = {
+
+  models.Relationship.create({
     followerId: followerId,
     followeeId: followeeId
-  };
-
-  models.Relationship.create(relationship).then(function(newRelationship) {
+  })
+  .then(relationship => {
     res.render(
-      "NOT YET IMPLEMENTED2", JSON.parse(JSON.stringify(newRelationship)));
-    // var redirectURL = '../user/' + followeeID;
-    // res.redirect(redirectURL);
-  }).catch(function(err) {
+      "NOT YET IMPLEMENTED", JSON.parse(JSON.stringify(relationship)));
+    // Increment follower/followee counts in User models in the background.
+    models.User.update(
+      { numFollowers: sequelize.literal('numFollowers + 1') },
+      { where: { id: followeeId } });
+    models.User.update(
+      { numFollowees: sequelize.literal('numFollowees + 1') },
+      { where: { id: followerId } });
+  }).catch(err => {
     res.status(404).send(err);
   });
 };
 
-module.exports.unfollow = function (req, res) {
+module.exports.unfollow = (req, res) => {
+  if (isNan(req.params.id)) {
+    res.status(404).send(err);
+    return
+  }
   var followeeId = parseInt(req.params.id);
   var followerId = parseInt(req.user.id);
 
@@ -48,162 +61,40 @@ module.exports.unfollow = function (req, res) {
     },
     truncate: true
   }).then(results => {
-    // res.render(
-      // "NOT YET IMPLEMENTED2", JSON.parse(JSON.stringify(newRelationship)));
-    // var redirectURL = '../user/' + followeeId;
     res.redirect('../user/' + followeeId);
+    if (results.length > 0) {
+      models.User.update(
+        { numFollowers: sequelize.literal('numFollowers - 1') },
+        { where: { id: followeeId } });
+      models.User.update(
+        { numFollowees: sequelize.literal('numFollowees - 1') },
+        { where: { id: followerId } });
+    }
+    // var redirectURL = '../user/' + followeeId;
   }).catch(function(err) {
     res.status(404).send(err);
   });
 };
 
-
-// Example return JSON:
-// {
-//  "name": "Bob Builder"
-//  "username": "bob_builder",
-// }
-
-module.exports.getUser = function (req, res) {
-  var userData;
-  // console.log(getFollowees(req, res));
-  var following;
-  var followers;
-  var followingCount = -1;
-  var followerCount = -1;
-
-
-  //
-
-
-  var tweets;
-  models.User.findOne({
-    where: { id: parseInt(req.params.id) },
-    attributes: ['id', 'username', 'fname', 'lname']
-  }).then(result => {
-    userData = result;
-  }).catch(function(err) {
+module.exports.getUser = (req, res) => {
+  if (isNan(req.params.id)) {
     res.status(404).send(err);
-  });
-
-  models.Relationship.findAll({
-    where: { followerId: parseInt(req.params.id) },
-    include: [{
-      model: models.User,
-      as: 'followee',
-      attributes: ['id', 'username']
-    }],
-    attributes: ['createdAt']
-  }).then(result => {
-    following = result;
-    followingCount = following.length;
-  }).catch(function(err) {
+    return
+  }
+  var id = parseInt(req.params.id)
+  sequelize.Promise.join(helper.getUserMetadata(id), helper.getUserTimeline(id),
+    (metadata, timeline) => {
+      res.render('user', {
+        user: metadata,
+        tweets: timeline,
+        me: req.user
+      })
+    }
+  ).catch(err => {
     res.status(404).send(err);
-  });
-
-  models.Relationship.findAll({
-    where: { followeeId: parseInt(req.params.id) },
-    include: [{
-      model: models.User,
-      as: 'follower',
-      attributes: ['id', 'username']
-    }],
-    attributes: ['createdAt']
-  }).then(result => {
-    followers = result;
-    followerCount = followers.length;
-  }).catch(function(err) {
-    res.status(404).send(err);
-  });
-
-
-  models.Tweet.findAll({
-    where: { userId: parseInt(req.params.id) },
-    include: [{
-      model: models.User,
-      as: 'user',
-      attributes: ['id', 'username', 'fname', 'lname']
-    }],
-    attributes: ['content', 'createdAt']
-  }).then(result => {
-    tweets = result;
-    res.render('user', {
-      req: req,
-      userData: userData,
-      // userData: tweets.user,
-      tweets: tweets,
-      tweetCount: tweets.length,
-
-      following: following,
-      followers: followers,
-
-      followingCount: followingCount,
-      followerCount: followerCount,
-      atIndex: false,
-      currUser: false,
-      test2: 2
-    });
-  }).catch(function(err) {
-    res.status(404).send(err);
-  });
+    return;
+  })
 };
-
-
-// module.exports.getUser = function (req, res) {
-//   var userData;
-//   let followingCount = 0;
-//   let followerCount = 0;
-//   var tweets;
-//   models.User.findOne({
-//     where: { id: parseInt(req.params.id) },
-//     attributes: ['id', 'username', 'fname', 'lname']
-//   }).then(result => {
-//     userData = result;
-//   });
-//
-//   models.Tweet.findAll({
-//     where: { userId: parseInt(req.params.id) },
-//     include: [{
-//       model: models.User,
-//       as: 'user',
-//       attributes: ['id', 'username', 'fname', 'lname']
-//     }],
-//     attributes: ['content', 'createdAt']
-//   }).then(result => {
-//     tweets = result;
-//     res.render('user', {
-//       req: req,
-//       userData: userData,
-//       // userData: tweets.user,
-//       tweets: tweets,
-//       tweetCount: tweets.length,
-//       followingCount: followingCount,
-//       followerCount: followerCount,
-//       atIndex: false,
-//       currUser: false,
-//       test2: 2
-//     });
-//   }).catch(function(err) {
-//     res.status(404).send(err);
-//   });
-// };
-
-// module.exports.getUser = function (req, res) {
-//   models.User.findOne({
-//     where: { id: parseInt(req.params.id) },
-//     attributes: ['fname', 'lname', 'username']
-//   }).then(function(user) {
-//     var userData = {
-//       name: user.fullName,
-//       username: user.username,
-//       req: req,
-//       test: 1
-//     }
-//     res.render("user", userData);
-//   }).catch(function(err) {
-//     res.status(404).send(err);
-//   });
-// };
 
 // Example return JSON:
 // [{
@@ -221,29 +112,25 @@ module.exports.getUser = function (req, res) {
 //  }
 // }]
 // TODO: Set a limit for the results retrieved. (e.g. pagination)
-module.exports.getTweets = function (req, res) {
-
-  models.Tweet.findAll({
-    where: { userId: parseInt(req.params.id) },
-    include: [{
-      model: models.User,
-      as: 'user',
-      attributes: ['username']
-    }],
-    attributes: ['content', 'createdAt']
-  }).then(function(tweets) {
-    res.render('user', JSON.parse(JSON.stringify(tweets)), {
-      req: req,
-      tweets: tweets,
-      test2: 2
-    });
-  }).catch(function(err) {
+module.exports.getTweets = (req, res) => {
+  if (isNan(req.params.id)) {
     res.status(404).send(err);
-  });
+    return
+  }
+  var id = parseInt(req.params.id)
+  sequelize.Promise.join(helper.getUserMetadata(id), helper.getUserOriginalTimeline(id),
+    (metadata, timeline) => {
+      res.render("NOT YET IMPLEMENTED", {
+        user: metadata,
+        tweets: tweets,
+        me: req.user
+      })
+    }
+  ).catch(err => {
+    res.status(404).send(err);
+    return;
+  })
 };
-
-
-
 
 // Example return JSON:
 // [{
@@ -258,21 +145,24 @@ module.exports.getTweets = function (req, res) {
 //    "username":"dora_explorer"
 //  }
 // }]
-module.exports.getFollowees = function (req, res) {
-  models.Relationship.findAll({
-    where: { followerId: parseInt(req.params.id) },
-    include: [{
-      model: models.User,
-      as: 'followee',
-      attributes: ['username']
-    }],
-    attributes: ['createdAt']
-  }).then(followees => {
-    return followees;
-    // res.render("NOT YET IMPLEMENTED", JSON.parse(JSON.stringify(followees)));
-  }).catch(function(err) {
+module.exports.getFollowees = (req, res) => {
+  if (isNan(req.params.id)) {
     res.status(404).send(err);
-  });
+    return
+  }
+  var id = parseInt(req.params.id)
+  sequelize.Promise.join(helper.getUserMetadata(id), helper.getUserFollowees(id),
+    (metadata, followees) => {
+      res.render("NOT YET IMPLEMENTED", {
+        user: metadata,
+        followees: followees,
+        me: req.user
+      })
+    }
+  ).catch(err => {
+    res.status(404).send(err);
+    return;
+  })
 };
 
 // Example return JSON:
@@ -288,36 +178,43 @@ module.exports.getFollowees = function (req, res) {
 //    "username":"dora_explorer"
 //  }
 // }]
-module.exports.getFollowers = function (req, res) {
-  models.Relationship.findAll({
-    where: { followeeId: parseInt(req.params.id) },
-    include: [{
-      model: models.User,
-      as: 'follower',
-      attributes: ['username']
-    }],
-    attributes: ['createdAt']
-  }).then(followers => {
-    return followers;
-    // res.render("NOT YET IMPLEMENTED", JSON.parse(JSON.stringify(followers)));
-  }).catch(function(err) {
+module.exports.getFollowers =  (req, res) => {
+  if (isNan(req.params.id)) {
     res.status(404).send(err);
-  });
+    return
+  }
+  var id = parseInt(req.params.id)
+  sequelize.Promise.join(helper.getUserMetadata(id), helper.getUserFollowers(id),
+    (metadata, followers) => {
+      res.render("NOT YET IMPLEMENTED", {
+        user: metadata,
+        followers: followers,
+        me: req.user
+      })
+    }
+  ).catch(err => {
+    res.status(404).send(err);
+    return;
+  })
 };
 
 // TODO: Fix this.
-module.exports.getFolloweeTweets = function (req, res) {
-  // User.findOne({ '_id':  req.params.id})
-  // .populate({
-  //   path: 'followees',
-  //   populate: { path: 'followees.tweets', options: {sort: 'tweets.createdAt'}}
-  // })
-  // .exec(function (err, tweets) {
-  //   if (err) {
-  //     res.status(404).send(err);
-  //     return;
-  //   }
-  //   res.send("NOT YET IMPLEMENTED");
-  // });
-  res.send("NOT YET IMPLEMENTED");
+module.exports.getFolloweeTweets = (req, res) => {
+  if (isNan(req.params.id)) {
+    res.status(404).send(err);
+    return
+  }
+  var id = parseInt(req.params.id)
+  sequelize.Promise.join(helper.getUserMetadata(id), helper.getUserFollowers(id),
+    (metadata, followers) => {
+      res.render("NOT YET IMPLEMENTED", {
+        user: metadata,
+        followers: followers,
+        me: req.user
+      })
+    }
+  ).catch(err => {
+    res.status(404).send(err);
+    return;
+  });
 };

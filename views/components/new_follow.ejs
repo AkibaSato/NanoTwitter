@@ -1,6 +1,6 @@
-<form method="post" action="/user/<%= userData.id %>/follow">
+<form method="post" action="/user/<%= user.id %>/follow">
   <div class="box">
-    <% if (req.isAuthenticated()) { %>
+    <% if (me) { %>
       <button class="btn new-tweet__button" type="submit" style="float: right;">Follow</button>
     <% } %>
   </div>

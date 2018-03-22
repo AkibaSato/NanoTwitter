@@ -1,8 +1,8 @@
-module.exports.isLoggedIn = function(req, res, next) {
+module.exports = (req, res, next) => {
     // If user is authenticated in the session, carry on.
     if (req.isAuthenticated())
-        return next();
+        next();
 
     // If they aren't redirect them to the home page.
-    res.redirect('/login');
+    res.redirect('/');
 }

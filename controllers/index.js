@@ -1,41 +1,22 @@
-const User = require('../models').User;
-const Tweet = require('../models').Tweet;
-
+const models = require('../models')
+const sequelize = require('sequelize')
+const helper = require('./helper')
 
 module.exports.index = (req, res, next) => {
-  // let followingCount = req.user.following.length;
-  // let followerCount = req.user.followers.length;
-
-  let followingCount = 0;
-  let followerCount = 0;
-  let tweets;
-
-  Tweet.findAll({
-    include: [{
-      model: User,
-      as: 'user',
-      attributes: ['id', 'username', 'fname', 'lname']
-    }],
-    attributes: ['content', 'createdAt']
-  }).then(result => {
-    tweets = result;
-
+  var getTimeline
+  if (req.user) {
+    // If you are logged in, you see tweets from the people you follow.
+    getTimeline = helper.getHomeTimeline(req.user.id)
+  } else {
+    // If you are not, you see the most recent tweets from randos.
+    getTimeline = helper.getGlobalTimeline()
+  }
+  getTimeline.then(tweets => {
     res.render('index', {
-      req: req,
-      userData: req.user,
-      tweetCount: tweets.length,
-      followingCount: followingCount,
-      followerCount: followerCount,
+      user: req.user,
       tweets: tweets,
-      atIndex: true,
-      currUser: false,
-      test: 1
-    });
-  }).catch(function(err) {
+    })
+  }).catch(err => {
     res.status(404).send(err);
-  });
-
-
-
-
+  })
 };
