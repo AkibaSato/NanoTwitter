@@ -43,6 +43,10 @@ module.exports = {
     }).then(function() {
       queryInterface.addIndex('Relationships', ['followerId']);
       queryInterface.addIndex('Relationships', ['followeeId']);
+      queryInterface.addConstraint('Relationships', ['followerId', 'followeeId'], {
+        type: 'unique',
+        name: 'at_most_single_edge_between_pair'
+      });
     });
   },
   down: (queryInterface, Sequelize) => {

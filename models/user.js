@@ -29,6 +29,21 @@ module.exports = (sequelize, DataTypes) => {
       allowEmpty: false,
       unique: true,
       allowNull: false,
+    },
+    numFollowers: {
+      allowNull: false,
+      type: DataTypes.INTEGER,
+      defaultValue: 0
+    },
+    numFollowees: {
+      allowNull: false,
+      type: DataTypes.INTEGER,
+      defaultValue: 0
+    },
+    numTweets: {
+      allowNull: false,
+      type: DataTypes.INTEGER,
+      defaultValue: 0
     }
   } , {
     defaultScope: {
