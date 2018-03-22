@@ -2,7 +2,6 @@
 
 <%- include layouts/header.ejs %>
 
-
 <br>
 <div class="row">
     <div class="col-4">
@@ -12,21 +11,12 @@
         </div>
     </div>
     <div class="col-6">
-      <% if (req.isAuthenticated()) { %>
-        <% if (req.user.id === userData.id) { %>
+      <% if (me) { %>
           <%- include components/new_tweet.ejs %>
-        <% } else { %>
-          <% for(var i = 0; i < followers.length; i++) { %>
-
-
-            <% if (followers[i].follower.id === req.user.id) { %>
-              <%- include components/unfollow.ejs %>
-              <% break; %>
-            <% } else if (i === followers.length - 1) { %>
-              <%- include components/new_follow.ejs %>
-            <% } %>
+          <% if (me.id != user.id) { %>
+            <%- include components/unfollow.ejs %>
+            <%- include components/new_follow.ejs %>
           <% } %>
-        <% } %>
       <% } %>
       <%- include components/tweets.ejs %>
     </div>
