@@ -93,22 +93,22 @@ $ heroku pg:psql
 - [x] Configured Heroku and deployed skeleton.
 
 ### nanoTwitter 0.3: Core functionality
-- [] Write unit tests.
+- [ ] Write unit tests.
 - [x] Implement test interface.
 - [x] Setup automatic deployment.
 - [x] Load seed data.
 - [x] Migrated to Postgres and configured Heroku accordingly.
 
 ### nanoTwitter 0.4: Testing and Deployment
-- [] Perform simultaneous manual testing.
+- [ ] Perform simultaneous manual testing.
 - [x] Implement the complete test interface.
 - [x] Use loader.io to generate some artificial loads.
-- [] Add tests to test suite.
+- [ ] Add tests to test suite.
 
 ### nanoTwitter 0.5: Initial Load Testing
-- [] Instrument app to collect performance data.
-- [] Run load experiments.
-- [] Switch web server from WebBrick; try others, measure.
+- [ ] Instrument app to collect performance data.
+- [ ] Run load experiments.
+- [ ] Switch web server from WebBrick; try others, measure.
 - [x] Update schema to put indices and other enhancements.
 
 ## Mockups

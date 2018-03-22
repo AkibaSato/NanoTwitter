@@ -61,8 +61,16 @@ module.exports.unfollow = (req, res) => {
     },
     truncate: true
   }).then(results => {
-    // var redirectURL = '../user/' + followeeId;
     res.redirect('../user/' + followeeId);
+    if (results.length > 0) {
+      models.User.update(
+        { numFollowers: sequelize.literal('numFollowers - 1') },
+        { where: { id: followeeId } });
+      models.User.update(
+        { numFollowees: sequelize.literal('numFollowees - 1') },
+        { where: { id: followerId } });
+    }
+    // var redirectURL = '../user/' + followeeId;
   }).catch(function(err) {
     res.status(404).send(err);
   });

@@ -1,12 +1,12 @@
 var express = require('express');
 var router = express.Router();
-let User = require('../test_controllers/test_users');
-let Tweet = require('../test_controllers/test_tweets');
-var Relationship = require('../test_controllers/test_relationships');
-let Follower = require('../test_controllers/test_relationships');
-let Loader=require('../data_loader');
+let User = require('./test_controllers/test_users');
+let Tweet = require('./test_controllers/test_tweets');
+var Relationship = require('./test_controllers/test_relationships');
+let Follower = require('./test_controllers/test_relationships');
+let Loader=require('./data_loader');
 testuser=null;
-const index=require('../test_controllers/test_index');
+const index=require('./test_controllers/test_index');
 test_param={fname: "testuser",lname: "testuser", username: "testuser", email: "testuser@sample.com", password: "password"};
 
  //DONE
