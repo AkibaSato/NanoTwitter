@@ -49,7 +49,7 @@ const users = require('./routes/users');
 const search = require('./routes/search');
 const tweets = require('./routes/tweets');
 const index = require('./routes/index');
-const load=require('./test/test_routes');
+const load=require('./tests/test_routes');
 
 app.use('/login', login);
 app.use('/logout', logout);

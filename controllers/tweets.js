@@ -40,7 +40,7 @@ module.exports.tweet =  (req, res) => {
 //  }
 // }
 module.exports.getTweet = (req, res) => {
-  if (isNan(req.params.id)) {
+  if (isNaN(req.params.id)) {
     res.status(404).send(err);
     return
   }
@@ -68,7 +68,7 @@ module.exports.getTweet = (req, res) => {
 //  "createdAt":"2018-03-11T07:57:40.240Z"
 // }
 module.exports.like = (req, res) => {
-  if (isNan(req.params.id)) {
+  if (isNaN(req.params.id)) {
     res.status(404).send(err);
     return
   }
@@ -97,7 +97,7 @@ module.exports.like = (req, res) => {
 //  }
 // }]
 module.exports.getLikes = (req, res) => {
-  if (isNan(req.params.id)) {
+  if (isNaN(req.params.id)) {
     res.status(404).send(err);
     return
   }
@@ -127,7 +127,7 @@ module.exports.getLikes = (req, res) => {
 //  "originalId": 2
 // }
 module.exports.retweet = (req, res) => {
-  if (isNan(req.params.id)) {
+  if (isNaN(req.params.id)) {
     res.status(404).send(err);
     return
   }
@@ -156,7 +156,7 @@ module.exports.retweet = (req, res) => {
 //  }
 // }]
 module.exports.getRetweets = (req, res) => {
-  if (isNan(req.params.id)) {
+  if (isNaN(req.params.id)) {
     res.status(404).send(err);
     return
   }
