@@ -36,7 +36,6 @@ $ sequelize db:migrate
 
 ### STEP 5: Run the app locally
 ```sh
-$ npm install
 $ node index.js
 ```
 Point your browser to http://localhost:3000 and voila!
@@ -45,7 +44,6 @@ Point your browser to http://localhost:3000 and voila!
 ```sh
   sequelize db: [create/migrate/drop] --env [development/test]
 ```
-
 
 ### Local Development
 To connect to the Postgres shell:
@@ -56,7 +54,7 @@ $ psql ntdev
 #### Create migrations
 First create a boilerplate migration and model file with the basic columns. This example creates a new model:
 ```sh
-$ sequelize model:create --name Tweet --attributes fname:string,bio:text
+$ sequelize model:create --name User --attributes fname:string,bio:text
 ```
 
 Further modify the migration file and model file if necessary. Any changes to either file must be reflected in the other manually.
@@ -67,7 +65,7 @@ $ sequelize db:migrate
 ```
 If you want to undo the migration:
 ```
-$ sequelize db:migrate:undo
+$ sequelize db:migrate:undo:all
 ```
 
 ### Heroku Deployment
@@ -95,11 +93,23 @@ $ heroku pg:psql
 - [x] Configured Heroku and deployed skeleton.
 
 ### nanoTwitter 0.3: Core functionality
-- [x] Write unit tests.
+- [] Write unit tests.
 - [x] Implement test interface.
 - [x] Setup automatic deployment.
 - [x] Load seed data.
 - [x] Migrated to Postgres and configured Heroku accordingly.
+
+### nanoTwitter 0.4: Testing and Deployment
+- [] Perform simultaneous manual testing.
+- [x] Implement the complete test interface.
+- [x] Use loader.io to generate some artificial loads.
+- [] Add tests to test suite.
+
+### nanoTwitter 0.5: Initial Load Testing
+- [] Instrument app to collect performance data.
+- [] Run load experiments.
+- [] Switch web server from WebBrick; try others, measure.
+- [x] Update schema to put indices and other enhancements.
 
 ## Mockups
 ![UI Design 1: Front Page](design/ui_design_1.png)
