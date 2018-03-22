@@ -37,6 +37,10 @@ module.exports.tweet =  (req, res) => {
 //  }
 // }
 module.exports.getTweet = (req, res) => {
+  if (isNan(req.params.id)) {
+    res.status(404).send(err);
+    return
+  }
   models.Tweet.findOne({
     where: { id: parseInt(req.params.id) },
     include: [{
@@ -61,9 +65,13 @@ module.exports.getTweet = (req, res) => {
 //  "createdAt":"2018-03-11T07:57:40.240Z"
 // }
 module.exports.like = (req, res) => {
+  if (isNan(req.params.id)) {
+    res.status(404).send(err);
+    return
+  }
   models.Like.create({
     userId: user,
-    tweetId: req.params.id
+    tweetId: parseInt(req.params.id)
   }).then(like => {
     res.render(
       "NOT YET IMPLEMENTED", JSON.parse(JSON.stringify(like)));
@@ -86,6 +94,10 @@ module.exports.like = (req, res) => {
 //  }
 // }]
 module.exports.getLikes = (req, res) => {
+  if (isNan(req.params.id)) {
+    res.status(404).send(err);
+    return
+  }
   models.Like.findAll({
     where: { tweetId: parseInt(req.params.id) },
     include: [{
@@ -112,10 +124,14 @@ module.exports.getLikes = (req, res) => {
 //  "originalId": 2
 // }
 module.exports.retweet = (req, res) => {
+  if (isNan(req.params.id)) {
+    res.status(404).send(err);
+    return
+  }
   models.Tweet.create({
       content: "",
       userId: req.user.id,
-      originalId: req.params.id
+      originalId: parseInt(req.params.id)
   }).then(tweet => {
     res.render("NOT YET IMPLEMENTED", JSON.parse(JSON.stringify(tweet)));
   }).catch(err => {
@@ -137,6 +153,10 @@ module.exports.retweet = (req, res) => {
 //  }
 // }]
 module.exports.getRetweets = (req, res) => {
+  if (isNan(req.params.id)) {
+    res.status(404).send(err);
+    return
+  }
   models.Tweet.findAll({
     where: { originalId: parseInt(req.params.id) },
     include: [{

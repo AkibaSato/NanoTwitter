@@ -3,7 +3,7 @@ var sequelize = require('sequelize');
 
 module.exports.getUserFollowers = (id) => {
   return models.Relationship.findAll({
-    where: { followeeId: parseInt(id) },
+    where: { followeeId: id },
     include: [{
       model: models.User,
       as: 'follower',
@@ -17,7 +17,7 @@ module.exports.getUserFollowers = (id) => {
 
 module.exports.getUserFollowees = (id) => {
   return models.Relationship.findAll({
-    where: { followerId: parseInt(id) },
+    where: { followerId: id },
     include: [{
       model: models.User,
       as: 'followee',
@@ -31,7 +31,7 @@ module.exports.getUserFollowees = (id) => {
 
 module.exports.getUserOriginalTimeline = (id) => {
   return models.Tweet.findAll({
-    where: { userId: parseInt(id), originalId: null },
+    where: { userId: id, originalId: null },
     attributes: ['content', 'createdAt']
   }).catch(err => {
     throw new Error('Error in retrieving user original tweets.')

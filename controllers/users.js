@@ -15,6 +15,10 @@ module.exports.getSignup = (req, res) => {
 //  "createdAt":"2018-03-08T22:52:09.442Z"
 // }
 module.exports.follow = (req, res) => {
+  if (isNan(req.params.id)) {
+    res.status(404).send(err);
+    return
+  }
   var followeeId = parseInt(req.params.id);
   var followerId = parseInt(req.user.id);
 
@@ -43,6 +47,10 @@ module.exports.follow = (req, res) => {
 };
 
 module.exports.unfollow = (req, res) => {
+  if (isNan(req.params.id)) {
+    res.status(404).send(err);
+    return
+  }
   var followeeId = parseInt(req.params.id);
   var followerId = parseInt(req.user.id);
 
@@ -61,7 +69,11 @@ module.exports.unfollow = (req, res) => {
 };
 
 module.exports.getUser = (req, res) => {
-  id = parseInt(req.params.id)
+  if (isNan(req.params.id)) {
+    res.status(404).send(err);
+    return
+  }
+  var id = parseInt(req.params.id)
   sequelize.Promise.join(helper.getUserMetadata(id), helper.getUserTimeline(id),
     (metadata, timeline) => {
       res.render('user', {
@@ -93,7 +105,11 @@ module.exports.getUser = (req, res) => {
 // }]
 // TODO: Set a limit for the results retrieved. (e.g. pagination)
 module.exports.getTweets = (req, res) => {
-  id = parseInt(req.params.id)
+  if (isNan(req.params.id)) {
+    res.status(404).send(err);
+    return
+  }
+  var id = parseInt(req.params.id)
   sequelize.Promise.join(helper.getUserMetadata(id), helper.getUserOriginalTimeline(id),
     (metadata, timeline) => {
       res.render("NOT YET IMPLEMENTED", {
@@ -122,7 +138,11 @@ module.exports.getTweets = (req, res) => {
 //  }
 // }]
 module.exports.getFollowees = (req, res) => {
-  var id = req.params.id
+  if (isNan(req.params.id)) {
+    res.status(404).send(err);
+    return
+  }
+  var id = parseInt(req.params.id)
   sequelize.Promise.join(helper.getUserMetadata(id), helper.getUserFollowees(id),
     (metadata, followees) => {
       res.render("NOT YET IMPLEMENTED", {
@@ -151,7 +171,11 @@ module.exports.getFollowees = (req, res) => {
 //  }
 // }]
 module.exports.getFollowers =  (req, res) => {
-  var id = req.params.id
+  if (isNan(req.params.id)) {
+    res.status(404).send(err);
+    return
+  }
+  var id = parseInt(req.params.id)
   sequelize.Promise.join(helper.getUserMetadata(id), helper.getUserFollowers(id),
     (metadata, followers) => {
       res.render("NOT YET IMPLEMENTED", {
@@ -168,7 +192,11 @@ module.exports.getFollowers =  (req, res) => {
 
 // TODO: Fix this.
 module.exports.getFolloweeTweets = (req, res) => {
-  var id = req.params.id
+  if (isNan(req.params.id)) {
+    res.status(404).send(err);
+    return
+  }
+  var id = parseInt(req.params.id)
   sequelize.Promise.join(helper.getUserMetadata(id), helper.getUserFollowers(id),
     (metadata, followers) => {
       res.render("NOT YET IMPLEMENTED", {

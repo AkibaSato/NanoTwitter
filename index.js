@@ -75,7 +75,7 @@ app.use(function (err, req, res, next) {
 
   // Render the error page.
   res.status(err.status || 500);
-  res.render('error', { res : res });
+  res.render('error', { res : res, user: req.user });
 });
 
 app.listen(port);
