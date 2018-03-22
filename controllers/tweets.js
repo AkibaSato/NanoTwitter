@@ -21,14 +21,14 @@ module.exports.tweet =  (req, res) => {
     // res.render("NOT YET IMPLEMENTED", JSON.parse(JSON.stringify(tweet)));
     res.redirect('../user/' + req.user.id);
     models.User.update(
-      { numTweets: sequelize.literal('numTweets + 1') },
-      { where: { id: req.user.id } });
+      { numTweets: sequelize.literal('"Users."numTweets" + 1') },
+      { where: { id: req.user.id }
+    }).catch(err => {
+      throw err;
+    });
   }).catch(err => {
     res.status(404).send(err);
   });
-  models.User.update(
-    { numTweets: sequelize.literal('numTweets + 1') },
-    { where: { id: req.user.id } });
 };
 
 // Example return JSON:

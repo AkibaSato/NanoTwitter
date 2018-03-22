@@ -32,15 +32,20 @@ module.exports.follow = (req, res) => {
     followeeId: followeeId
   })
   .then(relationship => {
+    // Increment follower/followee counts in User models in the background.
+    console.log("Hey")
+    models.User.update(
+      { numFollowers: sequelize.literal(`"Users"."numFollowers" + 1`) },
+      { where: { id: followeeId } }).catch(err => {
+        res.status(404).send(err);
+      });
+    models.User.update(
+      { numFollowees: sequelize.literal(`"Users"."numFollowees" + 1`) },
+      { where: { id: followerId } }).catch(err => {
+        res.status(404).send(err);
+      });
     res.render(
       "NOT YET IMPLEMENTED", JSON.parse(JSON.stringify(relationship)));
-    // Increment follower/followee counts in User models in the background.
-    models.User.update(
-      { numFollowers: sequelize.literal('numFollowers + 1') },
-      { where: { id: followeeId } });
-    models.User.update(
-      { numFollowees: sequelize.literal('numFollowees + 1') },
-      { where: { id: followerId } });
   }).catch(err => {
     res.status(404).send(err);
   });
@@ -64,10 +69,10 @@ module.exports.unfollow = (req, res) => {
     res.redirect('../user/' + followeeId);
     if (results.length > 0) {
       models.User.update(
-        { numFollowers: sequelize.literal('numFollowers - 1') },
+        { numFollowers: sequelize.literal('"Users"."numFollowers" - 1') },
         { where: { id: followeeId } });
       models.User.update(
-        { numFollowees: sequelize.literal('numFollowees - 1') },
+        { numFollowees: sequelize.literal('"Users"."numFollowees" - 1') },
         { where: { id: followerId } });
     }
     // var redirectURL = '../user/' + followeeId;
