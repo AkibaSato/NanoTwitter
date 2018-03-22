@@ -48,10 +48,10 @@ module.exports.unfollow = function (req, res) {
     },
     truncate: true
   }).then(results => {
-    res.render(
+    // res.render(
       // "NOT YET IMPLEMENTED2", JSON.parse(JSON.stringify(newRelationship)));
     // var redirectURL = '../user/' + followeeId;
-    res.redirect('../user/' + followeeId));
+    res.redirect('../user/' + followeeId);
   }).catch(function(err) {
     res.status(404).send(err);
   });
