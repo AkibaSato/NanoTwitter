@@ -30,16 +30,16 @@ module.exports.follow = (req, res) => {
   .then(relationship => {
     res.render(
       "NOT YET IMPLEMENTED", JSON.parse(JSON.stringify(relationship)));
+    // Increment follower/followee counts in User models in the background.
+    models.User.update(
+      { numFollowers: sequelize.literal('numFollowers + 1') },
+      { where: { id: followeeId } });
+    models.User.update(
+      { numFollowees: sequelize.literal('numFollowees + 1') },
+      { where: { id: followerId } });
   }).catch(err => {
     res.status(404).send(err);
   });
-  // Increment follower/followee counts in User models in the background.
-  models.User.update(
-    { numFollowers: sequelize.literal('numFollowers + 1') },
-    { where: { id: followeeId } });
-  models.User.update(
-    { numFollowees: sequelize.literal('numFollowees + 1') },
-    { where: { id: followerId } });
 };
 
 module.exports.unfollow = (req, res) => {
@@ -72,6 +72,7 @@ module.exports.getUser = (req, res) => {
     }
   ).catch(err => {
     res.status(404).send(err);
+    return;
   })
 };
 
@@ -103,6 +104,7 @@ module.exports.getTweets = (req, res) => {
     }
   ).catch(err => {
     res.status(404).send(err);
+    return;
   })
 };
 
@@ -131,6 +133,7 @@ module.exports.getFollowees = (req, res) => {
     }
   ).catch(err => {
     res.status(404).send(err);
+    return;
   })
 };
 
@@ -159,6 +162,7 @@ module.exports.getFollowers =  (req, res) => {
     }
   ).catch(err => {
     res.status(404).send(err);
+    return;
   })
 };
 
@@ -175,5 +179,6 @@ module.exports.getFolloweeTweets = (req, res) => {
     }
   ).catch(err => {
     res.status(404).send(err);
+    return;
   });
 };

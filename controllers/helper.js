@@ -89,7 +89,6 @@ module.exports.getHomeTimeline = (id) => {
 
 // TODO: Retrieve global timeline from Redis.
 module.exports.getGlobalTimeline = () => {
-  console.log("hey")
   return models.Tweet.findAll({
     order: [['createdAt', 'DESC']],
     limit: 50,
