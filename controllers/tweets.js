@@ -19,12 +19,13 @@ module.exports.tweet =  (req, res) => {
       parentId: req.body.parentId
   }).then(tweet => {
     // res.render("NOT YET IMPLEMENTED", JSON.parse(JSON.stringify(tweet)));
-    res.redirect('../user/' + req.user.id);
     models.User.update(
-      { numTweets: sequelize.literal('"Users."numTweets" + 1') },
+      { numTweets: sequelize.literal(`"Users"."numTweets" + 1`) },
       { where: { id: req.user.id }
+    }).then(user => {
+      res.redirect('/user/' + req.user.id);
     }).catch(err => {
-      throw err;
+      res.status(404).send(err);
     });
   }).catch(err => {
     res.status(404).send(err);

@@ -10,7 +10,7 @@ module.exports.getUserFollowers = (id) => {
       attributes: ['username']
     }],
     attributes: ['createdAt']
-  }).catch(function(err) {
+  }).catch(err => {
     throw new Error("Error in retrieving followers for user.")
   });
 }
@@ -24,7 +24,7 @@ module.exports.getUserFollowees = (id) => {
       attributes: ['username']
     }],
     attributes: ['createdAt']
-  }).catch(function(err) {
+  }).catch(err => {
     throw new Error("Error in retrieving followers for user.")
   });
 }

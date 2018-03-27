@@ -17,12 +17,12 @@ module.exports.getSignup = (req, res) => {
 module.exports.follow = (req, res) => {
   if (isNaN(req.params.id)) {
     res.status(404).send(err);
-    return
+    return;
   }
   var followeeId = parseInt(req.params.id);
   var followerId = parseInt(req.user.id);
 
-  if(followeeId == followerId) {
+  if(followeeId === followerId) {
     res.send("Can't follow myself");
     return;
   }
@@ -33,20 +33,26 @@ module.exports.follow = (req, res) => {
   })
   .then(relationship => {
     // Increment follower/followee counts in User models in the background.
-    console.log("Hey")
-    models.User.update(
+    var followerPromise = models.User.update(
       { numFollowers: sequelize.literal(`"Users"."numFollowers" + 1`) },
-      { where: { id: followeeId } }).catch(err => {
-        res.status(404).send(err);
-      });
-    models.User.update(
+      { where: { id: followeeId } });
+    var followeePromise = models.User.update(
       { numFollowees: sequelize.literal(`"Users"."numFollowees" + 1`) },
-      { where: { id: followerId } }).catch(err => {
-        res.status(404).send(err);
-      });
-    res.render(
-      "NOT YET IMPLEMENTED", JSON.parse(JSON.stringify(relationship)));
+      { where: { id: followerId } });
+    sequelize.Promise.join(followerPromise, followeePromise,
+      (followerResult, followeeResult) => {
+        res.redirect('/user/' + followeeId);
+      }
+    ).catch(err => {
+      res.status(404).send(err);
+    });
   }).catch(err => {
+    // Have already followed.
+    if (err.name == 'SequelizeUniqueConstraintError') {
+      // res.redirect('/user/' + followerId);
+      res.status(404).send(err);
+      return;
+    }
     res.status(404).send(err);
   });
 };
@@ -54,7 +60,7 @@ module.exports.follow = (req, res) => {
 module.exports.unfollow = (req, res) => {
   if (isNaN(req.params.id)) {
     res.status(404).send(err);
-    return
+    return;
   }
   var followeeId = parseInt(req.params.id);
   var followerId = parseInt(req.user.id);
@@ -63,20 +69,27 @@ module.exports.unfollow = (req, res) => {
     where: {
       followerId: followerId,
       followeeId: followeeId
-    },
-    truncate: true
+    }
   }).then(results => {
-    res.redirect('../user/' + followeeId);
-    if (results.length > 0) {
-      models.User.update(
-        { numFollowers: sequelize.literal('"Users"."numFollowers" - 1') },
+    if (results > 0) {
+      var followerPromise = models.User.update(
+        { numFollowers: sequelize.literal(`"Users"."numFollowers" - 1`) },
         { where: { id: followeeId } });
-      models.User.update(
-        { numFollowees: sequelize.literal('"Users"."numFollowees" - 1') },
+      var followeePromise = models.User.update(
+        { numFollowees: sequelize.literal(`"Users"."numFollowees" - 1`) },
         { where: { id: followerId } });
+      sequelize.Promise.join(followerPromise, followeePromise,
+        (followerResult, followeeResult) => {
+          res.redirect('/user/' + followeeId);
+        }
+      ).catch(err => {
+        res.status(404).send(err);
+      });
+    } else {
+       res.status(404).send(new Error("Was not following in the first place"));
     }
     // var redirectURL = '../user/' + followeeId;
-  }).catch(function(err) {
+  }).catch(err => {
     res.status(404).send(err);
   });
 };
@@ -97,7 +110,6 @@ module.exports.getUser = (req, res) => {
     }
   ).catch(err => {
     res.status(404).send(err);
-    return;
   })
 };
 
@@ -133,7 +145,6 @@ module.exports.getTweets = (req, res) => {
     }
   ).catch(err => {
     res.status(404).send(err);
-    return;
   })
 };
 
@@ -166,7 +177,6 @@ module.exports.getFollowees = (req, res) => {
     }
   ).catch(err => {
     res.status(404).send(err);
-    return;
   })
 };
 
@@ -220,6 +230,5 @@ module.exports.getFolloweeTweets = (req, res) => {
     }
   ).catch(err => {
     res.status(404).send(err);
-    return;
   });
 };

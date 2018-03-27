@@ -11,7 +11,7 @@ router.get('/:id/followees', users.getFollowees);
 router.get('/:id/followers', users.getFollowers);
 router.get('/:id/followee_tweets', users.getFolloweeTweets);
 router.post('/:id/follow', isLoggedIn, users.follow);
-router.delete('/:id/follow', isLoggedIn, users.unfollow);
+router.post('/:id/unfollow', isLoggedIn, users.unfollow);
 
 router.post('/register', passport.authenticate('local-signup', {
   successRedirect: '/',
