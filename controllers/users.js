@@ -213,18 +213,18 @@ module.exports.getFollowers =  (req, res) => {
   })
 };
 
-// TODO: Fix this.
+// Get tweets from the people that the user follows.
 module.exports.getFolloweeTweets = (req, res) => {
   if (isNaN(req.params.id)) {
     res.status(404).send(err);
     return
   }
   var id = parseInt(req.params.id)
-  sequelize.Promise.join(helper.getUserMetadata(id), helper.getUserFollowers(id),
-    (metadata, followers) => {
+  sequelize.Promise.join(helper.getUserMetadata(id), helper.getHomeTimeline(id),
+    (metadata, tweets) => {
       res.render("NOT YET IMPLEMENTED", {
         user: metadata,
-        followers: followers,
+        tweets: tweets,
         me: req.user
       })
     }
