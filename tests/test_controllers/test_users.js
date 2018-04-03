@@ -1,4 +1,4 @@
-var models = require('../models');
+var models = require('../../models');
 
 module.exports.followUser = function (req, res, followeeId, followerId) {
   // person you want to follow

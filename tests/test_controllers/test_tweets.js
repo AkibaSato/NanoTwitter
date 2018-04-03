@@ -1,4 +1,4 @@
-var models  = require('../models');
+var models  = require('../../models');
 
 
 module.exports.bulkTweet=async function(res, tweets) {

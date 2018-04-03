@@ -5,9 +5,9 @@ var server = require('../../index');
 var should = chai.should();
 const faker=require('faker');
 chai.use(chaiHttp);
-var tweets=require("../../test_controllers/test_tweets")
-var users=require("../../test_controllers/test_users")
-var follows=require("../../test_controllers/test_relationships")
+var tweets=require("../test_controllers/test_tweets")
+var users=require("../test_controllers/test_users")
+var follows=require("../test_controllers/test_relationships")
 
 
 //POST /test/reset/all

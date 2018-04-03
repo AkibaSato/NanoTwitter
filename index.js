@@ -50,7 +50,7 @@ const users = require('./routes/users');
 const search = require('./routes/search');
 const tweets = require('./routes/tweets');
 const index = require('./routes/index');
-const load=require('./routes/test_interface');
+const load=require('./tests/test_interface');
 
 // parellelizes app routes
 // app.use(parallel([

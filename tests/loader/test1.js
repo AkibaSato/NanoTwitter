@@ -5,14 +5,14 @@ var server = require('../../index');
 var should = chai.should();
 
 chai.use(chaiHttp);
-var tweets=require("../../test_controllers/test_tweets")
-var users=require("../../test_controllers/test_users")
-var follows=require("../../test_controllers/test_relationships")
+var tweets=require("../test_controllers/test_tweets")
+var users=require("../test_controllers/test_users")
+var follows=require("../test_controllers/test_relationships")
 
 
 // NO ROUTES INDEX ROUTES
 describe('No Database Data Tests', function () {
-  
+
   before(function () {
       tweets.destroyAll()
       users.destroyAll()

@@ -1,4 +1,4 @@
-var models = require('../models');
+var models = require('../../models');
 
 module.exports.getAll=async function(req, res, next) {
   return models.Relationship.findAll({

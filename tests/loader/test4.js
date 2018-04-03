@@ -6,9 +6,9 @@ var server = require('../../index');
 var should = chai.should();
 const faker=require('faker');
 chai.use(chaiHttp);
-var tweets=require("../../test_controllers/test_tweets")
-var Users=require("../../test_controllers/test_users")
-var follows=require("../../test_controllers/test_relationships")
+var tweets=require("../test_controllers/test_tweets")
+var Users=require("../test_controllers/test_users")
+var follows=require("../test_controllers/test_relationships")
 var userData={fname: faker.name.firstName(),lname: faker.name.lastName(), username: faker.internet.userName(), email: faker.internet.email(), password: faker.internet.password()};
 req={};
 res={};
@@ -21,7 +21,7 @@ function sleep(ms) {
 //Deletes and recreates TestUser, including all his tweets, follows, and removes him from any other users’ follow list.
 describe('Test Suite For POST /test/user/follow?count=n', function (req, res, next) {
   before( function (done) {
-    allUsers=[];  
+    allUsers=[];
     tweets.destroyAll()
     Users.destroyAll()
     follows.destoryAll()
