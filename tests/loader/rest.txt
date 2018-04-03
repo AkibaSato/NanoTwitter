@@ -1,0 +1,6 @@
+POST /test/reset/standard?tweets=n
+Deletes all users, tweets and follows
+Recreate TestUser
+If tweets parameter is included, only load n tweets from seed data, otherwise load all
+Imports the complete set of standard seed data, see: Seed Data
+Example: /test/reset/standard

@@ -1,0 +1,2 @@
+POST /test/users/create?count=u&tweets=c
+POST /test/user/u/tweets?count=t

@@ -3,26 +3,48 @@
 
 <%- include layouts/header.ejs %>
 <br>
-<div class="row">
-  <div class="col-4">
-    <div class="user-information__border"></div>
-    <div class="user-information">
-      <% if (req.isAuthenticated()) { %>
-        <%- include components/user_info.ejs %>
-      <% } else { %>
-        <br>
-        <a href="/login">Login</a>
-        <br>
-        <a href="/user/register">Signup</a>
-      <% } %>
+<% if (req.isAuthenticated()) { %>
+  <% if (req.user !== null) { %>
+    <div class="row">
+        <div class="col-4">
+            <div class="user-information__border"></div>
+            <div class="user-information">
+                <div class="row">
+                  <div class="col-8 user-information__text">
+                    <h4><%= req.user.fname %> <%=req.user.lname %></h4>
+                    <a href="/user/<%= req.user.id %>">
+                      <h2>@<%= req.user.username %></h2>
+                    </a>
+                    <div class="user-information__stats user-information__stats">
+                      <div class="row">
+                        <div class="col-4">
+                          <span class="user-information__stat-title">Tweets:</span>
+                          <span><a href="/user/<%= req.user.id %>"><%= tweetCount %></a></span>
+                        </div>
+                        <div class="col-4">
+                          <span class="user-information__stat-title">Following:</span>
+                          <span><a href="/user/<%= req.user.id %>/following"><%= followingCount %></a></span>
+                        </div>
+                        <div class="col-4">
+                          <span class="user-information__stat-title">Followers:</span>
+                          <span><a href="/user/<%= req.user.id %>/followers"><%= followerCount %></a></span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6">
+          <%- include components/new_tweet.ejs %>
+          <%- include components/tweets.ejs %>
+        </div>
+
     </div>
-  </div>
-  <div class="col-6">
-    <% if (req.isAuthenticated()) { %>
-      <%- include components/new_tweet.ejs %>
-    <% } else { %>
-      <div class="box"></div>
-    <% } %>
-    <%- include components/tweets.ejs %>
-  </div>
-</div>
+  <% } %>
+<% } else { %>
+  <br>
+  <a href="/login">Login</a>
+  <br>
+  <a href="/user/register">Signup</a>
+<% } %>

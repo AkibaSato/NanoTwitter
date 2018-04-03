@@ -3,22 +3,11 @@
 <%- include layouts/header.ejs %>
 
 
-<br>
-<div class="row">
-    <div class="col-4">
-      <div class="user-information__border"></div>
-        <div class="user-information">
-          <%- include components/user_info.ejs %>
-        </div>
-    </div>
-    <div class="col-6">
-      <% if (req.isAuthenticated()) { %>
-        <% if (req.user.id === userData.id) { %>
-          <%- include components/new_tweet.ejs %>
-        <% } else { %>
-          <%- include components/new_follow.ejs %>
-        <% } %>
-      <% } %>
-      <%- include components/tweets.ejs %>
-    </div>
-</div>
+<%= userData.username %>
+
+
+<% for(var i=0; i<tweets.length; i++) { %>
+  <li><%= tweets[i].content %></li>
+<% } %>
+
+<%= tweetCount %>

@@ -1,0 +1,7 @@
+POST /test/user/u/tweets?count=t
+POST /test/user/u/follow?count=n
+POST /test/user/follow?count=n
+
+POST /test/user/u/follow?count=n
+POST /test/reset/standard?tweets=n
+POST /test/users/create?count=u&tweets=c

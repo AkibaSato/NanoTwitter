@@ -4,7 +4,10 @@ module.exports.getSignup = function (req, res) {
   res.render('signup');
 };
 
-
+module.exports.logout = (req, res) => {
+  req.logout();
+  res.redirect('/');
+};
 
 // Example return JSON:
 // {
@@ -18,9 +21,6 @@ module.exports.follow = function (req, res) {
   var followeeId = parseInt(req.params.id);
   var followerId = parseInt(req.user.id);
 
-  console.log(followeeId);
-  console.log(followerId);
-
   if(followeeId == followerId) {
     res.send("Can't follow myself");
     return;
@@ -30,14 +30,9 @@ module.exports.follow = function (req, res) {
     followeeId: followeeId
   };
 
-
-
-
   models.Relationship.create(relationship).then(function(newRelationship) {
     res.render(
-      "NOT YET IMPLEMENTED2", JSON.parse(JSON.stringify(newRelationship)));
-    // var redirectURL = '../user/' + followeeID;
-    // res.redirect(redirectURL);
+      "NOT YET IMPLEMENTED", JSON.parse(JSON.stringify(newRelationship)));
   }).catch(function(err) {
     res.status(404).send(err);
   });
@@ -53,12 +48,10 @@ module.exports.follow = function (req, res) {
 
 module.exports.getUser = function (req, res) {
   var userData;
-  let followingCount = 0;
-  let followerCount = 0;
   var tweets;
   models.User.findOne({
     where: { id: parseInt(req.params.id) },
-    attributes: ['id', 'username', 'fname', 'lname']
+    attributes: ['fname', 'lname', 'username']
   }).then(result => {
     userData = result;
   });
@@ -68,7 +61,7 @@ module.exports.getUser = function (req, res) {
     include: [{
       model: models.User,
       as: 'user',
-      attributes: ['id', 'username', 'fname', 'lname']
+      attributes: ['username', 'fname', 'lname']
     }],
     attributes: ['content', 'createdAt']
   }).then(result => {
@@ -76,13 +69,8 @@ module.exports.getUser = function (req, res) {
     res.render('user', {
       req: req,
       userData: userData,
-      // userData: tweets.user,
       tweets: tweets,
       tweetCount: tweets.length,
-      followingCount: followingCount,
-      followerCount: followerCount,
-      atIndex: false,
-      currUser: false,
       test2: 2
     });
   }).catch(function(err) {
