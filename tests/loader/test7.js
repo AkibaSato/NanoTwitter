@@ -18,6 +18,7 @@ var userID=-1;
 chai.use(chaiHttp);
 
 
+
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
@@ -29,6 +30,9 @@ describe('test suite goes here', function () {
       follows.destoryAll()
       user=await Users.create(req, userData);
       userID=user['id'];
+      var req=chai.request(server)
+
+
     });
 /**
  * user u generates t(integer) new fake tweets
@@ -37,13 +41,16 @@ Example: /test/user/testuser/tweets?tweets=100
  */
     it('Test Version Status', function(done) {
       var req=chai.request(server)
-      req.post('/test/user/'+userID+'/tweets?count=4').end(async function(err1, res2){
-        var req2=chai.request(server)
-        re2q.get('/test/status').end(async function(err1, res2){
-        });
+      req.post('/test/user/'+userID+'/tweets?count=4').then(async function(err1, res2){
+      }).then(function(data){
+        // req.get('/test/status').then(async function(err1, res2){
+        console.log("")
         done();
+        //   done()
+        //
+        // });
+      })
 
-      });
 
 
     });

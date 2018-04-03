@@ -31,20 +31,22 @@ describe('Test Suite For POST /test/user/follow?count=n', async function (req, r
     it('Test1', function(done) {
       var req=chai.request(server)
       req.post('/test/user/'+userID+'/follow?count=10').end( function(err1, res2){
-          req.get('/test/status').end(async function(err, res){
-            var followers=await Users.getFollowees(req, res, userID)
-            res.should.have.status(200);
-            res.body.should.be.a('object')
-            res.body['users'].should.not.equal(null);
-            res.body['users'].should.equal(21);
-            res.body['tweets'].should.not.equal(null);
-            res.body['tweets'].should.equal(0);
-            res.body['follows'].should.equal(10);
-            expect(followers).to.not.equal(null);
-            expect(followers.length).to.not.equal(0);
-            expect(followers.length).to.equal(10);
-            done();
-          });
-      });
+
+      }).then(function(data){
+        req.get('/test/status').end(async function(err, res){
+          var followers=await Users.getFollowees(req, res, userID)
+          res.should.have.status(200);
+          res.body.should.be.a('object')
+          res.body['users'].should.not.equal(null);
+          res.body['users'].should.equal(21);
+          res.body['tweets'].should.not.equal(null);
+          res.body['tweets'].should.equal(0);
+          res.body['follows'].should.equal(10);
+          expect(followers).to.not.equal(null);
+          expect(followers.length).to.not.equal(0);
+          expect(followers.length).to.equal(10);
+          done();
+        });
+      })
   });
 });

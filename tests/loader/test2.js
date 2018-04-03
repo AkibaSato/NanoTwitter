@@ -21,8 +21,8 @@ describe('test/reset/all Test Data', function () {
     it('Test Version Status', function(done) {
       var req=chai.request(server)
       req.post('/test/reset/all').end(function(err, res2){
+      }).then(function(data){
         var req2=chai.request(server)
-        //
         req2.get('/test/status').end(function(err2, res){
           res.should.have.status(200);
           res.body.should.be.a('object')
@@ -35,7 +35,9 @@ describe('test/reset/all Test Data', function () {
           res.body['test_user_id'].should.not.equal(null);
           res.body['test_user_id'].should.not.equal(-1);
           done();
+
         });
-      });
+
+      })
     });
 });

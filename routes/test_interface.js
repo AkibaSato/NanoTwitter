@@ -14,8 +14,9 @@ test_id=-1;
 
  //DONE
 router.post('/reset/all',  async function (req, res, next) {
-  await resetAll(req, res, next)
-  await resetTestUser(req)
+   resetAll(req, res, next)
+   resetTestUser(req)
+  next();
 });
 
 //DONE
@@ -25,6 +26,8 @@ router.post('/reset/testuser', async function (req, res, next) {
     testuser=null
   }
   await resetTestUser();
+  next();
+
 });
 
 //DONE
@@ -43,8 +46,10 @@ router.get('/version',  index.version);
 router.post('/reset/standard', function (req, res, next) {
   resetAll().then(function(data){
     Loader.loadData(req, res, req.query['tweets'])
+    next();
+
   })
- 
+
 
   // if(tweetN) {
   //   await Loader.loadTweets(req,res, tweetN);
@@ -64,6 +69,7 @@ router.post('/users/create', function (req, res, next) {
     const count=(req.query['count'] || 1);
     const tweets=(req.query['tweets'] || 0);
     Loader.fakeUserTweet(req, res, count, tweets)
+    next();
 
 
 });
@@ -81,6 +87,8 @@ router.post('/user/:id/tweets', function (req, res, next) {
       } else {
         Loader.createNTweets(req, res, id, tweets)
       }
+      next();
+
 });
 /**
 n (integer) randomly selected users follow user u (integer)
@@ -92,6 +100,7 @@ router.post('/user/:id/follow', function (req, res, next) {
   userID=req.params.id
   follows=req.query.count
   Loader.randomFollow(req, res, userID, follows)
+  next();
 });
 
 
@@ -102,6 +111,8 @@ Example: /test/user/follow?count=10
 router.post('/user/follow', function (req, res, next) {
     const numToFollow=req.query['count']
     Loader.randomNFollowN(req, res, numToFollow)
+    next();
+
 });
 
 module.exports=router;
