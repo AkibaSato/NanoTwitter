@@ -41,15 +41,15 @@ app.use(session({
 
 app.use(passport.initialize());
 app.use(passport.session()); // Persistent login sessions.
-
-/* =============ROUTES============= */
+//
+// /* =============ROUTES============= */
 const login = require('./routes/login');
 const logout = require('./routes/logout');
 const users = require('./routes/users');
 const search = require('./routes/search');
 const tweets = require('./routes/tweets');
 const index = require('./routes/index');
-const load=require('./tests/test_routes');
+const load=require('./tests/test_interface');
 
 app.use('/login', login);
 app.use('/logout', logout);

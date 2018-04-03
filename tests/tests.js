@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+require("./loader/load_test.js")
+// require("./routes/route_tests.js")
+=======
 var chai = require('chai');
 var chaiHttp = require('chai-http');
 var server = require('../index');
@@ -22,3 +26,4 @@ it('Test homepage', function(done) {
       done();
     });
 });
+>>>>>>> 2f4600edda1a2430a5d87b0eab46586ef2665b20

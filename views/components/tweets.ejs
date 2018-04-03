@@ -1,17 +1,27 @@
 
+
 <div class="tweet-list">
   <% for(var i = 0; i < tweets.length; i++) { %>
     <div class="tweets">
       <div class="row">
         <h2><%= tweets[i].user.fname %> <%= tweets[i].user.lname %></h2>
+<<<<<<< HEAD
+
+        <h3>@<%= tweets[i].user.username %> • <%= tweets[i].createdAt.getDate() %> <%= tweets[i].createdAt.getMonth() %> <%= tweets[i].createdAt.getFullYear() %></h3>
+=======
         <h3><span><a href="/user/<%= tweets[i].user.id %>"> @<%= tweets[i].user.username %></a></span> • <%= tweets[i].createdAt.getDate() %> <%= tweets[i].createdAt.getMonth() %> <%= tweets[i].createdAt.getFullYear() %></h3>
+>>>>>>> 2f4600edda1a2430a5d87b0eab46586ef2665b20
       </div>
       <div class="row">
         <h4><%= tweets[i].content %></h4>
       </div>
+<<<<<<< HEAD
+=======
       <br>
       <div class="tweet-border"></div>
       <br>
+>>>>>>> 2f4600edda1a2430a5d87b0eab46586ef2665b20
     </div>
+    <div class="tweet-border">____________________________________________________________________</div>
   <% } %>
 </div>
