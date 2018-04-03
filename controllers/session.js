@@ -1,8 +1,10 @@
-module.exports.getLogin = function (req, res, next) {
+module.exports.getLogin = (req, res, next) => {
   res.render('login');
 };
 
-module.exports.logout = function (req, res, next) {
+module.exports.logout = (req, res, next) => {
   req.logout();
+  // res.render('index');
+  req.flash('success', 'You are logged out.');
   res.redirect('/');
 };

@@ -2,7 +2,6 @@ const express = require('express');
 const app = express();
 const port = process.env.PORT || 3000;
 const path    = require('path');
-const async    = require('async');
 
 /* ===========BODY_PARSER=========== */
 const bodyParser = require('body-parser');
@@ -42,8 +41,8 @@ app.use(session({
 
 app.use(passport.initialize());
 app.use(passport.session()); // Persistent login sessions.
-
-/* =============ROUTES============= */
+//
+// /* =============ROUTES============= */
 const login = require('./routes/login');
 const logout = require('./routes/logout');
 const users = require('./routes/users');
@@ -52,16 +51,6 @@ const tweets = require('./routes/tweets');
 const index = require('./routes/index');
 const load=require('./tests/test_interface');
 
-// parellelizes app routes
-// app.use(parallel([
-//   a('/login', login),
-//   ('/logout', logout),
-//   ('/user', users),
-//   ('/search', search),
-//   ('/tweets', tweets),
-//   ('/', index),
-//   ('/test', load)
-// ]));
 app.use('/login', login);
 app.use('/logout', logout);
 app.use('/user', users);
@@ -69,15 +58,6 @@ app.use('/search', search);
 app.use('/tweets', tweets);
 app.use('/', index);
 app.use('/test', load);
-
-function runInParallel() {
-  async.parallel([
-    app.use('/', index),
-
-  ], function(err, results) {
-    //This callback runs when all the functions complete
-  });
-}
 
 
 /* ===========ERROR HANDLER=========== */
@@ -95,17 +75,8 @@ app.use(function (err, req, res, next) {
 
   // Render the error page.
   res.status(err.status || 500);
-  res.render('error', { res : res });
+  res.render('error', { res : res, user: req.user });
 });
-
-function parallel(middlewares) {
-  return function (req, res, next) {
-    async.each(middlewares, function (mw, cb) {
-      mw(req, res, cb);
-    }, next);
-  };
-}
-
 
 app.listen(port);
 

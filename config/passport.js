@@ -10,11 +10,13 @@ module.exports = function(passport) {
 
   // Converts user to user id.
   passport.serializeUser(function(user, done) {
+    console.log("hello serializing")
     done(null, user.id);
   });
 
   // Converts user id to user, stored in req.user.
   passport.deserializeUser(function(id, done) {
+    console.log("hello deserializing")
     User.findById(id).then(function(user) {
       done(null, user);
     }).catch(function(err) {

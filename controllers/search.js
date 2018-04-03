@@ -15,7 +15,7 @@ var models = require('../models')
 //   "username":"dora_explorer"
 //  }
 // }]
-module.exports.search = function (req, res, next) {
+module.exports.search = (req, res, next) => {
   var term = req.params.term;
   var searchPromise;
   if (term.startsWith('#')) {
@@ -27,9 +27,9 @@ module.exports.search = function (req, res, next) {
   };
 
   searchPromise
-  .then(function(tweets) {
+  .then(tweets => {
     res.render("NOT YET IMPLEMENTED", JSON.parse(JSON.stringify(tweets)));
-  }).catch(function(err) {
+  }).catch(err => {
     res.status(404).send(err);
   });
 };
@@ -57,7 +57,7 @@ function searchHashtag(term) {
       }
     ],
     attributes: ['createdAt']
-  }).then(function(tweets) {
+  }).then(tweets => {
     return tweets.map(x => flattenHashtagJson(x));
   });
 };
@@ -93,7 +93,7 @@ function searchMention(term) {
       }
     ],
     attributes: ['createdAt']
-  }).then(function(tweets) {
+  }).then(tweets => {
     return tweets.map(x => flattenMentionJson(x));
   });
 };

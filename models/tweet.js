@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
     }
   });
 
-  Tweet.associate = function (models) {
+  Tweet.associate = models => {
     Tweet.belongsTo(models.User, {
       foreignKey: 'userId',
       as: 'user',
@@ -32,16 +32,6 @@ module.exports = (sequelize, DataTypes) => {
     Tweet.hasMany(models.HashtagTweet);
     Tweet.hasMany(models.Like);
   };
-
-  // Tweet.statics = {
-  //   countUserTweets: function(id, callback) {
-  //     return this.find({ user: id })
-  //               .count()
-  //               .exec(callback);
-  //   }
-  // }
-
-
 
   return Tweet;
 };

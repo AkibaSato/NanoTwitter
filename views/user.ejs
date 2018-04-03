@@ -2,6 +2,7 @@
 
 <%- include layouts/header.ejs %>
 
+<<<<<<< HEAD
 
 <%= userData.username %>
 
@@ -11,3 +12,24 @@
 <% } %>
 
 <%= tweetCount %>
+=======
+<br>
+<div class="row">
+    <div class="col-4">
+      <div class="user-information__border"></div>
+        <div class="user-information">
+          <%- include components/user_info.ejs %>
+        </div>
+    </div>
+    <div class="col-6">
+      <% if (me) { %>
+          <%- include components/new_tweet.ejs %>
+          <% if (me.id != user.id) { %>
+            <%- include components/unfollow.ejs %>
+            <%- include components/new_follow.ejs %>
+          <% } %>
+      <% } %>
+      <%- include components/tweets.ejs %>
+    </div>
+</div>
+>>>>>>> 2f4600edda1a2430a5d87b0eab46586ef2665b20
