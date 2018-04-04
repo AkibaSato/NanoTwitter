@@ -25,7 +25,6 @@ module.exports.search = (req, res, next) => {
   } else {
     searchPromise = searchWord(term);
   };
-
   searchPromise
   .then(tweets => {
     res.render("NOT YET IMPLEMENTED", JSON.parse(JSON.stringify(tweets)));

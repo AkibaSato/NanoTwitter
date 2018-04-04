@@ -94,6 +94,31 @@ module.exports.unfollow = (req, res) => {
   });
 };
 
+module.exports.getFollowers=async function (req, res) {
+  var searchData = {followerId: parseInt(id)}
+  return models.Relationship.findAll(
+    {attributes: ['followerId'], where: searchData}
+  ).then(function(newRelationship) {
+    return JSON.parse(JSON.stringify(newRelationship));
+  }).catch(function(err) {
+    console.log(err)
+  });
+};
+
+module.exports.getFollowees=async function (req, res, id) {
+  var userID=parseInt(id)
+  var searchData = {followeeId: userID}
+  return models.Relationship.findAll(
+    {attributes: ['followerId'], where: searchData}
+  ).then(function(newRelationship) {
+    console.log(JSON.stringify(newRelationship))
+    return JSON.parse(JSON.stringify(newRelationship));
+  }).catch(function(err) {
+    console.log(err)
+  });
+};
+
+
 module.exports.getUser = (req, res) => {
   if (isNaN(req.params.id)) {
     res.status(404).send(err);
@@ -169,9 +194,9 @@ module.exports.getFollowees = (req, res) => {
   var id = parseInt(req.params.id)
   sequelize.Promise.join(helper.getUserMetadata(id), helper.getUserFollowees(id),
     (metadata, followees) => {
-      res.render("NOT YET IMPLEMENTED", {
+      res.render("Following", {
         user: metadata,
-        followees: followees,
+        followees: JSON.parse(JSON.stringify(followees)),
         me: req.user
       })
     }
@@ -201,9 +226,9 @@ module.exports.getFollowers =  (req, res) => {
   var id = parseInt(req.params.id)
   sequelize.Promise.join(helper.getUserMetadata(id), helper.getUserFollowers(id),
     (metadata, followers) => {
-      res.render("NOT YET IMPLEMENTED", {
+      res.render("Followers", {
         user: metadata,
-        followers: followers,
+        followers: JSON.parse(JSON.stringify(followers)),
         me: req.user
       })
     }
@@ -222,9 +247,9 @@ module.exports.getFolloweeTweets = (req, res) => {
   var id = parseInt(req.params.id)
   sequelize.Promise.join(helper.getUserMetadata(id), helper.getHomeTimeline(id),
     (metadata, tweets) => {
-      res.render("NOT YET IMPLEMENTED", {
-        user: metadata,
-        tweets: tweets,
+      res.render("followee_Tweets", {
+        user: JSON.parse(JSON.stringify(metadata)),
+        tweets: JSON.parse(JSON.stringify(tweets)),
         me: req.user
       })
     }

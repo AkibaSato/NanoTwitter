@@ -54,7 +54,9 @@ module.exports.getTweet = (req, res) => {
     }],
     attributes: ['content', 'createdAt']
   }).then(tweet => {
-    res.render("NOT YET IMPLEMENTED", JSON.parse(JSON.stringify(tweet)));
+    res.render('tweet', {
+      tweet: JSON.parse(JSON.stringify(tweet)),
+    })
   }).catch(err => {
     res.status(404).send(err);
   });
@@ -170,6 +172,7 @@ module.exports.getRetweets = (req, res) => {
     }],
     attributes: ['createdAt']
   }).then(retweets => {
+    console.log(JSON.parse(JSON.stringify(retweets)))
     res.render("NOT YET IMPLEMENTED", JSON.parse(JSON.stringify(retweets)));
   }).catch(err => {
     res.status(404).send(err);
