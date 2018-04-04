@@ -5,7 +5,7 @@ var router = express.Router();
 var isLoggedIn = require('../middleware/isLoggedIn')
 
 router.get('/register', users.getSignup);
-router.get('/:id', users.getUser);
+router.get('/:id', users.getUser)
 router.get('/:id/tweets', users.getTweets);
 router.get('/:id/followees', users.getFollowees);
 router.get('/:id/followers', users.getFollowers);

@@ -24,7 +24,7 @@ module.exports.destroyAll=function(req, res, next) {
 };
 
 
-module.exports.destroy=function(req, res, next) {
+module.exports.destory=function(req, res, next) {
   models.Relationship.destroy({where: {
     followerId: req.id
     // followingId: req.id

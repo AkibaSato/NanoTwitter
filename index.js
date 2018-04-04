@@ -2,6 +2,10 @@ const express = require('express');
 const app = express();
 const port = process.env.PORT || 3000;
 const path    = require('path');
+const redis = require('redis');
+const compression = require('compression');
+const REDIS_PORT = process.env.REDIS_PORT;
+const client = redis.createClient(REDIS_PORT);
 
 /* ===========BODY_PARSER=========== */
 const bodyParser = require('body-parser');
@@ -11,13 +15,13 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 // Parse application/vnd.api+json as json
 app.use(bodyParser.json({ type: 'application/vnd.api+json' }));
-
 /* =============VIEWS============= */
 app.use(express.static("public"));
 app.engine('ejs', require('express-ejs-extend'));
-
 app.set('view engine', 'ejs');
-app.set('views', path.join(__dirname, 'views'));
+app.set('views', path.join(__dirname, 'views'))
+// faster loadup - shrinks the HTTP load so it can be expanded by the browser.
+app.use(compression());
 
 /* =============PASSPORT============= */
 const passport = require('passport');
@@ -46,7 +50,7 @@ app.use(passport.session()); // Persistent login sessions.
 const login = require('./routes/login');
 const logout = require('./routes/logout');
 const users = require('./routes/users');
-const search = require('./routes/search');
+const search = require('./routes/search')
 const tweets = require('./routes/tweets');
 const index = require('./routes/index');
 const load=require('./tests/test_interface');
@@ -77,6 +81,12 @@ app.use(function (err, req, res, next) {
   res.status(err.status || 500);
   res.render('error', { res : res, user: req.user });
 });
+
+client.on("error", function (err) {
+    console.log("Error " + err);
+});
+
+
 
 app.listen(port);
 

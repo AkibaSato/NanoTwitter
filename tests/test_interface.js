@@ -1,4 +1,3 @@
-process.env.NODE_ENV="test"
 var express = require('express');
 var router = express.Router();
 let User = require('./test_controllers/test_users');
@@ -16,7 +15,7 @@ test_id=-1;
 router.post('/reset/all',  async function (req, res, next) {
    resetAll(req, res, next)
    resetTestUser(req)
-  next();
+   res.json({})
 });
 
 //DONE
@@ -83,10 +82,12 @@ router.post('/user/:id/tweets', function (req, res, next) {
       const tweets=req.query.count
       const id=req.params.id
       if (id==testuser && tweets) {
+        console.log("What")
         Loader.createNTweets(req, res, testuser['id'], tweets);
       } else {
         Loader.createNTweets(req, res, id, tweets)
       }
+
       next();
 
 });
@@ -128,7 +129,7 @@ async function getStatus() {
 async function resetAll(req, res, next) {
   User.destroyAll(req, res, next);
   Tweet.destroyAll(req, res, next);
-  Relationship.destoryAll(req, res, next);
+  Relationship.destroyAll(req, res, next);
 };
 
 
