@@ -128,7 +128,7 @@ module.exports.getUser = (req, res) => {
   }
   var id = parseInt(req.params.id)
 
-  renderUser("user_sdssadasepage"+id.toString(), id, req, res)
+  renderUser("user_page"+id.toString(), id, req, res)
 };
 
 
