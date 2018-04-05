@@ -13,6 +13,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 // Parse application/vnd.api+json as json
 app.use(bodyParser.json({ type: 'application/vnd.api+json' }));
+
 /* =============VIEWS============= */
 app.use(express.static("public"));
 app.engine('ejs', require('express-ejs-extend'));

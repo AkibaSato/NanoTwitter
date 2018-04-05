@@ -27,6 +27,7 @@
     "nodemon": "^1.15.1"
   },
   "dependencies": {
+    "async": "^2.6.0",
     "bcrypt": "^1.0.3",
     "body-parser": "^1.18.2",
     "bootstrap": "^4.0.0",
