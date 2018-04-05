@@ -4,8 +4,6 @@ const port = process.env.PORT || 3000;
 const path    = require('path');
 const redis = require('redis');
 const compression = require('compression');
-const REDIS_PORT = process.env.REDIS_PORT;
-const client = redis.createClient(REDIS_PORT);
 
 /* ===========BODY_PARSER=========== */
 const bodyParser = require('body-parser');
@@ -82,9 +80,6 @@ app.use(function (err, req, res, next) {
   res.render('error', { res : res, user: req.user });
 });
 
-client.on("error", function (err) {
-    console.log("Error " + err);
-});
 
 
 
