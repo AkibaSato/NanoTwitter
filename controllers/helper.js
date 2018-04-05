@@ -57,6 +57,8 @@ module.exports.getUserMetadata = (id) => {
 // Get the tweets from the user, including retweets.
 module.exports.getUserTimeline = (id) => {
   return models.Tweet.findAll({
+    order: [['createdAt', 'DESC']],
+    limit: 50,
     where: { userId: id },
     include: [{
       model: models.User,
