@@ -1,9 +1,7 @@
 var models = require('../models');
 var sequelize = require('sequelize');
 var helper = require('./helper');
-var redis = require("redis")
-var REDIS_PORT = process.env.REDIS_URL || process.env.REDIS_PORT;
-var client = redis.createClient(REDIS_PORT);
+var client = require('../config/redis')
 
 module.exports.getSignup = (req, res) => {
   res.render('signup');
