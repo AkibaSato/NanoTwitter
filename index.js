@@ -3,7 +3,7 @@ const app = express();
 const port = process.env.PORT || 3000;
 const path    = require('path');
 const redis = require('redis');
-const compressiona = require('compression');
+const compression = require('compression');
 
 
 /* ===========BODY_PARSER=========== */
