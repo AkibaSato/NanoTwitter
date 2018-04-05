@@ -25,7 +25,9 @@ app.use(compression());
 const passport = require('passport');
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
-const flash = require('connect-flash');
+const flash = require('connect-flash'),
+RedisStore = require('connect-redis')(session)
+
 
 require('./config/passport')(passport);
 
@@ -33,12 +35,18 @@ require('./config/passport')(passport);
 app.use(flash());
 // required for passport
 app.use(cookieParser());
+
+
 app.use(session({
     // secret: process.env.SECRET || 'enteryoursecrethere',
     secret: 'enteryoursecrethere',
+    store: new RedisStore(),
     cookie: { maxAge: 3600000 },
     resave: true,
-    saveUninitialized: true
+    saveUninitialized: true,
+      cookie:{
+          secure: true
+      }
 }));
 
 app.use(passport.initialize());
