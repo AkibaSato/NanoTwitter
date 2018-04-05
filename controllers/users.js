@@ -128,7 +128,7 @@ module.exports.getUser = (req, res) => {
     return
   }
   var id = parseInt(req.params.id)
-  renderUser("user_proefsaile"+id.toString(), id, req, res)
+  renderUser("user_profile"+id.toString(), id, req, res)
 };
 
 
@@ -149,6 +149,7 @@ function renderUser(cacheKey, id, req, res) {
     } else {
       client.get(cacheKey, function(err, data) {
         userData=JSON.parse(data)
+        userData["me"]=req.user
         res.render('user', userData)
       });
     }
