@@ -4,7 +4,18 @@ const port = process.env.PORT || 3000;
 const path    = require('path');
 const redis = require('redis');
 const compression = require('compression');
+const cluster = require('cluster');
+const numCPUs = require('os').cpus().length;
 
+if (cluster.isMaster) {
+  console.log(`Master ${process.pid} is running`);
+  for (let i = 0; i < numCPUs; i++) {
+    cluster.fork();
+  }
+  cluster.on('exit', (worker, code, signal) => {
+    console.log(`worker ${worker.process.pid} died`);
+  });
+} else {
 
 /* ===========BODY_PARSER=========== */
 const bodyParser = require('body-parser');
@@ -88,3 +99,4 @@ app.use(function (err, req, res, next) {
 
 app.listen(port);
 exports = module.exports = app;
+}
