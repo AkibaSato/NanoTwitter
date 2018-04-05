@@ -3,7 +3,6 @@ const faker=require('faker');
 User=require('./test_controllers/test_users')
 Tweet=require('./test_controllers/test_tweets')
 Follows=require('./test_controllers/test_relationships')
-console.log(require('path').resolve(__dirname));
 
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));

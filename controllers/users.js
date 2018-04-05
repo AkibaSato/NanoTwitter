@@ -17,7 +17,7 @@ module.exports.getSignup = (req, res) => {
 // }
 module.exports.follow = (req, res) => {
   if (isNaN(req.params.id)) {
-    res.status(404).send(err);
+    res.status(404).send(new Error("NaN parameter"));
     return;
   }
   var followeeId = parseInt(req.params.id);
@@ -60,7 +60,7 @@ module.exports.follow = (req, res) => {
 
 module.exports.unfollow = (req, res) => {
   if (isNaN(req.params.id)) {
-    res.status(404).send(err);
+    res.status(404).send(new Error("NaN parameter"));
     return;
   }
   var followeeId = parseInt(req.params.id);
@@ -87,7 +87,7 @@ module.exports.unfollow = (req, res) => {
         res.status(404).send(err);
       });
     } else {
-       res.status(404).send(new Error("Was not following in the first place"));
+       res.status(404).send(new Error("Non-existent relationship"));
     }
     // var redirectURL = '../user/' + followeeId;
   }).catch(err => {
@@ -95,59 +95,32 @@ module.exports.unfollow = (req, res) => {
   });
 };
 
-module.exports.getFollowers=async function (req, res) {
-  var searchData = {followerId: parseInt(id)}
-  return models.Relationship.findAll(
-    {attributes: ['followerId'], where: searchData}
-  ).then(function(newRelationship) {
-    return JSON.parse(JSON.stringify(newRelationship));
-  }).catch(function(err) {
-    console.log(err)
-  });
-};
-
-module.exports.getFollowees=async function (req, res, id) {
-  var userID=parseInt(id)
-  var searchData = {followeeId: userID}
-  return models.Relationship.findAll(
-    {attributes: ['followerId'], where: searchData}
-  ).then(function(newRelationship) {
-    console.log(JSON.stringify(newRelationship))
-    return JSON.parse(JSON.stringify(newRelationship));
-  }).catch(function(err) {
-    console.log(err)
-  });
-};
-
-
 module.exports.getUser = (req, res) => {
   if (isNaN(req.params.id)) {
-    res.status(404).send(err);
+    res.status(404).send(new Error("NaN parameter"));
     return
   }
   var id = parseInt(req.params.id)
-  renderUser("user_profile"+id.toString(), id, req, res)
+  renderUser("user_profile" + id, id, req, res)
 };
 
-
-// added basic cahcing to user info and tweets
+// Added basic caching to user info and tweets.
 function renderUser(cacheKey, id, req, res) {
   client.get(cacheKey, function(err, data) {
     if(err || data === null) {
       sequelize.Promise.join(helper.getUserMetadata(id), helper.getUserTimeline(id),
         (metadata, timeline) => {
-          userData={user: metadata, tweets: timeline , me: req.user}
+          userData = {user: metadata, tweets: timeline , me: req.user}
           client.set(cacheKey, JSON.stringify(userData))
           res.render('user', userData)
         }
       ).catch(err => {
-        console.log(err)
         res.status(404).send(err);
       })
     } else {
       client.get(cacheKey, function(err, data) {
-        userData=JSON.parse(data)
-        userData["me"]=req.user
+        userData = JSON.parse(data)
+        userData["me"] = req.user
         res.render('user', userData)
       });
     }
@@ -172,7 +145,7 @@ function renderUser(cacheKey, id, req, res) {
 // TODO: Set a limit for the results retrieved. (e.g. pagination)
 module.exports.getTweets = (req, res) => {
   if (isNaN(req.params.id)) {
-    res.status(404).send(err);
+    res.status(404).send(new Error("NaN parameter"));
     return
   }
   var id = parseInt(req.params.id)
@@ -204,7 +177,7 @@ module.exports.getTweets = (req, res) => {
 // }]
 module.exports.getFollowees = (req, res) => {
   if (isNaN(req.params.id)) {
-    res.status(404).send(err);
+    res.status(404).send(new Error("NaN parameter"));
     return
   }
   var id = parseInt(req.params.id)
@@ -236,7 +209,7 @@ module.exports.getFollowees = (req, res) => {
 // }]
 module.exports.getFollowers =  (req, res) => {
   if (isNaN(req.params.id)) {
-    res.status(404).send(err);
+    res.status(404).send(new Error("NaN parameter"));
     return
   }
   var id = parseInt(req.params.id)
@@ -257,7 +230,7 @@ module.exports.getFollowers =  (req, res) => {
 // Get tweets from the people that the user follows.
 module.exports.getFolloweeTweets = (req, res) => {
   if (isNaN(req.params.id)) {
-    res.status(404).send(err);
+    res.status(404).send(new Error("NaN parameter"));
     return
   }
   var id = parseInt(req.params.id)

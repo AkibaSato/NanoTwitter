@@ -27,6 +27,7 @@ if (cluster.isMaster) {
 
   /* =============VIEWS============= */
   const compression = require('compression');
+  const flash = require('connect-flash');
 
   app.use(express.static("public"));
   app.engine('ejs', require('express-ejs-extend'));
@@ -34,17 +35,17 @@ if (cluster.isMaster) {
   app.set('views', path.join(__dirname, 'views'))
   // faster loadup - shrinks the HTTP load so it can be expanded by the browser.
   app.use(compression());
+  // Show flash messages to the user.
+  app.use(flash());
+
   /* =============PASSPORT============= */
   const passport = require('passport');
   const cookieParser = require('cookie-parser');
   const session = require('express-session');
-  const flash = require('connect-flash');
   const RedisStore = require('connect-redis')(session)
 
   require('./config/passport')(passport);
 
-  // Show flash messages to the user.
-  app.use(flash());
   // required for passport
   app.use(cookieParser());
 

@@ -42,7 +42,7 @@ module.exports.tweet =  (req, res) => {
 // }
 module.exports.getTweet = (req, res) => {
   if (isNaN(req.params.id)) {
-    res.status(404).send(err);
+    res.status(404).send(new Error("NaN parameter"));
     return
   }
   models.Tweet.findOne({
@@ -72,7 +72,7 @@ module.exports.getTweet = (req, res) => {
 // }
 module.exports.like = (req, res) => {
   if (isNaN(req.params.id)) {
-    res.status(404).send(err);
+    res.status(404).send(new Error("NaN parameter"));
     return
   }
   models.Like.create({
@@ -101,7 +101,7 @@ module.exports.like = (req, res) => {
 // }]
 module.exports.getLikes = (req, res) => {
   if (isNaN(req.params.id)) {
-    res.status(404).send(err);
+    res.status(404).send(new Error("NaN parameter"));
     return
   }
   models.Like.findAll({
@@ -131,7 +131,7 @@ module.exports.getLikes = (req, res) => {
 // }
 module.exports.retweet = (req, res) => {
   if (isNaN(req.params.id)) {
-    res.status(404).send(err);
+    res.status(404).send(new Error("NaN parameter"));
     return
   }
   models.Tweet.create({
@@ -160,7 +160,7 @@ module.exports.retweet = (req, res) => {
 // }]
 module.exports.getRetweets = (req, res) => {
   if (isNaN(req.params.id)) {
-    res.status(404).send(err);
+    res.status(404).send(new Error("NaN parameter"));
     return
   }
   models.Tweet.findAll({
