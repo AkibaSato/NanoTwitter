@@ -1,5 +1,6 @@
 var models  = require('../models');
 var sequelize = require('sequelize');
+var client = require('../config/redis')
 
 // Example return JSON:
 // {
@@ -23,13 +24,23 @@ module.exports.tweet =  (req, res) => {
       { numTweets: sequelize.literal(`"Users"."numTweets" + 1`) },
       { where: { id: req.user.id }
     }).then(user => {
+
       res.redirect('/user/' + req.user.id);
+      client.del('user_profile'+req.user.id.toString(), function(err, response) {
+       if (response == 1) {
+          console.log("Deleted Successfully!")
+       } else{
+        console.log("Cannot delete")
+       }
+    })
     }).catch(err => {
       res.status(404).send(err);
     });
   }).catch(err => {
     res.status(404).send(err);
   });
+
+
 };
 
 // Example return JSON:

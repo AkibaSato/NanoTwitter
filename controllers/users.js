@@ -121,6 +121,7 @@ function renderUser(cacheKey, id, req, res) {
       client.get(cacheKey, function(err, data) {
         userData = JSON.parse(data)
         userData["me"] = req.user
+
         res.render('user', userData)
       });
     }

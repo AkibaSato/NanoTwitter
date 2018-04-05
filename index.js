@@ -43,6 +43,7 @@ if (cluster.isMaster) {
   const cookieParser = require('cookie-parser');
   const session = require('express-session');
   const RedisStore = require('connect-redis')(session)
+  const redisCookie = require('heroku-redis-client');
 
   require('./config/passport')(passport);
 
@@ -54,7 +55,7 @@ if (cluster.isMaster) {
       secret: 'enteryoursecrethere',
       cookie: { maxAge: 3600000 },
       resave: true,
-      store: new RedisStore(),
+      store: new RedisStore({client: redisCookie.createClient()}),
       saveUninitialized: true
   }));
 
@@ -92,7 +93,7 @@ if (cluster.isMaster) {
     res.locals.error = process.env.NODE_ENV != 'production' ? err : {};
     // Render the error page.
     res.status(err.status || 500);
-    res.render('errhbor', { res : res, user: req.user });
+    res.render('error', { res : res, user: req.user });
   });
 
   app.listen(port);
