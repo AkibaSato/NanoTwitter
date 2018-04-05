@@ -8,7 +8,7 @@
   <% for(var i = 0; i < followees.length; i++) { %>
     <div class="tweets">
       <div class="row">
-        <h2><%= followees[i].followee.fullName %></h2>
+        <h2><%= followees[i].followee.fname + " " + followees[i].followee.lname %></h2>
         <h3><span><a href="/user/<%= followees[i].followee.id %>"> @<%= followees[i].followee.username %></a></span></h3>
       </div>
       <div class="row">
