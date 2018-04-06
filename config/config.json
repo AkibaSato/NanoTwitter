@@ -4,11 +4,15 @@
     "password": "",
     "database": "ntdev",
     "host": "localhost",
-    "dialect": "postgres"
+    "dialect": "postgres",
+    "user_service": "http://localhost:1234",
+    "tweet_service": "http://localhost:4567"
   },
   "production": {
     "use_env_variable": "DATABASE_URL",
-    "dialect": "postgres"
+    "dialect": "postgres",
+    "user_service": "https://ntusers-tjak.herokuapp.com",
+    "tweet_service": "https://nttweets-tjak.herokuapp.com"
   },
   "test": {
     "username": "",
