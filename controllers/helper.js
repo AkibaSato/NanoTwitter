@@ -65,7 +65,7 @@ module.exports.getUserTimeline = (id) => {
       as: 'user',
       attributes: ['id', 'username']
     }],
-    attributes: ['content', 'createdAt']
+    attributes: ['id','content', 'createdAt']
   }).catch(err => {
     throw new Error('Error in retrieving user tweets.')
   });

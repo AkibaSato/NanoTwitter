@@ -16,7 +16,7 @@ var models = require('../models')
 //  }
 // }]
 module.exports.search = (req, res, next) => {
-  var term = req.params.term;
+  var term = req.query.search;
   var searchPromise;
   if (term.startsWith('#')) {
     searchPromise = searchHashtag(term.substring(1));
@@ -27,7 +27,7 @@ module.exports.search = (req, res, next) => {
   };
   searchPromise
   .then(tweets => {
-    res.render("NOT YET IMPLEMENTED", JSON.parse(JSON.stringify(tweets)));
+    res.render("search", {tweets: JSON.parse(JSON.stringify(tweets)), user:req.user});
   }).catch(err => {
     res.status(404).send(err);
   });

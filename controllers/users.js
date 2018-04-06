@@ -101,7 +101,7 @@ module.exports.getUser = (req, res) => {
     return
   }
   var id = parseInt(req.params.id)
-  renderUser("user_profile" + id, id, req, res)
+  renderUser("usersa_profile" + id, id, req, res)
 };
 
 // Added basic caching to user info and tweets.
@@ -121,7 +121,6 @@ function renderUser(cacheKey, id, req, res) {
       client.get(cacheKey, function(err, data) {
         userData = JSON.parse(data)
         userData["me"] = req.user
-
         res.render('user', userData)
       });
     }
@@ -152,7 +151,7 @@ module.exports.getTweets = (req, res) => {
   var id = parseInt(req.params.id)
   sequelize.Promise.join(helper.getUserMetadata(id), helper.getUserOriginalTimeline(id),
     (metadata, timeline) => {
-      res.render("NOT YET IMPLEMENTED", {
+      res.render("tweets", {
         user: metadata,
         tweets: tweets,
         me: req.user

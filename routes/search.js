@@ -2,6 +2,6 @@ var express = require('express');
 var search = require('../controllers/search');
 var router = express.Router();
 
-router.post('/:term', search.search);
+router.get('/', search.search);
 
 module.exports = router;

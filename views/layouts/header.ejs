@@ -4,6 +4,13 @@
         <div class="container">
             <div class="navbar__group navbar__group_left">
                 <ul class="navbar__main-navigation">
+
+                  <form method="get" action="/search">
+                      <input type="text" name="search" placeholder="Search..">
+                  </form>
+
+
+
                     <li><a href="/" title="Home"><i class="fa fa-home" aria-hidden="true"></i><span>Home</span></a></li>
                     <% if (user) { %>
                       <li><a href="/user/<%= user.id %>" title="Profile"><i class="fa fa-user" aria-hidden="true"></i><span>Profile</span></a></li>

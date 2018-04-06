@@ -1,20 +1,8 @@
-const express = require('express');
-const app = express();
-const port = process.env.PORT || 3000;
-const path    = require('path');
-const redis = require('redis');
-const cluster = require('cluster');
-const numCPUs = require('os').cpus().length;
-
-if (cluster.isMaster) {
-  console.log(`Master ${process.pid} is running`);
-  for (let i = 0; i < numCPUs; i++) {
-    cluster.fork();
-  }
-  cluster.on('exit', (worker, code, signal) => {
-    console.log(`worker ${worker.process.pid} died`);
-  });
-} else {
+  const express = require('express');
+  const app = express();
+  const port = process.env.PORT || 3000;
+  const path    = require('path');
+  const redis = require('redis');
 
   /* ===========BODY_PARSER=========== */
   const bodyParser = require('body-parser');
@@ -98,4 +86,3 @@ if (cluster.isMaster) {
 
   app.listen(port);
   exports = module.exports = app;
-}
