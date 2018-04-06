@@ -27,6 +27,7 @@
     "nodemon": "^1.15.1"
   },
   "dependencies": {
+    "ajax": "0.0.4",
     "bcrypt": "^1.0.3",
     "body-parser": "^1.18.2",
     "bootstrap": "^4.0.0",
@@ -38,6 +39,7 @@
     "express-ejs-extend": "^0.0.1",
     "express-session": "^1.15.6",
     "faker": "^4.1.0",
+    "jquery": "^3.3.1",
     "node-sass": "^4.7.2",
     "passport": "^0.4.0",
     "passport-local": "^1.0.0",

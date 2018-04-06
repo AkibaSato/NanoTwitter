@@ -81,3 +81,40 @@ app.use(function (err, req, res, next) {
 app.listen(port);
 
 exports = module.exports = app;
+
+/* =========AJAX========= */
+// $(document).ready(function() {
+//   $('.profile__follow-button').on('click', function(e) {
+//       const userID = $(e.currentTarget).data('userid');
+//       const url = '/users/' + userID + '/follow';
+//       if ($(this).hasClass('following')) {
+//         $(this).text('Follow');
+//         $(this).removeClass('following');
+//       } else {
+//         $(this).text('Unfollow');
+//         $(this).addClass('following');
+//       }
+//       $.ajax({
+//         type: 'POST',
+//         url: url,
+//         success: function(data) {
+//           console.log('Followed the user');
+//         },
+//         error: function(data) {
+//           console.log('not sent');
+//         }
+//       });
+//     });
+// });
+function follow_button() {
+  $.ajax({
+    type: 'POST',
+    url: url,
+    success: function(data) {
+      console.log('Followed the user');
+    },
+    error: function(data) {
+      console.log('not sent');
+    }
+  });
+}

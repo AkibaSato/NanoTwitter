@@ -567,3 +567,80 @@ h3 {
     width: 100%;
     display: block;
     font-size: 1.2em; }
+
+
+/* MODALS */
+
+.modal-dialog {
+  margin-top: 60px;
+}
+
+.modal-content {
+  background: none;
+}
+
+.modal-header {
+  background-color: $dark-jungle-green;
+  justify-content: center;
+  border-bottom: 0;
+
+  button.close {
+    color: $grey-blue;
+    opacity: 1;
+    text-shadow: none;
+    position: absolute;
+    right: 15px;
+    &:hover {
+      cursor: pointer;
+    }
+  }
+}
+
+.modal-body {
+  background-color: $yankees-blue;
+  padding: 20px 15px;
+}
+
+.modal {
+  padding: 0;
+}
+
+.new-tweet__button,
+.new-message__button {
+  font-size: 14px;
+  padding: 4px 10px;
+  background-color: #1da1f2;
+  color: #fff;
+  margin: auto;
+  margin-top: 10px;
+  display: block;
+}
+
+
+
+.button {
+  display: inline-block;
+  margin: 20px;
+  padding: 10px 20px;
+  background:#fff;
+  border:1px #333 solid;
+  font-size:14px;
+  color:#333;
+}
+a {
+  font-size:14px;
+  color:#333;
+  text-decoration:none;
+}
+.close {
+  text-align:right;
+  padding: 10px;
+}
+p {
+  padding: 20px;
+  line-height:1.6;
+}
+video {
+  width:100%;
+  height:auto;
+}
