@@ -61,9 +61,9 @@ module.exports.getTweet = (req, res) => {
     include: [{
       model: models.User,
       as: 'user',
-      attributes: ['username']
+      attributes: ['fname', 'lname', 'username']
     }],
-    attributes: ['content', 'createdAt']
+    attributes: ['id', 'content', 'createdAt']
   }).then(tweet => {
     res.render('tweet', {
       tweet: JSON.parse(JSON.stringify(tweet)),
@@ -146,11 +146,13 @@ module.exports.retweet = (req, res) => {
     return
   }
   models.Tweet.create({
-      content: "",
+      content: req.body.content,
       userId: req.user.id,
       originalId: parseInt(req.params.id)
   }).then(tweet => {
-    res.render("NOT YET IMPLEMENTED", JSON.parse(JSON.stringify(tweet)));
+    // res.render("RETWEET NOT YET IMPLEMENTED", JSON.parse(JSON.stringify(tweet)));
+    res.redirect('/user/' + req.user.id);
+
   }).catch(err => {
     res.status(404).send(err);
   });

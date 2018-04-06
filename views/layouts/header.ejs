@@ -1,3 +1,4 @@
+<%- include head.ejs %>
 
 <body>
     <header class="navbar" role="banner">
@@ -25,6 +26,9 @@
                     <img class="tweet__image chat-image logout-image"/>
                     <span>Logout</span>
                   </a>
+                  <div style = "left-margin: 20px;">
+                    <%- include ../components/modals/new_tweet_modal.ejs %>
+                  </div>
                 <% } else { %>
                   <a class="navbar__profile-login" href="/login" title="login">
                     <i class="fa fa-sign-in" aria-hidden="true"></i>
