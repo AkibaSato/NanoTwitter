@@ -2,17 +2,22 @@
 <div class="tweet-list">
   <% for(var i = 0; i < tweets.length; i++) { %>
     <div class="tweets">
-      <div class="row">
-        <h2><%= tweets[i].user.fname %> <%= tweets[i].user.lname %></h2>
-        <% date=new Date(Date.parse(tweets[i].createdAt)) %>
-        <h3><span><a href="/user/<%= tweets[i].user.id %>"> @<%= tweets[i].user.username %></a></span> • <%= date.getDate() %> <%= date.getMonth() %> <%= date.getFullYear() %></h3>
-      </div>
+      <% if (original) { %>
+          <div class="row">
+            <h2><%= me.fname %> <%= me.lname %></h2>
+            <% date=new Date(Date.parse(tweets[i].createdAt)) %>
+            <h3><span><a href="/user/<%= me.id %>"> @<%= me.username %></a></span> • <%= date.getDate() %> <%= date.getMonth() %> <%= date.getFullYear() %></h3>
+          </div>
+      <% } else { %>
+        <div class="row">
+          <h2><%= tweets[i].user.fname %> <%= tweets[i].user.lname %></h2>
+          <% date=new Date(Date.parse(tweets[i].createdAt)) %>
+          <h3><span><a href="/user/<%= tweets[i].user.id %>"> @<%= tweets[i].user.username %></a></span> • <%= date.getDate() %> <%= date.getMonth() %> <%= date.getFullYear() %></h3>
+        </div>
+      <% }  %>
       <div class="row">
         <h4><%= tweets[i].content %></h4>
       </div>
-
-
-
 
       <br>
       <div class="tweet-border"></div>

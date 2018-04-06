@@ -10,11 +10,11 @@ module.exports.getSignup = (req, res) => {
 };
 
 module.exports.follow = async (req, res) => {
-  res.redirect('/user/' + followeeId);
-
   try {
     var followeeId = parseInt(req.params.id);
     var followerId = req.user.id;
+
+    res.redirect('/user/' + followeeId);
 
     if (isNaN(followeeId)) {
       throw new Error("NaN parameter");
@@ -24,23 +24,21 @@ module.exports.follow = async (req, res) => {
       throw new Error("Can't follow myself");
     }
 
-    axios.post(userServiceURL + '/follow', {
-      data: {
-        followerId: followerId,
-        followeeId: followeeId
-      }
+    await axios.post(userServiceURL + '/follow', {
+      followerId: followerId,
+      followeeId: followeeId
     });
   } catch (err) {
-    res.status(404).send(err)
+
   }
 };
 
 module.exports.unfollow = async (req, res) => {
-  res.redirect('/user/' + followeeId);
-
   try {
     var followeeId = parseInt(req.params.id);
     var followerId = req.user.id;
+
+    res.redirect('/user/' + followeeId);
 
     if (isNaN(followeeId)) {
       throw new Error("NaN parameter");
@@ -51,13 +49,11 @@ module.exports.unfollow = async (req, res) => {
     }
 
     await axios.post(userServiceURL + '/unfollow', {
-      data: {
-        followerId: followerId,
-        followeeId: followeeId
-      }
+      followerId: followerId,
+      followeeId: followeeId
     });
   } catch (err) {
-    res.status(404).send(err)
+
   }
 };
 
@@ -81,7 +77,7 @@ module.exports.getUser = async (req, res) => {
     var [userData, tweetsData] = await axios.all([getUser, getTweets]);
 
     res.render('user', {
-      user: userData.data, tweets: tweetsData.data, me: req.user
+      user: userData.data, tweets: tweetsData.data, me: req.user, original: false
     })
   } catch (err) {
     res.status(404).send(err)
@@ -105,10 +101,10 @@ module.exports.getOriginalTweets = async (req, res) => {
       data: { id: id }
     });
 
-    var [ userData, tweetsData ] = await axios.all([ getUser, getTweets ]);
+    var [userData, tweetsData] = await axios.all([getUser, getTweets]);
 
-    res.render('tweets', {
-      user: userData.data, tweets: tweetsData.data, me: req.user
+    res.render('user', {
+      user: userData.data, tweets: tweetsData.data, me: req.user, original: true
     })
   } catch (err) {
     res.status(404).send(err)
@@ -117,7 +113,6 @@ module.exports.getOriginalTweets = async (req, res) => {
 
 // Get tweets from the people that the user follows.
 module.exports.getFolloweeTweets = async (req, res) => {
-
   try {
     var id = parseInt(req.params.id);
 
@@ -133,10 +128,10 @@ module.exports.getFolloweeTweets = async (req, res) => {
       data: { id: id }
     });
 
-    var [ userData, tweetsData ] = await axios.all([ getUser, getTweets ]);
+    var [userData, tweetsData] = await axios.all([getUser, getTweets]);
 
-    res.render('followee_Tweets', {
-      user: userData.data, tweets: tweetsData.data, me: req.user
+    res.render('user', {
+      user: userData.data, tweets: tweetsData.data, me: req.user, original: false
     })
   } catch (err) {
     res.status(404).send(err)
@@ -151,22 +146,17 @@ module.exports.getFollowees = async (req, res) => {
       throw new Error("NaN parameter");
     }
 
-    var getUser = axios.get(userServiceURL + '/user', {
+    var followees = await axios.get(userServiceURL + '/followees', {
       data: { id: id }
     });
-
-    var getFollowees = axios.get(userServiceURL + '/followees', {
-      data: { id: id }
-    });
-
-    var [ userData, followeeData ] = await axios.all([ getUser, getFollowees ]);
 
     res.render('following', {
-      user: userData.data, followees: followeeData.data , me: req.user
+      followees: followees.data , me: req.user
     });
   } catch (err) {
     res.status(404).send(err)
   }
+
 };
 
 module.exports.getFollowers =  async (req, res) => {
@@ -177,18 +167,12 @@ module.exports.getFollowers =  async (req, res) => {
       throw new Error("NaN parameter");
     }
 
-    var getUser = axios.get(userServiceURL + '/user', {
+    var followers = await axios.get(userServiceURL + '/followers', {
       data: { id: id }
     });
 
-    var getFollowers = axios.get(userServiceURL + '/followers', {
-      data: { id: id }
-    });
-
-    var [ userData, followerData ] = await axios.all([ getUser, getFollowers ]);
-
-    res.render('Followers', {
-      user: userData.data, followers: followerData.data , me: req.user
+    res.render('followers', {
+      followers: followers.data , me: req.user
     })
   } catch (err) {
     res.status(404).send(err)

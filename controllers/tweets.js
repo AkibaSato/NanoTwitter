@@ -1,191 +1,118 @@
-var models  = require('../models');
-var sequelize = require('sequelize');
-var client = require('../config/redis')
+var env = process.env.NODE_ENV || 'development';
+var config = require('../config/config.json')[env]
+var tweetServiceURL = config.tweet_service
 
-// Example return JSON:
-// {
-//  "id": 2,
-//  "content": "hey",
-//  "userId": 1,
-//  "updatedAt": "2018-03-09T04:30:08.385Z",
-//  "createdAt":"2018-03-09T04:30:08.385Z",
-//  "parentId": null,
-//  "originalId": null
-// }
+var axios = require('axios')
+
+
 // TODO: Parse tweet content in background and insert into Hashtag and Mention.
-module.exports.tweet =  (req, res) => {
-  models.Tweet.create({
-      content: req.body.content,
-      userId: req.user.id,
-      parentId: req.body.parentId
-  }).then(tweet => {
-    // res.render("NOT YET IMPLEMENTED", JSON.parse(JSON.stringify(tweet)));
-    models.User.update(
-      { numTweets: sequelize.literal(`"Users"."numTweets" + 1`) },
-      { where: { id: req.user.id }
-    }).then(user => {
+module.exports.tweet = async (req, res) => {
+  try {
+    res.redirect('/user/' + req.user.id);
 
-      res.redirect('/user/' + req.user.id);
-      client.del('user_profile'+req.user.id.toString(), function(err, response) {
-       if (response == 1) {
-          console.log("Deleted Successfully!")
-       } else{
-        console.log("Cannot delete")
-       }
-    })
-    }).catch(err => {
-      res.status(404).send(err);
+    await axios.post(tweetServiceURL + '/tweet', {
+        content: req.body.content,
+        userId: req.user.id,
+        parentId: req.body.parentId
     });
-  }).catch(err => {
-    res.status(404).send(err);
-  });
+  } catch (err) {
 
-
+   }
 };
 
-// Example return JSON:
-// {
-//  "content": "hello",
-//  "createdAt": "2018-03-08T19:00:17.085Z",
-//  "user": {
-//   "username": "bob_builder"
-//  }
-// }
-module.exports.getTweet = (req, res) => {
-  if (isNaN(req.params.id)) {
-    res.status(404).send(new Error("NaN parameter"));
-    return
-  }
-  models.Tweet.findOne({
-    where: { id: parseInt(req.params.id) },
-    include: [{
-      model: models.User,
-      as: 'user',
-      attributes: ['username']
-    }],
-    attributes: ['content', 'createdAt']
-  }).then(tweet => {
+module.exports.getTweet = async (req, res) => {
+  try {
+    var id = parseInt(req.params.id);
+
+    if (isNaN(id)) {
+      throw new Error("NaN parameter");
+    }
+
+    var tweet = await axios.get(tweetServiceURL + '/tweet', {
+      data: { id: id }
+    });
+
     res.render('tweet', {
-      tweet: JSON.parse(JSON.stringify(tweet)),
-    })
-  }).catch(err => {
-    res.status(404).send(err);
-  });
+      tweet: tweet.data,
+    });
+  } catch (err) {
+    res.status(404).send(err)
+  }
+
 };
 
-// Example return JSON:
-// {
-//  "id": 4,
-//  "userId": 1,
-//  "tweetId": 3,
-//  "updatedAt": "2018-03-11T07:57:40.240Z",
-//  "createdAt":"2018-03-11T07:57:40.240Z"
-// }
-module.exports.like = (req, res) => {
-  if (isNaN(req.params.id)) {
-    res.status(404).send(new Error("NaN parameter"));
-    return
-  }
-  models.Like.create({
-    userId: user,
-    tweetId: parseInt(req.params.id)
-  }).then(like => {
-    res.render(
-      "NOT YET IMPLEMENTED", JSON.parse(JSON.stringify(like)));
-  }).catch(err => {
-    res.status(404).send(err);
-  });
-};
+module.exports.like = async (req, res) => {
+  try {
+    res.redirect('/user/' + req.user.id);
 
-// Example return JSON:
-// [{
-//  "createdAt": "2018-03-11T07:56:36.176Z",
-//  "user": {
-//    "username": "bob_builder"
-//  }
-// },
-// {
-//  "createdAt": "2018-03-11T07:56:36.176Z",
-//  "user": {
-//    "username": "dora_explorer"
-//  }
-// }]
-module.exports.getLikes = (req, res) => {
-  if (isNaN(req.params.id)) {
-    res.status(404).send(new Error("NaN parameter"));
-    return
-  }
-  models.Like.findAll({
-    where: { tweetId: parseInt(req.params.id) },
-    include: [{
-      model: models.User,
-      as: 'user',
-      attributes: ['username']
-    }],
-    attributes: ['createdAt']
-  }).then(users => {
-    res.render("NOT YET IMPLEMENTED", users);
-  }).catch(err => {
-    res.status(404).send(err);
-  });
-};
+    var id = parseInt(req.params.id);
 
-// Example return JSON:
-// {
-//  "id": 4,
-//  "content": "",
-//  "userId": 1,
-//  "updatedAt": "2018-03-09T04:30:08.385Z",
-//  "createdAt":"2018-03-09T04:30:08.385Z",
-//  "parentId": null,
-//  "originalId": 2
-// }
-module.exports.retweet = (req, res) => {
-  if (isNaN(req.params.id)) {
-    res.status(404).send(new Error("NaN parameter"));
-    return
-  }
-  models.Tweet.create({
-      content: "",
+    if (isNaN(id)) {
+      throw new Error("NaN parameter");
+    }
+
+    await axios.post(tweetServiceURL + '/like', {
       userId: req.user.id,
-      originalId: parseInt(req.params.id)
-  }).then(tweet => {
-    res.render("NOT YET IMPLEMENTED", JSON.parse(JSON.stringify(tweet)));
-  }).catch(err => {
-    res.status(404).send(err);
-  });
+      tweetId: id
+    });
+  } catch (err) {
+
+   }
 };
 
-// Example return JSON:
-// [{
-//  "createdAt": "2018-03-11T07:56:36.176Z",
-//  "user": {
-//    "username": "bob_builder"
-//  }
-// },
-// {
-//  "createdAt": "2018-03-11T07:56:36.176Z",
-//  "user": {
-//    "username": "dora_explorer"
-//  }
-// }]
-module.exports.getRetweets = (req, res) => {
-  if (isNaN(req.params.id)) {
-    res.status(404).send(new Error("NaN parameter"));
-    return
+module.exports.getLikes = async (req, res) => {
+  try {
+    var id = parseInt(req.params.id);
+
+    if (isNaN(id)) {
+      throw new Error("NaN parameter");
+    }
+
+    var users = await axios.get(tweetServiceURL + '/likes', {
+      data: { id: id }
+    });
+
+    res.render("NOT YET IMPLEMENTED", users);
+
+  } catch (err) {
+    res.status(404).send(err)
   }
-  models.Tweet.findAll({
-    where: { originalId: parseInt(req.params.id) },
-    include: [{
-      model: models.User,
-      as: 'user',
-      attributes: ['username']
-    }],
-    attributes: ['createdAt']
-  }).then(retweets => {
-    console.log(JSON.parse(JSON.stringify(retweets)))
-    res.render("NOT YET IMPLEMENTED", JSON.parse(JSON.stringify(retweets)));
-  }).catch(err => {
-    res.status(404).send(err);
-  });
+};
+
+module.exports.retweet = async (req, res) => {
+  try {
+    res.redirect('/user/' + req.user.id);
+
+    var id = parseInt(req.params.id);
+
+    if (isNaN(id)) {
+      throw new Error("NaN parameter");
+    }
+
+    await axios.post(tweetServiceURL + '/retweet', {
+      userId: req.user.id,
+      tweetId: id
+    });
+  } catch (err) {
+
+   }
+};
+
+module.exports.getRetweets = async (req, res) => {
+  try {
+    var id = parseInt(req.params.id);
+
+    if (isNaN(id)) {
+      throw new Error("NaN parameter");
+    }
+
+    var users = await axios.get(tweetServiceURL + '/retweets', {
+      data: { id: id }
+    });
+
+    res.render("NOT YET IMPLEMENTED", users);
+
+  } catch (err) {
+    res.status(404).send(err)
+  }
 };
