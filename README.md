@@ -78,6 +78,10 @@ Check results of change in Postgres shell.
 $ heroku pg:psql
 ```
 
+### Testing
+To run tests, run:
+npm test
+
 ## Change History
 ### nanoTwitter 0.1: Foundation
 - [x] Setup Github with `LICENSE.txt`, `README.md`, `version.rb`.

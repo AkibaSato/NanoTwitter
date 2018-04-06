@@ -1,4 +1,4 @@
-<form method="delete" action="/user/<%= user.id %>/follow">
+<form method="post" action="/user/<%= user.id %>/unfollow">
   <div class="box">
     <% if (me) { %>
       <button class="btn new-tweet__button" type="submit" style="float: right;">Unfollow</button>

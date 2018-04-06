@@ -1,5 +1,6 @@
 var models  = require('../models');
 var sequelize = require('sequelize');
+var client = require('../config/redis')
 
 // Example return JSON:
 // {
@@ -19,16 +20,27 @@ module.exports.tweet =  (req, res) => {
       parentId: req.body.parentId
   }).then(tweet => {
     // res.render("NOT YET IMPLEMENTED", JSON.parse(JSON.stringify(tweet)));
-    res.redirect('../user/' + req.user.id);
     models.User.update(
-      { numTweets: sequelize.literal('"Users."numTweets" + 1') },
+      { numTweets: sequelize.literal(`"Users"."numTweets" + 1`) },
       { where: { id: req.user.id }
+    }).then(user => {
+
+      res.redirect('/user/' + req.user.id);
+      client.del('user_profile'+req.user.id.toString(), function(err, response) {
+       if (response == 1) {
+          console.log("Deleted Successfully!")
+       } else{
+        console.log("Cannot delete")
+       }
+    })
     }).catch(err => {
-      throw err;
+      res.status(404).send(err);
     });
   }).catch(err => {
     res.status(404).send(err);
   });
+
+
 };
 
 // Example return JSON:
@@ -41,7 +53,7 @@ module.exports.tweet =  (req, res) => {
 // }
 module.exports.getTweet = (req, res) => {
   if (isNaN(req.params.id)) {
-    res.status(404).send(err);
+    res.status(404).send(new Error("NaN parameter"));
     return
   }
   models.Tweet.findOne({
@@ -53,7 +65,9 @@ module.exports.getTweet = (req, res) => {
     }],
     attributes: ['content', 'createdAt']
   }).then(tweet => {
-    res.render("NOT YET IMPLEMENTED", JSON.parse(JSON.stringify(tweet)));
+    res.render('tweet', {
+      tweet: JSON.parse(JSON.stringify(tweet)),
+    })
   }).catch(err => {
     res.status(404).send(err);
   });
@@ -69,7 +83,7 @@ module.exports.getTweet = (req, res) => {
 // }
 module.exports.like = (req, res) => {
   if (isNaN(req.params.id)) {
-    res.status(404).send(err);
+    res.status(404).send(new Error("NaN parameter"));
     return
   }
   models.Like.create({
@@ -98,7 +112,7 @@ module.exports.like = (req, res) => {
 // }]
 module.exports.getLikes = (req, res) => {
   if (isNaN(req.params.id)) {
-    res.status(404).send(err);
+    res.status(404).send(new Error("NaN parameter"));
     return
   }
   models.Like.findAll({
@@ -128,7 +142,7 @@ module.exports.getLikes = (req, res) => {
 // }
 module.exports.retweet = (req, res) => {
   if (isNaN(req.params.id)) {
-    res.status(404).send(err);
+    res.status(404).send(new Error("NaN parameter"));
     return
   }
   models.Tweet.create({
@@ -157,7 +171,7 @@ module.exports.retweet = (req, res) => {
 // }]
 module.exports.getRetweets = (req, res) => {
   if (isNaN(req.params.id)) {
-    res.status(404).send(err);
+    res.status(404).send(new Error("NaN parameter"));
     return
   }
   models.Tweet.findAll({
@@ -169,6 +183,7 @@ module.exports.getRetweets = (req, res) => {
     }],
     attributes: ['createdAt']
   }).then(retweets => {
+    console.log(JSON.parse(JSON.stringify(retweets)))
     res.render("NOT YET IMPLEMENTED", JSON.parse(JSON.stringify(retweets)));
   }).catch(err => {
     res.status(404).send(err);

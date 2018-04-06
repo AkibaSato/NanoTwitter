@@ -1,0 +1,17 @@
+<h1> Tweet Info </h1>
+<div class="tweet-list">
+    <div class="tweets">
+      <div class="row">
+        <h2><%= tweet.user.fullName %> </h2>
+        <h3>@<%= tweet.user.username %> </h3>
+
+      </div>
+      <div class="row">
+        <h4><%= tweet.content %></h4>
+        <h4>created at: <%= tweet.createdAt %></h4>
+      </div>
+      <br>
+      <div class="tweet-border"></div>
+      <br>
+    </div>
+</div>

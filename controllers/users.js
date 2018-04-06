@@ -1,6 +1,7 @@
 var models = require('../models');
 var sequelize = require('sequelize');
 var helper = require('./helper');
+var client = require('../config/redis')
 
 module.exports.getSignup = (req, res) => {
   res.render('signup');
@@ -16,13 +17,13 @@ module.exports.getSignup = (req, res) => {
 // }
 module.exports.follow = (req, res) => {
   if (isNaN(req.params.id)) {
-    res.status(404).send(err);
-    return
+    res.status(404).send(new Error("NaN parameter"));
+    return;
   }
   var followeeId = parseInt(req.params.id);
   var followerId = parseInt(req.user.id);
 
-  if(followeeId == followerId) {
+  if(followeeId === followerId) {
     res.send("Can't follow myself");
     return;
   }
@@ -33,28 +34,34 @@ module.exports.follow = (req, res) => {
   })
   .then(relationship => {
     // Increment follower/followee counts in User models in the background.
-    console.log("Hey")
-    models.User.update(
+    var followerPromise = models.User.update(
       { numFollowers: sequelize.literal(`"Users"."numFollowers" + 1`) },
-      { where: { id: followeeId } }).catch(err => {
-        res.status(404).send(err);
-      });
-    models.User.update(
+      { where: { id: followeeId } });
+    var followeePromise = models.User.update(
       { numFollowees: sequelize.literal(`"Users"."numFollowees" + 1`) },
-      { where: { id: followerId } }).catch(err => {
-        res.status(404).send(err);
-      });
-    res.render(
-      "NOT YET IMPLEMENTED", JSON.parse(JSON.stringify(relationship)));
+      { where: { id: followerId } });
+    sequelize.Promise.join(followerPromise, followeePromise,
+      (followerResult, followeeResult) => {
+        res.redirect('/user/' + followeeId);
+      }
+    ).catch(err => {
+      res.status(404).send(err);
+    });
   }).catch(err => {
+    // Have already followed.
+    if (err.name == 'SequelizeUniqueConstraintError') {
+      // res.redirect('/user/' + followerId);
+      res.status(404).send(err);
+      return;
+    }
     res.status(404).send(err);
   });
 };
 
 module.exports.unfollow = (req, res) => {
   if (isNaN(req.params.id)) {
-    res.status(404).send(err);
-    return
+    res.status(404).send(new Error("NaN parameter"));
+    return;
   }
   var followeeId = parseInt(req.params.id);
   var followerId = parseInt(req.user.id);
@@ -63,43 +70,62 @@ module.exports.unfollow = (req, res) => {
     where: {
       followerId: followerId,
       followeeId: followeeId
-    },
-    truncate: true
+    }
   }).then(results => {
-    res.redirect('../user/' + followeeId);
-    if (results.length > 0) {
-      models.User.update(
-        { numFollowers: sequelize.literal('"Users"."numFollowers" - 1') },
+    if (results > 0) {
+      var followerPromise = models.User.update(
+        { numFollowers: sequelize.literal(`"Users"."numFollowers" - 1`) },
         { where: { id: followeeId } });
-      models.User.update(
-        { numFollowees: sequelize.literal('"Users"."numFollowees" - 1') },
+      var followeePromise = models.User.update(
+        { numFollowees: sequelize.literal(`"Users"."numFollowees" - 1`) },
         { where: { id: followerId } });
+      sequelize.Promise.join(followerPromise, followeePromise,
+        (followerResult, followeeResult) => {
+          res.redirect('/user/' + followeeId);
+        }
+      ).catch(err => {
+        res.status(404).send(err);
+      });
+    } else {
+       res.status(404).send(new Error("Non-existent relationship"));
     }
     // var redirectURL = '../user/' + followeeId;
-  }).catch(function(err) {
+  }).catch(err => {
     res.status(404).send(err);
   });
 };
 
 module.exports.getUser = (req, res) => {
   if (isNaN(req.params.id)) {
-    res.status(404).send(err);
+    res.status(404).send(new Error("NaN parameter"));
     return
   }
   var id = parseInt(req.params.id)
-  sequelize.Promise.join(helper.getUserMetadata(id), helper.getUserTimeline(id),
-    (metadata, timeline) => {
-      res.render('user', {
-        user: metadata,
-        tweets: timeline,
-        me: req.user
-      })
-    }
-  ).catch(err => {
-    res.status(404).send(err);
-    return;
-  })
+  renderUser("usersa_profile" + id, id, req, res)
 };
+
+// Added basic caching to user info and tweets.
+function renderUser(cacheKey, id, req, res) {
+  client.get(cacheKey, function(err, data) {
+    if(err || data === null) {
+      sequelize.Promise.join(helper.getUserMetadata(id), helper.getUserTimeline(id),
+        (metadata, timeline) => {
+          userData = {user: metadata, tweets: timeline , me: req.user}
+          client.set(cacheKey, JSON.stringify(userData))
+          res.render('user', userData)
+        }
+      ).catch(err => {
+        res.status(404).send(err);
+      })
+    } else {
+      client.get(cacheKey, function(err, data) {
+        userData = JSON.parse(data)
+        userData["me"] = req.user
+        res.render('user', userData)
+      });
+    }
+  });
+}
 
 // Example return JSON:
 // [{
@@ -119,13 +145,13 @@ module.exports.getUser = (req, res) => {
 // TODO: Set a limit for the results retrieved. (e.g. pagination)
 module.exports.getTweets = (req, res) => {
   if (isNaN(req.params.id)) {
-    res.status(404).send(err);
+    res.status(404).send(new Error("NaN parameter"));
     return
   }
   var id = parseInt(req.params.id)
   sequelize.Promise.join(helper.getUserMetadata(id), helper.getUserOriginalTimeline(id),
     (metadata, timeline) => {
-      res.render("NOT YET IMPLEMENTED", {
+      res.render("tweets", {
         user: metadata,
         tweets: tweets,
         me: req.user
@@ -133,7 +159,6 @@ module.exports.getTweets = (req, res) => {
     }
   ).catch(err => {
     res.status(404).send(err);
-    return;
   })
 };
 
@@ -152,21 +177,20 @@ module.exports.getTweets = (req, res) => {
 // }]
 module.exports.getFollowees = (req, res) => {
   if (isNaN(req.params.id)) {
-    res.status(404).send(err);
+    res.status(404).send(new Error("NaN parameter"));
     return
   }
   var id = parseInt(req.params.id)
   sequelize.Promise.join(helper.getUserMetadata(id), helper.getUserFollowees(id),
     (metadata, followees) => {
-      res.render("NOT YET IMPLEMENTED", {
+      res.render("Following", {
         user: metadata,
-        followees: followees,
+        followees: JSON.parse(JSON.stringify(followees)),
         me: req.user
       })
     }
   ).catch(err => {
     res.status(404).send(err);
-    return;
   })
 };
 
@@ -185,15 +209,15 @@ module.exports.getFollowees = (req, res) => {
 // }]
 module.exports.getFollowers =  (req, res) => {
   if (isNaN(req.params.id)) {
-    res.status(404).send(err);
+    res.status(404).send(new Error("NaN parameter"));
     return
   }
   var id = parseInt(req.params.id)
   sequelize.Promise.join(helper.getUserMetadata(id), helper.getUserFollowers(id),
     (metadata, followers) => {
-      res.render("NOT YET IMPLEMENTED", {
+      res.render("Followers", {
         user: metadata,
-        followers: followers,
+        followers: JSON.parse(JSON.stringify(followers)),
         me: req.user
       })
     }
@@ -203,23 +227,22 @@ module.exports.getFollowers =  (req, res) => {
   })
 };
 
-// TODO: Fix this.
+// Get tweets from the people that the user follows.
 module.exports.getFolloweeTweets = (req, res) => {
   if (isNaN(req.params.id)) {
-    res.status(404).send(err);
+    res.status(404).send(new Error("NaN parameter"));
     return
   }
   var id = parseInt(req.params.id)
-  sequelize.Promise.join(helper.getUserMetadata(id), helper.getUserFollowers(id),
-    (metadata, followers) => {
-      res.render("NOT YET IMPLEMENTED", {
-        user: metadata,
-        followers: followers,
+  sequelize.Promise.join(helper.getUserMetadata(id), helper.getHomeTimeline(id),
+    (metadata, tweets) => {
+      res.render("followee_Tweets", {
+        user: JSON.parse(JSON.stringify(metadata)),
+        tweets: JSON.parse(JSON.stringify(tweets)),
         me: req.user
       })
     }
   ).catch(err => {
     res.status(404).send(err);
-    return;
   });
 };
