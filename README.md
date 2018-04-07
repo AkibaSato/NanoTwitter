@@ -21,7 +21,7 @@ Team Japan and Kevin
 
 **Search Service**
 * Github: https://github.com/mgkbsh/ntSearchService
-* Heroku:
+* Heroku: http://ntsearch-tjak.herokuapp.com/
 * Port: 6000
 
 ## Usage
