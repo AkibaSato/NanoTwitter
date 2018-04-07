@@ -1,7 +1,7 @@
 <%- include ../../layouts/head.ejs %>
 
 <!-- Button trigger modal -->
-<button type="button" class="btn-link" data-toggle="modal" data-target="#myModal2">
+<button type="button" class="btn-default" data-toggle="modal" data-target="#myModal2">
   <i class="fa fa-retweet"></i>
 </button>
 
@@ -26,7 +26,7 @@
                 <h3><span><a href="/user/<%= tweets[i].user.id %>"> @<%= tweets[i].user.username %></a></span> • <%= date.getDate() %> <%= date.getMonth() %> <%= date.getFullYear() %></h3>
               </div>
               <div class="row">
-                <%= tweets[i].content %>
+                <h3><%= tweets[i].content %></h3>
                 <input type="hidden" name="content" value="<%= tweets[i].content %>">
               </div>
             </div>

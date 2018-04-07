@@ -8,7 +8,7 @@ module.exports.getUserFollowers = (id) => {
     include: [{
       model: models.User,
       as: 'follower',
-      attributes: ['username', 'fname', 'lname']
+      attributes: ['id', 'username', 'fname', 'lname']
     }],
     attributes: ['createdAt']
   }).catch(err => {
@@ -23,7 +23,7 @@ module.exports.getUserFollowees = (id) => {
     include: [{
       model: models.User,
       as: 'followee',
-      attributes: ['username', 'fname', 'lname']
+      attributes: ['id', 'username', 'fname', 'lname']
     }],
     attributes: ['createdAt']
   }).catch(err => {
