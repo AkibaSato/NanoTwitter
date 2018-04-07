@@ -25,6 +25,8 @@
   app.use(compression());
   // Show flash messages to the user.
   app.use(flash());
+  app.set('view cache', true);
+
 
   /* =============PASSPORT============= */
   const passport = require('passport');
@@ -49,7 +51,12 @@
 
   app.use(passport.initialize());
   app.use(passport.session()); // Persistent login sessions.
-
+  app.use(function (req, res, next) {
+      if (req.url.match(/^\/(css|js|img|font)\/.+/)) {
+          res.setHeader('Cache-Control', 'public, max-age=3600'); // cache header
+      }
+      next();
+  });
   // /* =============ROUTES============= */
   const login = require('./routes/login');
   const logout = require('./routes/logout');
