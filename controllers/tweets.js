@@ -14,12 +14,35 @@ var client = require('../config/redis')
 // }
 // TODO: Parse tweet content in background and insert into Hashtag and Mention.
 module.exports.tweet =  (req, res) => {
+
+
+
   models.Tweet.create({
       content: req.body.content,
       userId: req.user.id,
       parentId: req.body.parentId
   }).then(tweet => {
     // res.render("NOT YET IMPLEMENTED", JSON.parse(JSON.stringify(tweet)));
+    var content = tweet.content;
+    if (content.includes("@")) {
+      var splitContent = content.split(" ");
+      for (var i = 0; i < splitContent.length; i++) {
+        if (splitContent[i].startsWith('@')) {
+          var mention = splitContent[i].substring(1);
+
+          models.User.findOne({
+            where: { username: mention },
+            attributes: ['id']
+          }).then(user => {
+            models.Mention.create({
+              userId: user.id,
+              tweetId: tweet.id
+            })
+          })
+        }
+      }
+    }
+
     models.User.update(
       { numTweets: sequelize.literal(`"Users"."numTweets" + 1`) },
       { where: { id: req.user.id }
