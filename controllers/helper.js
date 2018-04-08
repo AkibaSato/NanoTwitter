@@ -56,6 +56,7 @@ module.exports.getUserMetadata = (id) => {
 
 // Get the tweets from the user, including retweets.
 module.exports.getUserTimeline = (id) => {
+  console.log("getting user timeline")
   return models.Tweet.findAll({
     order: [['createdAt', 'DESC']],
     limit: 50,
@@ -67,6 +68,7 @@ module.exports.getUserTimeline = (id) => {
     }],
     attributes: ['id','content', 'createdAt']
   }).catch(err => {
+    console.log("can't get user timeline")
     throw new Error('Error in retrieving user tweets.')
   });
 }

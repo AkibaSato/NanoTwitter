@@ -1,7 +1,7 @@
 var models = require('../models');
 var sequelize = require('sequelize');
 var helper = require('./helper');
-var client = require('../config/redis')
+// var client = require('../config/redis')
 
 module.exports.getSignup = (req, res) => {
   res.render('signup');
@@ -101,30 +101,33 @@ module.exports.getUser = (req, res) => {
     return
   }
   var id = parseInt(req.params.id)
-  renderUser("usersa_profile" + id, id, req, res)
+  renderUser("user_profile" + id, id, req, res)
 };
 
 // Added basic caching to user info and tweets.
 function renderUser(cacheKey, id, req, res) {
-  client.get(cacheKey, function(err, data) {
-    if(err || data === null) {
+  // client.get(cacheKey, function(err, data) {
+  //   if(err || data === null) {
+  console.log("rendering user")
       sequelize.Promise.join(helper.getUserMetadata(id), helper.getUserTimeline(id),
         (metadata, timeline) => {
           userData = {user: metadata, tweets: timeline , me: req.user}
-          client.set(cacheKey, JSON.stringify(userData))
+          // client.set(cacheKey, JSON.stringify(userData))
+          console.log("succeeded in fetching user page")
+          console.log(timeline)
           res.render('user', userData)
         }
       ).catch(err => {
         res.status(404).send(err);
       })
-    } else {
-      client.get(cacheKey, function(err, data) {
-        userData = JSON.parse(data)
-        userData["me"] = req.user
-        res.render('user', userData)
-      });
-    }
-  });
+  //   } else {
+  //     client.get(cacheKey, function(err, data) {
+  //       userData = JSON.parse(data)
+  //       userData["me"] = req.user
+  //       res.render('user', userData)
+  //     });
+  //   }
+  // });
 }
 
 // Example return JSON:
