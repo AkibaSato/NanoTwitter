@@ -67,8 +67,6 @@ Example: /test/users/create?count=100&tweets=5
 router.post('/users/create', function (req, res, next) {
     const count=(req.query['count'] || 1);
     const tweets=(req.query['tweets'] || 0);
-    console.log(count);
-    console.log(tweets);
     Loader.fakeUserTweet(req, res, count, tweets)
     next();
 

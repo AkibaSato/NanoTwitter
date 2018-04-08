@@ -85,7 +85,7 @@ module.exports.fakeUserTweet = async function (req, res, users, tweets) {
         line=dataArray[j].split(",");
         allTweets.push({content: line[1], userId: u_id})
       };
-      t= await Tweet.bulkTweet(req, allTweets);
+      t= Tweet.bulkTweet(req, allTweets);
     });
   };
   res.json({})
