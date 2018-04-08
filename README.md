@@ -24,6 +24,12 @@ Team Japan and Kevin
 * Heroku: http://ntsearch-tjak.herokuapp.com/
 * Port: 6000
 
+**Cache Service**
+* Github: https://github.com/kwang30/nt-cache
+* Heroku: http://ntsearch-tjak.herokuapp.com/
+* Port: 2000
+
+
 ## Usage
 ### Requirements
 These are required for your local development environment:
