@@ -11,7 +11,7 @@ function sleep(ms) {
 
 module.exports.loadData=async function(req, res, tweets_num) {
   var current=this;
-  a=this.loadUsers(req, res).then(
+  this.loadUsers(req, res).then(
     current.loadTweets(req, res, tweets_num)
     // current.loadFollows(req, res)
 
@@ -88,7 +88,6 @@ module.exports.fakeUserTweet = async function (req, res, users, tweets) {
       t= Tweet.bulkTweet(req, allTweets);
     });
   };
-  res.json({})
 };
 
 module.exports.createNTweets= async function(req, res, userID, tweets) {
