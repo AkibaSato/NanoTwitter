@@ -75,19 +75,22 @@ module.exports.fakeUserTweet = async function (req, res, users, tweets) {
   for(i=0; i<users; i++) {
     userData.push({fname: faker.name.firstName(),lname: faker.name.lastName(), username: faker.internet.userName(), email: faker.internet.email(), password: faker.internet.password()});
   }
-  allUsers=await User.bulkCreate(req, userData)
-  for(i=0; i<users; i++) {
-    u_id=allUsers[i]['id']
+  User.bulkCreate(req, userData).then(function(userData){
     fs.readFile('seeds/tweets.csv', 'utf8', function (err, data) {
       const dataArray = data.split(/\r?\n/);
-      allTweets=[];
-      for(j=0; j<tweets; j++) {
-        line=dataArray[j].split(",");
-        allTweets.push({content: line[1], userId: u_id})
+      for(i=0; i<users; i++) {
+        u_id=userData[i]['id']
+          allTweets=[];
+          for(j=0; j<tweets; j++) {
+            line=dataArray[j].split(",");
+            allTweets.push({content: line[1], userId: u_id})
+          };
+          t= Tweet.bulkTweet(req, allTweets);
       };
-      t= Tweet.bulkTweet(req, allTweets);
     });
-  };
+  })
+
+
 };
 
 module.exports.createNTweets= async function(req, res, userID, tweets) {
