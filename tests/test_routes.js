@@ -13,7 +13,6 @@ test_param={fname: "testuser",lname: "testuser", username: "testuser", email: "t
 router.post('/reset/all', function (req, res, next) {
   resetAll(req, res, next)
   user=resetTestUser(req, res, next)
-  res.json({})
 });
 
 //DONE
@@ -25,7 +24,6 @@ router.post('/reset/testuser', function (req, res, next) {
     resetTestUser(req, res, next);
   });
   }
-  res.json({})
 });
 
 //DONE
@@ -53,17 +51,10 @@ router.post('/reset/standard', function (req, res, next) {
 
 // DONE
 router.post('/users/create', function (req, res, next) {
-    const count=req.query['count'];
-    const tweets=req.query['tweets'];
-    if(count && tweets) {
-      req.count=count
-      req.tweets=tweets
-      Loader.fakeUserTweet(req, res, next)
-    } else {
-      req.count=1
-      req.tweets=0
-      Loader.fakeUserTweet(req, res, next)
-    }
+    const count=(req.query['count'] || 1)
+    const tweets=(req.query['tweets'] || 0)
+    Loader.fakeUserTweet(req, res, next);
+    
 });
 
 router.post('/user/:id/tweets', function (req, res, next) {
