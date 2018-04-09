@@ -4,9 +4,9 @@
     <div class="tweets">
       <% if (original) { %>
           <div class="row">
-            <h2><%= me.fname %> <%= me.lname %></h2>
+            <h2><%= user.fname %> <%= user.lname %></h2>
             <% date=new Date(Date.parse(tweets[i].createdAt)) %>
-            <h3><span><a href="/user/<%= me.id %>"> @<%= me.username %></a></span> • <%= date.getDate() %> <%= date.getMonth() %> <%= date.getFullYear() %></h3>
+            <h3><span><a href="/user/<%= user.id %>"> @<%= user.username %></a></span> • <%= date.getDate() %> <%= date.getMonth() %> <%= date.getFullYear() %></h3>
           </div>
       <% } else { %>
         <div class="row">
