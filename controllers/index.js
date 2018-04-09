@@ -29,7 +29,7 @@ module.exports.index = async (req, res) => {
     }
 
     res.render('index', {
-      me: req.user, user: req.user, tweets: timeline.data, original: false
+      me: req.user, user: req.user, tweets: timeline.data
     })
   } catch (err) {
     res.status(404).send(err)

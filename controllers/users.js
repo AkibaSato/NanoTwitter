@@ -77,34 +77,7 @@ module.exports.getUser = async (req, res) => {
     var [userData, tweetsData] = await axios.all([getUser, getTweets]);
 
     res.render('user', {
-      user: userData.data, tweets: tweetsData.data, me: req.user, original: false
-    })
-  } catch (err) {
-    res.status(404).send(err)
-  }
-};
-
-// TODO: Set a limit for the results retrieved. (e.g. pagination)
-module.exports.getOriginalTweets = async (req, res) => {
-  try {
-    var id = parseInt(req.params.id);
-
-    if (isNaN(id)) {
-      throw new Error("NaN parameter");
-    }
-
-    var getUser = axios.get(userServiceURL + '/user', {
-      data: { id: id }
-    });
-
-    var getTweets = axios.get(tweetServiceURL + '/timeline/original', {
-      data: { id: id }
-    });
-
-    var [userData, tweetsData] = await axios.all([getUser, getTweets]);
-
-    res.render('user', {
-      user: userData.data, tweets: tweetsData.data, me: req.user, original: true
+      user: userData.data, tweets: tweetsData.data, me: req.user
     })
   } catch (err) {
     res.status(404).send(err)
@@ -130,8 +103,8 @@ module.exports.getFolloweeTweets = async (req, res) => {
 
     var [userData, tweetsData] = await axios.all([getUser, getTweets]);
 
-    res.render('user', {
-      user: userData.data, tweets: tweetsData.data, me: req.user, original: false
+    res.render('followee_tweets', {
+      user: userData.data, tweets: tweetsData.data, me: req.user
     })
   } catch (err) {
     res.status(404).send(err)
