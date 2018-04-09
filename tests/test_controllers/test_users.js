@@ -44,8 +44,12 @@ module.exports.getFollowees=async function (req, res, id) {
 
 module.exports.getUser = function (req, res, userID) {
   return models.User.findOne({where: {id: parseInt(userID)}})
-  .then(function(user) {return JSON.parse(JSON.stringify(user))})
-  .catch(function(err) {res.status(404).send(err)});
+  .then(function(user) {
+    console.log(user)
+    return JSON.parse(JSON.stringify(user))})
+  .catch(function(err) {
+    console.log(err)
+    res.status(404).send(err)});
 };
 
 
@@ -77,11 +81,15 @@ module.exports.getAll=async function(req, res, next) {
 module.exports.randomUser=async function(req, res, numberUsers, userID) {
   var sequelize=require('sequelize')
   return models.User.findAll({order: [sequelize.fn('RANDOM')]
-, limit: numberUsers, offset: 1, where: {
-    id: {not: userID}
+, limit: parseInt(numberUsers), offset: 1, where: {
+    id: {not: parseInt(userID)}
   } }).then(function(user) {
+    
     return JSON.parse(JSON.stringify(user))
-  })}
+  }).catch(function(err) {
+      console.log(err)
+  });
+}
 
 module.exports.getAllCount=function(req, res, next) {
   return this.getAll().length

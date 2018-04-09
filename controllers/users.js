@@ -96,11 +96,15 @@ module.exports.unfollow = (req, res) => {
 };
 
 module.exports.getUser = (req, res) => {
-  if (isNaN(req.params.id)) {
+  var id;
+  if (isNaN(req.params.id) && req.params.id!="testuser") {
     res.status(404).send(new Error("NaN parameter"));
     return
+  } else if(req.params.id=="testuser") {
+    id=parseInt(process.env.testid)
+  } else {
+    id= parseInt(req.params.id)
   }
-  var id = parseInt(req.params.id)
   renderUser("usersa_profile" + id, id, req, res)
 };
 

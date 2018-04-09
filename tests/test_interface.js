@@ -69,8 +69,6 @@ router.post('/users/create', function (req, res, next) {
     const tweets=(req.query['tweets'] || 0);
     Loader.fakeUserTweet(req, res, count, tweets)
     next();
-
-
 });
 
 /**
@@ -81,14 +79,11 @@ if u=”testuser” then this refers to the TestUser
 router.post('/user/:id/tweets', function (req, res, next) {
       const tweets=req.query.count
       const id=req.params.id
-      if (id==testuser && tweets) {
-        console.log("What")
+      if (id=="testuser" && tweets) {
         Loader.createNTweets(req, res, testuser['id'], tweets);
       } else {
         Loader.createNTweets(req, res, id, tweets)
       }
-
-      next();
 
 });
 /**
@@ -100,7 +95,11 @@ Example: /test/user/22/follow?count=10
 router.post('/user/:id/follow', function (req, res, next) {
   userID=req.params.id
   follows=req.query.count
-  Loader.randomFollow(req, res, userID, follows)
+  if(userID=="testuser") {
+    console.log(follows)
+    Loader.randomFollow(req, res, testuser['id'], follows)
+
+  } else {}
   next();
 });
 
@@ -136,5 +135,8 @@ async function resetAll(req, res, next) {
 async function resetTestUser(req) {
  testuser=await User.create(req, test_param)
  test_id=testuser['id']
+ process.env.testuser=testuser
+ process.env.testid=test_id
+
  return testuser;
 };
