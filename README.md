@@ -3,6 +3,33 @@
 
 Team Japan and Kevin
 
+## Services
+**Main application**
+* Github: https://github.com/AkibaSato/NanoTwitter
+* Heroku: http://nanotwitter-tjak.herokuapp.com/
+* Port: 3000
+
+**User Service**
+* Github: https://github.com/mgkbsh/ntUserService
+* Heroku: http://ntusers-tjak.herokuapp.com/
+* Port: 1234
+
+**Tweet Service**
+* Github: https://github.com/mgkbsh/ntTweetService
+* Heroku: http://nttweets-tjak.herokuapp.com/
+* Port: 4567
+
+**Search Service**
+* Github: https://github.com/mgkbsh/ntSearchService
+* Heroku: http://ntsearch-tjak.herokuapp.com/
+* Port: 6000
+
+**Cache Service**
+* Github: https://github.com/kwang30/nt-cache
+* Heroku: http://ntsearch-tjak.herokuapp.com/
+* Port: 2000
+
+
 ## Usage
 ### Requirements
 These are required for your local development environment:
@@ -10,6 +37,7 @@ These are required for your local development environment:
 * [NPM](https://www.npmjs.com/)
 * [NodeJS](https://nodejs.org/)
 * [Postgres Server](https://www.postgresql.org/)
+* [Redis](https://redis.io/)
 
 ### STEP 1: Clone the repository
 ```sh
