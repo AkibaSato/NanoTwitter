@@ -7,6 +7,7 @@ router.post('/new', isLoggedIn, tweets.tweet);
 router.get('/:id', tweets.getTweet);
 router.get('/:id/likes', tweets.getLikes);
 router.post('/:id/like', isLoggedIn, tweets.like);
+router.post('/:id/unlike', isLoggedIn, tweets.unlike);
 router.get('/:id/retweets', tweets.getRetweets);
 router.post('/:id/retweet', isLoggedIn, tweets.retweet);
 

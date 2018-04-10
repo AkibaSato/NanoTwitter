@@ -1,0 +1,46 @@
+<%- include ../../layouts/head.ejs %>
+
+<!-- Button trigger modal -->
+Retweet <button type="button" class="btn-default" data-toggle="modal" data-target="#myModal2">
+  <i class="fa fa-retweet"></i>
+</button>
+
+<!-- Modal -->
+<div class="modal fade " id="myModal2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" id="myModalLabel2">Retweet to this your followers?</h4>
+
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      </div>
+      <div class="modal-body">
+
+        <form method="post" action="/tweets/<%= tweets[i].id %>/retweet">
+          <div class="box">
+            <div class="tweets">
+
+              <div class="row">
+                <h2><%= tweets[i].user.fname %> <%= tweets[i].user.lname %> </h2>
+                <% date=new Date(Date.parse(tweets[i].createdAt)) %>
+                <h3><span><a href="/user/<%= tweets[i].user.id %>"> @<%= tweets[i].user.username %></a></span> • <%= date.getDate() %> <%= date.getMonth() %> <%= date.getFullYear() %></h3>
+              </div>
+              <div class="row">
+                <h3><%= tweets[i].content %></h3>
+                <input type="hidden" name="content" value="<%= tweets[i].content %>">
+              </div>
+            </div>
+
+            <br>
+            <br>
+            <button class="btn new-tweet__button" type="submit" style="float: right;">Retweet</button>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
+        <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
+      </div>
+    </div>
+  </div>
+</div>

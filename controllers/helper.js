@@ -8,7 +8,7 @@ module.exports.getUserFollowers = (id) => {
     include: [{
       model: models.User,
       as: 'follower',
-      attributes: ['username', 'fname', 'lname']
+      attributes: ['id', 'username', 'fname', 'lname']
     }],
     attributes: ['createdAt']
   }).catch(err => {
@@ -23,7 +23,7 @@ module.exports.getUserFollowees = (id) => {
     include: [{
       model: models.User,
       as: 'followee',
-      attributes: ['username', 'fname', 'lname']
+      attributes: ['id', 'username', 'fname', 'lname']
     }],
     attributes: ['createdAt']
   }).catch(err => {
@@ -35,7 +35,7 @@ module.exports.getUserFollowees = (id) => {
 module.exports.getUserOriginalTimeline = (id) => {
   return models.Tweet.findAll({
     where: { userId: id, originalId: null },
-    attributes: ['content', 'createdAt']
+    attributes: ['id', 'content', 'createdAt']
   }).catch(err => {
     throw new Error('Error in retrieving user original tweets.')
   });
@@ -90,7 +90,7 @@ module.exports.getHomeTimeline = (id) => {
       }
     }],
     required: true,
-    attributes: ['content', 'createdAt']
+    attributes: ['id', 'originalId', 'content', 'createdAt']
   }).catch(err => {
     throw new Error("Error in retrieving the home timeline for user")
   });
@@ -107,7 +107,7 @@ module.exports.getGlobalTimeline = () => {
       as: 'user',
       attributes: ['id', 'username', 'fname', 'lname']
     }],
-    attributes: ['content', 'createdAt']
+    attributes: ['id', 'originalId', 'content', 'createdAt']
   }).catch(err => {
     throw new Error("Error in retrieving the global timeline")
   });
