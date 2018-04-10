@@ -1,0 +1,27 @@
+<%- include layouts/head.ejs %>
+<%- include layouts/icon.ejs %>
+<%- include layouts/header.ejs %>
+<br>
+<div class="row">
+  <div class="col-4">
+    <div class="user-information__border"></div>
+    <div class="user-information">
+      <% if (user) { %>
+        <%- include components/user_info.ejs %>
+      <% } else { %>
+        <br>
+        <a href="/login">Login</a>
+        <br>
+        <a href="/user/register">Signup</a>
+      <% } %>
+    </div>
+  </div>
+  <div class="col-6">
+    <% if (user) { %>
+      <%- include components/new_tweet.ejs %>
+    <% } else { %>
+      <div class="box"></div>
+    <% } %>
+    <%- include components/tweets.ejs %>
+  </div>
+</div>

@@ -1,0 +1,40 @@
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+<div class="box">
+  <form id="my-form2">
+    <button class="btn unfollow_ajax__button" type="submit" value="Unfollow" style="float: right;"><p2>Unfollow</p2></button>
+  </form>
+</div>
+
+<style>
+  p2 {
+    font-size: 14px;
+    font-weight: bold;
+    color: #ffffff;
+  }
+</style>
+
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script>
+    (function($){
+        function profile__unfollow_button( e ){
+            $.ajax({
+                url: "/user/<%= user.id %>/unfollow",
+                type: 'post',
+                data: $(this).serialize(),
+                success: function(data) {
+                  $("p2").text('Unfollowed');
+                  console.log('Unfollowed the user');
+                },
+                error: function(data) {
+                  console.log('not sent');
+                }
+            });
+
+            e.preventDefault();
+        }
+
+        $('#my-form2').submit( profile__unfollow_button );
+    })(jQuery);
+</script>

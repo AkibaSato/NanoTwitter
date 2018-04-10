@@ -14,8 +14,8 @@
       <% if (me) { %>
           <%- include components/new_tweet.ejs %>
           <% if (me.id != user.id) { %>
-            <%- include components/unfollow.ejs %>
-            <%- include components/new_follow.ejs %>
+            <%- include components/new_follow_ajax.ejs %>
+            <%- include components/unfollow_ajax.ejs %>
           <% } %>
       <% } %>
       <%- include components/tweets.ejs %>

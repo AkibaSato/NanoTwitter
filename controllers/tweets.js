@@ -24,7 +24,7 @@ module.exports.tweet =  (req, res) => {
   }).then(tweet => {
     // res.render("NOT YET IMPLEMENTED", JSON.parse(JSON.stringify(tweet)));
     var content = tweet.content;
-    if (content.includes("@")) {
+    if ((content.includes("@")) || (content.includes("#"))) {
       var splitContent = content.split(" ");
       for (var i = 0; i < splitContent.length; i++) {
         if (splitContent[i].startsWith('@')) {
@@ -37,6 +37,16 @@ module.exports.tweet =  (req, res) => {
             models.Mention.create({
               userId: user.id,
               tweetId: tweet.id
+            })
+          })
+        } else if (splitContent[i].startsWith('#')) {
+          var hashtag = splitContent[i].substring(1);
+          models.Hashtag.create({
+            content: hashtag
+          }).then(hashtag => {
+            models.HashtagTweet.create({
+              tweetId: tweet.id,
+              hashtagId: hashtag.id
             })
           })
         }
