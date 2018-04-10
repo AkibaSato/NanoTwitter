@@ -14,10 +14,12 @@ var sequelize = require("../models/index").sequelize
 
  router.post('/reset/all',  (req, res) => {
    sequelize.sync({force: true}).then(() => {
-resetTestUser(req)
+     resetTestUser(req)
    }, (err) => {
      res.status(404).send(err);
    });
+   next();
+
  });
 
 //DONE
@@ -86,6 +88,8 @@ router.post('/user/:id/tweets', function (req, res, next) {
       } else {
         Loader.createNTweets(req, res, id, tweets)
       }
+      next();
+
 
 });
 /**
