@@ -14,14 +14,7 @@ var sequelize = require("../models/index").sequelize
 
  router.post('/reset/all',  (req, res) => {
    sequelize.sync({force: true}).then(() => {
-     User.create(req, test_param).then((user) => {
-       test_id = user['id']
-       process.env.testuser = user
-       process.env.testid = test_id
-       res.json({})
-     }).catch(err => {
-       throw err;
-     })
+resetTestUser(req)
    }, (err) => {
      res.status(404).send(err);
    });
@@ -144,6 +137,7 @@ async function resetAll(req, res, next) {
 async function resetTestUser(req) {
  testuser=await User.create(req, test_param)
  test_id=testuser['id']
+ console.log(test_id)
  process.env.testuser=testuser
  process.env.testid=test_id
 

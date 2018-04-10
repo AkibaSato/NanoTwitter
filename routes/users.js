@@ -19,4 +19,5 @@ router.post('/register', passport.authenticate('local-signup', {
   failureFlash : true
 }));
 
+
 module.exports = router;

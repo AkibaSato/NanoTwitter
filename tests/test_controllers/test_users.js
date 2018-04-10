@@ -45,7 +45,6 @@ module.exports.getFollowees=async function (req, res, id) {
 module.exports.getUser = function (req, res, userID) {
   return models.User.findOne({where: {id: parseInt(userID)}})
   .then(function(user) {
-    console.log(user)
     return JSON.parse(JSON.stringify(user))})
   .catch(function(err) {
     console.log(err)
