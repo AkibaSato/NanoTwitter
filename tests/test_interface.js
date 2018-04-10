@@ -12,7 +12,7 @@ test_id=-1;
 var sequelize = require("../models/index").sequelize
  //DONE
 
- router.post('/reset/all',  (req, res) => {
+ router.post('/reset/all',  (req, res, next) => {
    sequelize.sync({force: true}).then(() => {
      resetTestUser(req)
    }, (err) => {
