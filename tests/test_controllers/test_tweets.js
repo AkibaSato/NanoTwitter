@@ -34,5 +34,7 @@ module.exports.getAll= async function(req, res, next) {
 };
 
 module.exports.destroyAll=function(req, res, next) {
-  models.Tweet.destroy({where: {}}).then(function () {});
+  // models.Tweet.destroy({where: {}, truncate : true, cascade: true }).then(function () {});
+  models.Tweet.truncate({ cascade: true });
+
 }

@@ -57,10 +57,10 @@ module.exports = (sequelize, DataTypes) => {
   });
 
   User.associate = function (models) {
-    User.hasMany(models.Tweet);
-    User.hasMany(models.Relationship);
-    User.hasMany(models.Mention);
-    User.hasMany(models.Like);
+    User.hasMany(models.Tweet, { onDelete: 'cascade', hooks: true });
+    User.hasMany(models.Relationship, { onDelete: 'cascade', hooks: true });
+    User.hasMany(models.Mention, { onDelete: 'cascade', hooks: true });
+    User.hasMany(models.Like, { onDelete: 'cascade', hooks: true });
   };
 
   // Generate hash for password.

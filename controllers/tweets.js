@@ -14,12 +14,45 @@ var client = require('../config/redis')
 // }
 // TODO: Parse tweet content in background and insert into Hashtag and Mention.
 module.exports.tweet =  (req, res) => {
+
+
+
   models.Tweet.create({
       content: req.body.content,
       userId: req.user.id,
       parentId: req.body.parentId
   }).then(tweet => {
     // res.render("NOT YET IMPLEMENTED", JSON.parse(JSON.stringify(tweet)));
+    var content = tweet.content;
+    if ((content.includes("@")) || (content.includes("#"))) {
+      var splitContent = content.split(" ");
+      for (var i = 0; i < splitContent.length; i++) {
+        if (splitContent[i].startsWith('@')) {
+          var mention = splitContent[i].substring(1);
+
+          models.User.findOne({
+            where: { username: mention },
+            attributes: ['id']
+          }).then(user => {
+            models.Mention.create({
+              userId: user.id,
+              tweetId: tweet.id
+            })
+          })
+        } else if (splitContent[i].startsWith('#')) {
+          var hashtag = splitContent[i].substring(1);
+          models.Hashtag.create({
+            content: hashtag
+          }).then(hashtag => {
+            models.HashtagTweet.create({
+              tweetId: tweet.id,
+              hashtagId: hashtag.id
+            })
+          })
+        }
+      }
+    }
+
     models.User.update(
       { numTweets: sequelize.literal(`"Users"."numTweets" + 1`) },
       { where: { id: req.user.id }
@@ -61,9 +94,9 @@ module.exports.getTweet = (req, res) => {
     include: [{
       model: models.User,
       as: 'user',
-      attributes: ['username']
+      attributes: ['fname', 'lname', 'username']
     }],
-    attributes: ['content', 'createdAt']
+    attributes: ['id', 'content', 'createdAt']
   }).then(tweet => {
     res.render('tweet', {
       tweet: JSON.parse(JSON.stringify(tweet)),
@@ -86,16 +119,41 @@ module.exports.like = (req, res) => {
     res.status(404).send(new Error("NaN parameter"));
     return
   }
+
+  var userId = req.user.id;
+  var tweetId = parseInt(req.params.id);
+
   models.Like.create({
-    userId: user,
-    tweetId: parseInt(req.params.id)
+    userId: userId,
+    tweetId: tweetId
   }).then(like => {
-    res.render(
-      "NOT YET IMPLEMENTED", JSON.parse(JSON.stringify(like)));
+      res.redirect('/user/' + userId);
   }).catch(err => {
     res.status(404).send(err);
   });
 };
+
+module.exports.unlike = (req, res) => {
+  if (isNaN(req.params.id)) {
+    res.status(404).send(new Error("NaN parameter"));
+    return
+  }
+
+  var userId = req.user.id;
+  var tweetId = parseInt(req.params.id);
+
+  models.Like.destroy({
+    where: {
+      userId: userId,
+      tweetId: tweetId
+    }
+  }).then(results => {
+    res.redirect('/user/' + userId);
+  }).catch(err => {
+    res.status(404).send(err);
+  });
+};
+
 
 // Example return JSON:
 // [{
@@ -120,11 +178,14 @@ module.exports.getLikes = (req, res) => {
     include: [{
       model: models.User,
       as: 'user',
-      attributes: ['username']
+      attributes: ['id', 'username']
     }],
     attributes: ['createdAt']
   }).then(users => {
-    res.render("NOT YET IMPLEMENTED", users);
+    res.render('likes', {
+      user: req.user,
+      users: users,
+    })
   }).catch(err => {
     res.status(404).send(err);
   });
@@ -146,15 +207,19 @@ module.exports.retweet = (req, res) => {
     return
   }
   models.Tweet.create({
-      content: "",
+      content: req.body.content,
       userId: req.user.id,
       originalId: parseInt(req.params.id)
   }).then(tweet => {
-    res.render("NOT YET IMPLEMENTED", JSON.parse(JSON.stringify(tweet)));
+    // res.render("RETWEET NOT YET IMPLEMENTED", JSON.parse(JSON.stringify(tweet)));
+    res.redirect('/user/' + req.user.id);
+
   }).catch(err => {
     res.status(404).send(err);
   });
 };
+
+
 
 // Example return JSON:
 // [{
@@ -179,12 +244,14 @@ module.exports.getRetweets = (req, res) => {
     include: [{
       model: models.User,
       as: 'user',
-      attributes: ['username']
+      attributes: ['id', 'username']
     }],
     attributes: ['createdAt']
   }).then(retweets => {
-    console.log(JSON.parse(JSON.stringify(retweets)))
-    res.render("NOT YET IMPLEMENTED", JSON.parse(JSON.stringify(retweets)));
+    res.render('retweets', {
+      user: req.user,
+      retweets: retweets,
+    })
   }).catch(err => {
     res.status(404).send(err);
   });

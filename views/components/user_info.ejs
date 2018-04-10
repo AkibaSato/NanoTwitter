@@ -14,10 +14,11 @@
         </div>
         <div class="col-4">
           <span class="user-information__stat-title">Following:</span>
-          <span><a href="/user/<%= user.id %>/followees"><%= user.numFollowees %></a></span>
+          <span><a href="/user/<%= user.id %>/followees"><f1><%= user.numFollowees %></f1></a></span>
         </div>
         <div class="col-4">
           <span class="user-information__stat-title">Followers:</span>
+          <% console.log(user.numFollowers) %>
           <span><a href="/user/<%= user.id %>/followers"><%= user.numFollowers %></a></span>
         </div>
       </div>
