@@ -2,10 +2,22 @@ var models = require('../models');
 var sequelize = require('sequelize');
 var helper = require('./helper');
 var client = require('../config/redis')
+const fs = require('fs');
+const faker=require('faker');
 
 module.exports.getSignup = (req, res) => {
   res.render('signup');
 };
+
+module.exports.tweet= function(req, res) {
+  console.log(req)
+  allFollows=[]
+  fs.readFile('../seeds/tweets.csv', 'utf8', async function (err, data) {
+    const dataA = data.split(/\r?\n/);  //Be careful if you are in a \r\n world...
+    dataline=dataA[i].split(",")
+    console.log(dataline)
+  });
+}
 
 // Example return JSON:
 // {
@@ -96,12 +108,27 @@ module.exports.unfollow = (req, res) => {
 };
 
 module.exports.getUser = (req, res) => {
-  if (isNaN(req.params.id)) {
+  console.log(req.params.id)
+  var id;
+  if (isNaN(req.params.id) && req.params.id!="testuser") {
     res.status(404).send(new Error("NaN parameter"));
     return
+  } else if(req.params.id=="testuser") {
+    id=parseInt(process.env.testid)
+    console.log(id)
+  } else {
+    id= parseInt(req.params.id)
   }
-  var id = parseInt(req.params.id)
-  renderUser("usersa_profile" + id, id, req, res)
+  sequelize.Promise.join(helper.getUserMetadata(id), helper.getUserTimeline(id),
+    (metadata, timeline) => {
+      userData = {user: metadata, tweets: timeline , me: req.user}
+      console.log(userData)
+      res.render('user', userData)
+
+    }
+  ).catch(err => {
+    res.status(404).send(err);
+  })
 };
 
 // Added basic caching to user info and tweets.

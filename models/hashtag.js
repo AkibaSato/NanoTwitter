@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
   }, {});
 
   Hashtag.associate = function (models) {
-    models.Hashtag.hasMany(models.HashtagTweet);
+    models.Hashtag.hasMany(models.HashtagTweet, { onDelete: 'cascade', hooks: true });
   };
 
   return Hashtag;

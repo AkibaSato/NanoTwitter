@@ -28,9 +28,9 @@ module.exports = (sequelize, DataTypes) => {
       foreignKey: 'originalId',
       as: 'original'
     });
-    Tweet.hasMany(models.Mention);
-    Tweet.hasMany(models.HashtagTweet);
-    Tweet.hasMany(models.Like);
+    Tweet.hasMany(models.Mention, { onDelete: 'cascade', hooks: true });
+    Tweet.hasMany(models.HashtagTweet, { onDelete: 'cascade', hooks: true });
+    Tweet.hasMany(models.Like, { onDelete: 'cascade', hooks: true });
   };
 
   return Tweet;
