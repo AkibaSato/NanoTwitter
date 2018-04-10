@@ -84,7 +84,7 @@ module.exports.randomUser=async function(req, res, numberUsers, userID) {
 , limit: parseInt(numberUsers), offset: 1, where: {
     id: {not: parseInt(userID)}
   } }).then(function(user) {
-    
+
     return JSON.parse(JSON.stringify(user))
   }).catch(function(err) {
       console.log(err)
@@ -96,7 +96,9 @@ module.exports.getAllCount=function(req, res, next) {
 };
 
 module.exports.destroyAll=function(req, res, next) {
-    models.User.destroy({where: {}}).then(function () {});
+    // models.User.destroy({where: {}, truncate : true, cascade: true }).then(function () {});
+    models.User.truncate({ cascade: true });
+
 };
 //
 // models.Relationship.generate=function(req, res, next) {
