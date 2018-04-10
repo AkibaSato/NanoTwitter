@@ -9,14 +9,23 @@ testuser=null;
 const index=require('./test_controllers/test_index');
 test_param={fname: "testuser",lname: "testuser", username: "testuser", email: "testuser@sample.com", password: "password"};
 test_id=-1;
-
-
+var sequelize = require("../models/index").sequelize
  //DONE
-router.post('/reset/all',  async function (req, res, next) {
-   resetAll(req, res, next)
-   resetTestUser(req)
-   res.json({})
-});
+
+ router.post('/reset/all',  (req, res) => {
+   sequelize.sync({force: true}).then(() => {
+     User.create(req, test_param).then((user) => {
+       test_id = user['id']
+       process.env.testuser = user
+       process.env.testid = test_id
+       res.json({})
+     }).catch(err => {
+       throw err;
+     })
+   }, (err) => {
+     res.status(404).send(err);
+   });
+ });
 
 //DONE
 router.post('/reset/testuser', async function (req, res, next) {
@@ -96,10 +105,10 @@ router.post('/user/:id/follow', function (req, res, next) {
   userID=req.params.id
   follows=req.query.count
   if(userID=="testuser") {
-    console.log(follows)
     Loader.randomFollow(req, res, testuser['id'], follows)
-
-  } else {}
+  } else {
+    Loader.randomFollow(req, res, userID, follows)
+  }
   next();
 });
 
@@ -126,9 +135,9 @@ async function getStatus() {
 };
 
 async function resetAll(req, res, next) {
-  User.destroyAll(req, res, next);
-  Tweet.destroyAll(req, res, next);
-  Relationship.destroyAll(req, res, next);
+  await Relationship.destroyAll(req, res, next);
+  await User.destroyAll(req, res, next);
+  await Tweet.destroyAll(req, res, next);
 };
 
 
