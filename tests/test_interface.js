@@ -89,7 +89,7 @@ router.post('/user/:id/tweets', function (req, res, next) {
       const tweets=req.query.count
       const id=req.params.id
       if (id=="testuser" && tweets) {
-        Loader.createNTweets(req, res, testuser['id'], tweets);
+        Loader.createNTweets(req, res, process.env.testid, tweets);
       } else {
         Loader.createNTweets(req, res, id, tweets)
       }
@@ -105,7 +105,7 @@ router.post('/user/:id/follow', function (req, res, next) {
   userID=req.params.id
   follows=req.query.count
   if(userID=="testuser") {
-    Loader.randomFollow(req, res, testuser['id'], follows)
+    Loader.randomFollow(req, res, process.env.testid, follows)
   } else {
     Loader.randomFollow(req, res, userID, follows)
   }
