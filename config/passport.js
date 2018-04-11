@@ -15,7 +15,11 @@ module.exports = function(passport) {
 
   // Converts user id to user, stored in req.user.
   passport.deserializeUser(function(id, done) {
-    done(null, {id: id});
+    User.findById(id).then(function(user) {
+      done(null, user);
+    }).catch(function(err) {
+      done(err);
+    });
   });
 
   /* ============Login============ */

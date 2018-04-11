@@ -32,6 +32,7 @@ module.exports.index = async (req, res) => {
       me: req.user, user: req.user, tweets: timeline.data
     })
   } catch (err) {
+    console.log(err)
     res.status(404).send(err)
   }
 };

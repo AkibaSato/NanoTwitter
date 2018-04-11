@@ -33,7 +33,8 @@ module.exports.getTweet = async (req, res) => {
     });
 
     res.render('tweet', {
-      tweet: tweet.data,
+      me: req.user,
+      tweet: tweet.data
     });
   } catch (err) {
     res.status(404).send(err)
@@ -91,7 +92,7 @@ module.exports.getLikes = async (req, res) => {
       data: { id: id }
     });
 
-    res.render('likes', { user: req.user, users: users })
+    res.render('likes', { me: req.user, user: req.user, users: users })
 
   } catch (err) {
     res.status(404).send(err)
@@ -129,7 +130,7 @@ module.exports.getRetweets = async (req, res) => {
       data: { id: id }
     });
 
-    res.render('retweets', { user: req.user, retweets: retweets });
+    res.render('retweets', { me: req.user, user: req.user, retweets: retweets.data });
 
   } catch (err) {
     res.status(404).send(err)
