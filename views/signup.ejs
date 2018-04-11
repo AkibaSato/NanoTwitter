@@ -1,28 +1,43 @@
 <h1>Signup</h1>
-<form action="/user/register" method="post">
-  <div>
-      <input type="text" name="username" placeholder="Username" />
-  </div>
 
-  <div>
-      <input type="text" name="fname" placeholder="First Name" />
-  </div>
 
-  <div>
-      <input type="text" name="lname" placeholder="Last Name" />
-  </div>
+<%- include layouts/head.ejs %>
+<%- include layouts/icon.ejs %>
 
-  <div>
-      <input type="text" name="email" placeholder="Email" />
+<br>
+<div class="row">
+  <div class="col-4"></div>
+  <div class="col-4">
+    <div class="user-information__border"></div>
+    <div class="user-information">
+      <form action="/user/register" method="post">
+        <div class="form-group">
+            <label>Username</label>
+            <input type="text" class="form-control" name="username">
+        </div>
+        <div class="form-group">
+            <label>First Name</label>
+            <input type="text" class="form-control" name="fname">
+        </div>
+        <div class="form-group">
+            <label>Last Name</label>
+            <input type="text" class="form-control" name="lname">
+        </div>
+        <div class="form-group">
+            <label>Email</label>
+            <input type="text" class="form-control" name="email">
+        </div>
+        <div class="form-group">
+            <label>Password</label>
+            <input type="text" class="form-control" name="password">
+        </div>
+        <div class="form-group">
+            <label>Password Confirm</label>
+            <input type="text" class="form-control" name="password_confirm">
+        </div>
+        <button type="submit" class="btn btn-warning btn-lg">Sign Up</button>
+      </form>
+    </div>
   </div>
-
-  <div>
-      <input type="text" name="password" placeholder="Password" />
-  </div>
-
-  <div>
-      <input type="text" name="password_confirm" placeholder="Confirm Password" />
-  </div>
-
-  <input type="submit" value="Signup" />
-</form>
+  <div class="col-4"></div>
+</div>

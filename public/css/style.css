@@ -127,6 +127,10 @@ pre code {
       .navbar__main-navigation .fa {
         padding-left: 0; } }
 
+.navbar__search {
+  margin-top: 12px;
+}
+
 .navbar__logo {
   position: absolute;
   left: 50%;
@@ -235,6 +239,7 @@ pre code {
   padding-bottom: 60px;
   background-color: #E9F3FC;
   color: 	#C4DCF4;
+
 }
 
 textarea {
@@ -256,12 +261,20 @@ textarea {
   margin-top: -20px;
   background-color: #FFFFFF;
   padding: 20px;
-
 }
+
 
 .tweet-border {
   color: #C4C6C9;
   border: 1px #C4C6C9;
+}
+.tweets hr {
+    display: block;
+    height: 1px;
+    border: 0;
+    border-top: 1px solid #ccc;
+    margin: 1em 0;
+    padding: 0;
 }
 
 .tweets h2 {
@@ -280,4 +293,12 @@ textarea {
   padding: 10px;
   font-size: 14px;
   line-height: 20px;
+}
+
+/* Buttons */
+
+.retweet_button {
+  font-size:  15px;
+  padding-left: 2px;
+  padding-right: 2px;
 }

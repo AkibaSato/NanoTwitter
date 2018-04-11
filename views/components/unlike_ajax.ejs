@@ -1,0 +1,31 @@
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<form id="my-form4-<%= tweets[i].id %>">
+  <p4 id="unlike-<%= tweets[i].id %>">Unlike </p4><button id="unlike_ajax" class="btn-default" type="submit" value="Like"><i class="fa fa-thumbs-down"></i></button>
+</form>
+
+
+
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script>
+    (function($){
+        function profile__unlike_button( e ){
+            $.ajax({
+                url: "/tweets/<%= tweets[i].id %>/unlike",
+                type: 'post',
+                data: $(this).serialize(),
+                success: function(data) {
+                  $("#unlike-<%= tweets[i].id %>").text('Unliked ');
+                  console.log('Unliked the tweet');
+                },
+                error: function(data) {
+                  console.log('not sent');
+                }
+            });
+
+            e.preventDefault();
+        }
+
+        $('#my-form4-<%= tweets[i].id %>').submit( profile__unlike_button );
+    })(jQuery);
+</script>

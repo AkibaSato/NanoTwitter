@@ -11,7 +11,7 @@ function sleep(ms) {
 
 module.exports.loadData=async function(req, res, tweets_num) {
   var current=this;
-  a=this.loadUsers(req, res).then(
+  this.loadUsers(req, res).then(
     current.loadTweets(req, res, tweets_num)
     // current.loadFollows(req, res)
 
@@ -71,46 +71,53 @@ module.exports.loadUsers= async function(req, res) {
 }
 
 module.exports.fakeUserTweet = async function (req, res, users, tweets) {
+  console.log(users)
   userData=[];
   for(i=0; i<users; i++) {
     userData.push({fname: faker.name.firstName(),lname: faker.name.lastName(), username: faker.internet.userName(), email: faker.internet.email(), password: faker.internet.password()});
   }
-  allUsers=await User.bulkCreate(req, userData)
-  for(i=0; i<users; i++) {
-    u_id=allUsers[i]['id']
+  console.log(userData)
+  User.bulkCreate(req, userData).then(function(user){
     fs.readFile('seeds/tweets.csv', 'utf8', function (err, data) {
       const dataArray = data.split(/\r?\n/);
-      allTweets=[];
-      for(j=0; j<tweets; j++) {
-        line=dataArray[j].split(",");
-        allTweets.push({content: line[1], userId: u_id})
+      for(i=0; i<users; i++) {
+        u_id=user[i]['id']
+          allTweets=[];
+          for(j=0; j<tweets; j++) {
+            line=dataArray[j].split(",");
+            allTweets.push({content: line[1], userId: u_id})
+          };
+          t= Tweet.bulkTweet(req, allTweets);
       };
-      t= Tweet.bulkTweet(req, allTweets);
     });
-  };
-  res.json({})
+  })
+
+
 };
 
 module.exports.createNTweets= async function(req, res, userID, tweets) {
+
   user= await User.getUser(req, res, userID)
-  userID= user['id']
+  tweetData=[]
   fs.readFile('seeds/tweets.csv', 'utf8', function (err, data) {
-    console.log(data)
     const dataArray = data.split(/\r?\n/);  //Be careful if you are in a \r\n world...
     for(i=0; i<tweets; i++) {
       line=dataArray[i].split(",");
       data={userId: userID, content: line[1]};
-      Tweet.generate(req, data);
+      tweetData.push(data)
     }
+    Tweet.bulkTweet(req, tweetData);
+
   });
 };
 
 
 
 module.exports.randomFollow=async function(req, res, userID, follows){
+  console.log(userID)
+  console.log(follows)
   randomUsers=await User.randomUser(req, res, follows, userID)
-  length=JSON.parse(JSON.stringify(randomUsers)).length
-  for(i=0; i<length; i++) {
+  for(i=0; i<follows; i++) {
     user=randomUsers[i];
     followerId=user['id'];
     User.followUser(req, res, userID, followerId)

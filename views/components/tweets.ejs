@@ -1,19 +1,52 @@
 
 <div class="tweet-list">
   <% for(var i = 0; i < tweets.length; i++) { %>
-    <div class="tweets">
-      <div class="row">
-        <h2><%= tweets[i].user.fname %> <%= tweets[i].user.lname %></h2>
-        <% date=new Date(Date.parse(tweets[i].createdAt)) %>
-        <h3><span><a href="/user/<%= tweets[i].user.id %>"> @<%= tweets[i].user.username %></a></span> • <%= date.getDate() %> <%= date.getMonth() %> <%= date.getFullYear() %></h3>
-      </div>
-      <div class="row">
-        <h4><%= tweets[i].content %></h4>
-      </div>
+    <div class="tweet-box">
+      <div class="tweets">
+        <div class="row">
+          <h4><% if (tweets[i].originalId !== null) { %>
+            Retweeted from <%= tweets[i].originalId %>
+            <% } %>
+          </h4>
+        </div>
+        <div class="row">
+          <h2><%= tweets[i].user.fname %> <%= tweets[i].user.lname %></h2>
+          <% date = new Date(Date.parse(tweets[i].createdAt)) %>
+          <h3><span><a href="/user/<%= tweets[i].user.id %>"> @<%= tweets[i].user.username %></a></span> • <%= date.getDate() %> <%= date.getMonth() %> <%= date.getFullYear() %></h3>
 
-      <br>
-      <div class="tweet-border"></div>
-      <br>
+        </div>
+        <div class="row">
+          <h4><%= tweets[i].content %></h4>
+        </div>
+        <div class="tweet-border"></div>
+        <div class="row">
+          <div class="col-3">
+            <div class="retweet_button">
+              <%- include modals/retweet_modal.ejs %>
+            </div>
+          </div>
+          <div class="col-3">
+            <div class="retweet_button">
+              <%- include like_ajax.ejs %>
+            </div>
+          </div>
+          <div class="col-3">
+            <div class="retweet_button">
+              <%- include unlike_ajax.ejs %>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div style="float: right;" class="retweet_button">
+            <span><a href="/tweets/<%= tweets[i].id %>/likes">Get Likes</a></span>
+            <span><a href="/tweets/<%= tweets[i].id %>/retweets">Get Retweets</a></span>
+          </div>
+        </div>
+        <br>
+        <hr/>
+        <br>
+      </div>
     </div>
+
   <% } %>
 </div>

@@ -3,7 +3,7 @@ var config = require('../config/config.json')[env]
 var tweetServiceURL = config.tweet_service
 var userServiceURL = config.user_service
 
-var axios = require('axios')
+var axios = require('axios');
 
 module.exports.getSignup = (req, res) => {
   res.render('signup');
@@ -55,6 +55,7 @@ module.exports.unfollow = async (req, res) => {
   } catch (err) {
 
   }
+
 };
 
 // Added basic caching to user info and tweets.
@@ -119,12 +120,19 @@ module.exports.getFollowees = async (req, res) => {
       throw new Error("NaN parameter");
     }
 
-    var followees = await axios.get(userServiceURL + '/followees', {
+    var getUser = axios.get(userServiceURL + '/user', {
       data: { id: id }
     });
 
+    var getFollowees = axios.get(tweetServiceURL + '/followees', {
+      data: { id: id }
+    });
+
+    var [userData, followeeData] = await axios.all([getUser, getFollowees]);
+
+
     res.render('following', {
-      followees: followees.data , me: req.user
+      user: userData.data, followees: followees.data , me: req.user
     });
   } catch (err) {
     res.status(404).send(err)
@@ -140,12 +148,18 @@ module.exports.getFollowers =  async (req, res) => {
       throw new Error("NaN parameter");
     }
 
-    var followers = await axios.get(userServiceURL + '/followers', {
+    var getUser = axios.get(userServiceURL + '/user', {
       data: { id: id }
     });
 
+    var getFollowers = axios.get(tweetServiceURL + '/followers', {
+      data: { id: id }
+    });
+
+    var [userData, followeeData] = await axios.all([getUser, getFollowers]);
+
     res.render('followers', {
-      followers: followers.data , me: req.user
+      user: userData.data, followers: followers.data , me: req.user
     })
   } catch (err) {
     res.status(404).send(err)

@@ -60,6 +60,25 @@ module.exports.like = async (req, res) => {
    }
 };
 
+module.exports.unlike = async (req, res) => {
+  try {
+    res.redirect('/user/' + req.user.id);
+
+    var id = parseInt(req.params.id);
+
+    if (isNaN(id)) {
+      throw new Error("NaN parameter");
+    }
+
+    await axios.post(tweetServiceURL + '/unlike', {
+      userId: req.user.id,
+      tweetId: id
+    });
+  } catch (err) {
+
+   }
+};
+
 module.exports.getLikes = async (req, res) => {
   try {
     var id = parseInt(req.params.id);
@@ -72,7 +91,7 @@ module.exports.getLikes = async (req, res) => {
       data: { id: id }
     });
 
-    res.render("NOT YET IMPLEMENTED", users);
+    res.render('likes', { user: req.user, users: users })
 
   } catch (err) {
     res.status(404).send(err)
@@ -106,13 +125,13 @@ module.exports.getRetweets = async (req, res) => {
       throw new Error("NaN parameter");
     }
 
-    var users = await axios.get(tweetServiceURL + '/retweets', {
+    var retweets = await axios.get(tweetServiceURL + '/retweets', {
       data: { id: id }
     });
 
-    res.render("NOT YET IMPLEMENTED", users);
+    res.render('retweets', { user: req.user, retweets: retweets });
 
   } catch (err) {
     res.status(404).send(err)
   }
-};
+}
