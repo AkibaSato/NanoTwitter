@@ -34,34 +34,6 @@
       next();
   });
 
-  /* =============ROUTES============= */
-
-
-
-
-  // /* =============PASSPORT============= */
-  // const passport = require('passport');
-  // const cookieParser = require('cookie-parser');
-  // const session = require('express-session');
-  // const RedisStore = require('connect-redis')(session)
-  // const redisCookie = require('heroku-redis-client');
-  //
-  // require('./config/passport')(passport);
-  //
-  // // required for passport
-  // app.use(cookieParser());
-  //
-  // app.use(session({
-  //     // secret: process.env.SECRET || 'enteryoursecrethere',
-  //     secret: 'enteryoursecrethere',
-  //     cookie: { maxAge: 3600000 },
-  //     resave: true,
-  //     store: new RedisStore({client: redisCookie.createClient()}),
-  //     saveUninitialized: true
-  // }));
-  //
-  // app.use(passport.initialize());
-  // app.use(passport.session()); // Persistent login sessions.
 
   // /* =============ROUTES============= */
   const login = require('./routes/login');
@@ -74,17 +46,15 @@
 
   const populateUser = require('./middleware/populateUser');
 
-  // app.use('/api/vi/:API_TOKEN', populateUser);
-  // app.use('/api/vi/:API_TOKEN/tweets/new', function(req, res, next) {
-  //   next()
-  // });
-  // app.use('/api/v1/:API_TOKEN/login', login);
-  // app.use('/api/v1/:API_TOKEN/logout', logout);
-  // app.use('/api/v1/:API_TOKEN/user', users);
-  // app.use('/api/v1/:API_TOKEN/search', search);
-  // app.use('/api/v1/:API_TOKEN/tweets', tweets);
-  // app.use('/api/v1/:API_TOKEN/', index);
-  // app.use('/api/v1/:API_TOKEN/test', load);
+  app.use('/api/vi/:API_TOKEN', populateUser);
+
+  app.use('/api/v1/:API_TOKEN/login', login);
+  app.use('/api/v1/:API_TOKEN/logout', logout);
+  app.use('/api/v1/:API_TOKEN/user', users);
+  app.use('/api/v1/:API_TOKEN/search', search);
+  app.use('/api/v1/:API_TOKEN/tweets', tweets);
+  app.use('/api/v1/:API_TOKEN/', index);
+  app.use('/api/v1/:API_TOKEN/test', load);
 
   /* ===========ERROR HANDLER=========== */
   // Catch 404 and forward to error handler.

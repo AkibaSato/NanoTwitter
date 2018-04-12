@@ -12,7 +12,7 @@ module.exports.logout = async (req, res) => {
     await this.client.delAsync(req.params.API_TOKEN);
 
   } catch (err) {}
-  res.redirect('/api/vi/:API_TOKEN/');
+  res.redirect('/');
 
 };
 
@@ -25,7 +25,7 @@ module.exports.signup = async (req, res) => {
     });
 
     if (user) {
-      return res.redirect('/api/vi/:API_TOKEN/signup')
+      return res.redirect('/api/v1/:API_TOKEN/signup')
     }
 
     await User.create({
@@ -38,11 +38,11 @@ module.exports.signup = async (req, res) => {
 
     await redis.setSync(req.params.API_TOKEN, JSON.stringify(user.get());
 
-    res.redirect('/api/vi/:API_TOKEN/');
+    res.redirect('/api/v1/:API_TOKEN/');
 
   } catch (err) {
 
-    res.redirect('/api/vi/:API_TOKEN/signup');
+    res.redirect('/signup');
 
   }
 }
@@ -57,16 +57,16 @@ module.exports.login = async (req, res) => {
     });
 
     if (!user || !user.validatePassword(req.body.password)) {
-      return res.redirect('/api/vi/:API_TOKEN/login');
+      return res.redirect('/login');
     }
 
-    await redis.setSync(req.params.API_TOKEN, JSON.stringify(user.get());
+    await redis.setSync(user.id, JSON.stringify(user.get());
 
-    res.redirect('/api/vi/:API_TOKEN/');
+    res.redirect('/api/v1/:API_TOKEN/');
 
   } catch (err) {
 
-    res.redirect('/api/vi/:API_TOKEN/login');
+    res.redirect('/login');
 
   }
 }
