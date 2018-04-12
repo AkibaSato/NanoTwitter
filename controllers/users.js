@@ -14,7 +14,7 @@ module.exports.follow = async (req, res) => {
     var followeeId = parseInt(req.params.id);
     var followerId = req.user.id;
 
-    res.redirect('/user/' + followeeId);
+    res.redirect('/api/v1/:API_TOKEN/user/' + followeeId);
 
     if (isNaN(followeeId)) {
       throw new Error("NaN parameter");
@@ -38,7 +38,7 @@ module.exports.unfollow = async (req, res) => {
     var followeeId = parseInt(req.params.id);
     var followerId = req.user.id;
 
-    res.redirect('/user/' + followeeId);
+    res.redirect('/api/v1/:API_TOKEN/user/' + followeeId);
 
     if (isNaN(followeeId)) {
       throw new Error("NaN parameter");

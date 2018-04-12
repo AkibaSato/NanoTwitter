@@ -27,36 +27,42 @@
   app.use(flash());
   app.set('view cache', true);
 
-
-  /* =============PASSPORT============= */
-  const passport = require('passport');
-  const cookieParser = require('cookie-parser');
-  const session = require('express-session');
-  const RedisStore = require('connect-redis')(session)
-  const redisCookie = require('heroku-redis-client');
-
-  require('./config/passport')(passport);
-
-  // required for passport
-  app.use(cookieParser());
-
-  app.use(session({
-      // secret: process.env.SECRET || 'enteryoursecrethere',
-      secret: 'enteryoursecrethere',
-      cookie: { maxAge: 3600000 },
-      resave: true,
-      store: new RedisStore({client: redisCookie.createClient()}),
-      saveUninitialized: true
-  }));
-
-  app.use(passport.initialize());
-  app.use(passport.session()); // Persistent login sessions.
   app.use(function (req, res, next) {
       if (req.url.match(/^\/(css|js|img|font)\/.+/)) {
           res.setHeader('Cache-Control', 'public, max-age=31557600'); // cache header
       }
       next();
   });
+
+  /* =============ROUTES============= */
+
+
+
+
+  // /* =============PASSPORT============= */
+  // const passport = require('passport');
+  // const cookieParser = require('cookie-parser');
+  // const session = require('express-session');
+  // const RedisStore = require('connect-redis')(session)
+  // const redisCookie = require('heroku-redis-client');
+  //
+  // require('./config/passport')(passport);
+  //
+  // // required for passport
+  // app.use(cookieParser());
+  //
+  // app.use(session({
+  //     // secret: process.env.SECRET || 'enteryoursecrethere',
+  //     secret: 'enteryoursecrethere',
+  //     cookie: { maxAge: 3600000 },
+  //     resave: true,
+  //     store: new RedisStore({client: redisCookie.createClient()}),
+  //     saveUninitialized: true
+  // }));
+  //
+  // app.use(passport.initialize());
+  // app.use(passport.session()); // Persistent login sessions.
+
   // /* =============ROUTES============= */
   const login = require('./routes/login');
   const logout = require('./routes/logout');
@@ -66,13 +72,19 @@
   const index = require('./routes/index');
   const load=require('./tests/test_interface');
 
-  app.use('/login', login);
-  app.use('/logout', logout);
-  app.use('/user', users);
-  app.use('/search', search);
-  app.use('/tweets', tweets);
-  app.use('/', index);
-  app.use('/test', load);
+  const populateUser = require('./middleware/populateUser');
+
+  // app.use('/api/vi/:API_TOKEN', populateUser);
+  // app.use('/api/vi/:API_TOKEN/tweets/new', function(req, res, next) {
+  //   next()
+  // });
+  // app.use('/api/v1/:API_TOKEN/login', login);
+  // app.use('/api/v1/:API_TOKEN/logout', logout);
+  // app.use('/api/v1/:API_TOKEN/user', users);
+  // app.use('/api/v1/:API_TOKEN/search', search);
+  // app.use('/api/v1/:API_TOKEN/tweets', tweets);
+  // app.use('/api/v1/:API_TOKEN/', index);
+  // app.use('/api/v1/:API_TOKEN/test', load);
 
   /* ===========ERROR HANDLER=========== */
   // Catch 404 and forward to error handler.

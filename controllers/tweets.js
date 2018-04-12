@@ -8,7 +8,7 @@ var axios = require('axios')
 // TODO: Parse tweet content in background and insert into Hashtag and Mention.
 module.exports.tweet = async (req, res) => {
   try {
-    res.redirect('/user/' + req.user.id);
+    res.redirect('/api/vi/:API_TOKEN/user/' + req.user.id);
 
     await axios.post(tweetServiceURL + '/tweet', {
         content: req.body.content,
@@ -44,7 +44,7 @@ module.exports.getTweet = async (req, res) => {
 
 module.exports.like = async (req, res) => {
   try {
-    res.redirect('/user/' + req.user.id);
+    res.redirect('/api/vi/:API_TOKEN/user/' + req.user.id);
 
     var id = parseInt(req.params.id);
 
@@ -63,7 +63,7 @@ module.exports.like = async (req, res) => {
 
 module.exports.unlike = async (req, res) => {
   try {
-    res.redirect('/user/' + req.user.id);
+    res.redirect('/api/vi/:API_TOKEN/user/' + req.user.id);
 
     var id = parseInt(req.params.id);
 
@@ -101,7 +101,7 @@ module.exports.getLikes = async (req, res) => {
 
 module.exports.retweet = async (req, res) => {
   try {
-    res.redirect('/user/' + req.user.id);
+    res.redirect('/api/vi/:API_TOKEN/user/' + req.user.id);
 
     var id = parseInt(req.params.id);
 
