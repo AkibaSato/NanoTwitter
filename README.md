@@ -19,6 +19,7 @@ Team Japan and Kevin
 * Heroku: http://nttweets-tjak.herokuapp.com/
 * Port: 4567
 
+NOTE: The following two services are not ready for production.
 **Search Service**
 * Github: https://github.com/mgkbsh/ntSearchService
 * Heroku: http://ntsearch-tjak.herokuapp.com/
@@ -39,12 +40,16 @@ These are required for your local development environment:
 * [Postgres Server](https://www.postgresql.org/)
 * [Redis](https://redis.io/)
 
-### STEP 1: Clone the repository
+### STEP 1: Clone the repositories
 ```sh
 $ git clone https://github.com/AkibaSato/NanoTwitter
+$ git clone https://github.com/mgkbsh/ntUserService
+$ git clone https://github.com/mgkbsh/ntTweetService
+
 ```
 
 ### STEP 2: Install the necessary modules
+Run the following commands in each repo directory.
 Install `sequelize` to global directory to just use `sequelize` prefix instead of specifying path name to binary for commands:
 ```sh
 $ npm install
@@ -63,6 +68,7 @@ $ sequelize db:migrate
 ```
 
 ### STEP 5: Run the app locally
+Run every service with the following command.
 ```sh
 $ node index.js
 ```
@@ -125,23 +131,27 @@ npm test
 - [x] Configured Heroku and deployed skeleton.
 
 ### nanoTwitter 0.3: Core functionality
-- [ ] Write unit tests.
+- [x] Write unit tests.
 - [x] Implement test interface.
 - [x] Setup automatic deployment.
 - [x] Load seed data.
 - [x] Migrated to Postgres and configured Heroku accordingly.
 
 ### nanoTwitter 0.4: Testing and Deployment
-- [ ] Perform simultaneous manual testing.
+- [x] Perform simultaneous manual testing.
 - [x] Implement the complete test interface.
 - [x] Use loader.io to generate some artificial loads.
-- [ ] Add tests to test suite.
+- [x] Add tests to test suite.
 
 ### nanoTwitter 0.5: Initial Load Testing
 - [ ] Instrument app to collect performance data.
-- [ ] Run load experiments.
-- [ ] Switch web server from WebBrick; try others, measure.
+- [x] Run load experiments.
 - [x] Update schema to put indices and other enhancements.
+
+### nanoTwitter 0.6: Advanced Scaling
+- [x] Setup caching service for timelines and user information. Put on hold for comparing performance between cached vs non-cached.
+- [x] Implemented new authentication system due to issues when accessing the API from the client (nt0.7) and loader.io.
+- [x] Designed service oriented architecture and defined communication logic.
 
 ## Mockups
 ![UI Design 1: Front Page](design/ui_design_1.png)
