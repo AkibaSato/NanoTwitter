@@ -1,7 +1,6 @@
 const redis = require('../config/redis');
 const Sequelize = require('sequelize');
 const User = require('../models').User;
-const uid = require('../utils/uid')
 
 module.exports.getLogin = (req, res) => {
   res.render('login');
@@ -38,7 +37,7 @@ module.exports.signup = async (req, res) => {
       password: req.body.password
     });
 
-    var ntSessionId = uid.generateUid();
+    var ntSessionId = generateUid();
     res.cookie('ntSessionId', ntSessionId);
     res.redirect('/api/v1/' + user.id + '/');
     await redis.setAsync(user.id, JSON.stringify(
@@ -66,7 +65,7 @@ module.exports.login = async (req, res) => {
       return res.redirect('/api/v1/public/login');
     }
 
-    var ntSessionId = uid.generateUid();
+    var ntSessionId = generateUid();
     res.cookie('ntSessionId', ntSessionId);
 
     res.redirect('/api/v1/' + user.id + '/');
@@ -81,4 +80,9 @@ module.exports.login = async (req, res) => {
     res.redirect('/api/v1/public/login');
 
   }
+}
+
+function generateUid() {
+  const t = (new Date).getUTCMilliseconds()
+  return Math.round(2147483647 * Math.random()) * t % 1e10
 }
