@@ -11,7 +11,6 @@ module.exports.getSignup = (req, res) => {
 
 module.exports.follow = async (req, res) => {
   try {
-    console.log("HERE")
     var followeeId = parseInt(req.params.id);
     var followerId = req.user.id;
 
@@ -80,7 +79,8 @@ module.exports.getUser = async (req, res) => {
 
     res.render('user', {
       user: userData.data, tweets: tweetsData.data, me: req.user, API_TOKEN: req.API_TOKEN
-    })
+    });
+
   } catch (err) {
     res.status(404).send(err)
   }

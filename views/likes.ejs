@@ -3,19 +3,6 @@
 <%- include layouts/header.ejs %>
 <br>
 <div class="row">
-  <div class="col-4">
-    <div class="user-information__border"></div>
-    <div class="user-information">
-      <% if (me) { %>
-        <%- include components/user_info.ejs %>
-      <% } else { %>
-        <br>
-        <a href="/api/v1/public/login">Login</a>
-        <br>
-        <a href="/api/v1/public/user/register">Signup</a>
-      <% } %>
-    </div>
-  </div>
   <div class="col-6">
     <div class="box"></div>
     <div class="tweet-list">

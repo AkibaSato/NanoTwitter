@@ -20,6 +20,7 @@ module.exports.index = async (req, res) => {
       });
 
       var [userData, timelineData] = await axios.all([getUser, getTimeline]);
+
       req.user = userData.data
       timeline = timelineData
 
@@ -27,6 +28,8 @@ module.exports.index = async (req, res) => {
       // If you are not, you see the most recent tweets from randos.
       timeline = await axios.get(tweetServiceURL + '/timeline/global', {});
     }
+
+    console.log("API TOKEN IS", req.API_TOKEN)
 
     res.render('index', {
       me: req.user, user: req.user, tweets: timeline.data, API_TOKEN: req.API_TOKEN
