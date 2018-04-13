@@ -4,14 +4,18 @@
   const path    = require('path');
   const redis = require('redis');
 
-  /* ===========BODY_PARSER=========== */
+  /* ===========PARSER=========== */
   const bodyParser = require('body-parser');
+  const cookieParser = require('cookie-parser')
+
   // Parse application/x-www-form-urlencoded
   app.use(bodyParser.urlencoded({ extended: false }));
   // Parse application/json
   app.use(bodyParser.json());
   // Parse application/vnd.api+json as json
   app.use(bodyParser.json({ type: 'application/vnd.api+json' }));
+
+  app.use(cookieParser())
 
   /* =============VIEWS============= */
   const compression = require('compression');
@@ -34,6 +38,11 @@
       next();
   });
 
+  app.use(function (req, res, next) {
+    console.log("Received request for ", req);
+    next();
+  });
+
 
   // /* =============ROUTES============= */
   const login = require('./routes/login');
@@ -42,11 +51,21 @@
   const search = require('./routes/search')
   const tweets = require('./routes/tweets');
   const index = require('./routes/index');
-  const load=require('./tests/test_interface');
+  const load = require('./tests/test_interface');
 
   const populateUser = require('./middleware/populateUser');
 
-  app.use('/api/vi/:API_TOKEN', populateUser);
+  app.use('/api/v1/:API_TOKEN', function(req, res, next) {
+    console.log("ENtered");
+    console.log(req.params.API_TOKEN)
+    req.API_TOKEN = req.params.API_TOKEN
+    if (req.API_TOKEN == 'loaderio') {
+      req.body = req.query;
+    }
+    next();
+  });
+
+  app.use('/api/v1/:API_TOKEN', populateUser);
 
   app.use('/api/v1/:API_TOKEN/login', login);
   app.use('/api/v1/:API_TOKEN/logout', logout);

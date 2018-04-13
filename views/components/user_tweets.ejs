@@ -5,7 +5,7 @@
       <div class="row">
         <h2><%= user.fname %> <%= user.lname %></h2>
         <% date=new Date(Date.parse(tweets[i].createdAt)) %>
-        <h3><span><a href="/user/<%= user.id %>"> @<%= user.username %></a></span> • <%= date.getDate() %> <%= date.getMonth() %> <%= date.getFullYear() %></h3>
+        <h3><span><a href="/api/v1/<%= API_TOKEN %>/user/<%= user.id %>"> @<%= user.username %></a></span> • <%= date.getDate() %> <%= date.getMonth() %> <%= date.getFullYear() %></h3>
       </div>
 
       <div class="row">

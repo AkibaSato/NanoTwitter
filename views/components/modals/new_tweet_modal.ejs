@@ -15,7 +15,7 @@
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
       </div>
       <div class="modal-body">
-        <form method="post" action="/tweets/new">
+        <form method="post" action="/api/v1/<%= API_TOKEN %>/tweets/new">
           <div class="box">
             <textarea type="text" name="content" placeholder="What's happening?" maxlength="280"></textarea>
             <br>

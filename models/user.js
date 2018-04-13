@@ -63,15 +63,15 @@ module.exports = (sequelize, DataTypes) => {
     User.hasMany(models.Like, { onDelete: 'cascade', hooks: true });
   };
 
-  // Generate hash for password.
-  User.generateHash = function (password) {
-    return bcrypt.hashSync(password, bcrypt.genSaltSync(8), null);
-  };
-
-  // Check if the password is the same.
-  User.prototype.validatePassword = function (password) {
-    return bcrypt.compareSync(password, this.password);
-  };
+  // // Generate hash for password.
+  // User.generateHash = function (password) {
+  //   return bcrypt.hashSync(password, bcrypt.genSaltSync(8), null);
+  // };
+  //
+  // // Check if the password is the same.
+  // User.prototype.validatePassword = function (password) {
+  //   return bcrypt.compareSync(password, this.password);
+  // };
 
   return User;
 };

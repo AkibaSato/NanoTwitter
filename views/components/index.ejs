@@ -6,18 +6,18 @@
   <div class="col-4">
     <div class="user-information__border"></div>
     <div class="user-information">
-      <% if (user) { %>
+      <% if (me) { %>
         <%- include components/user_info.ejs %>
       <% } else { %>
         <br>
-        <a href="/login">Login</a>
+        <a href="/api/v1/public/">Login</a>
         <br>
-        <a href="/user/register">Signup</a>
+        <a href="/api/v1/public/user/register">Signup</a>
       <% } %>
     </div>
   </div>
   <div class="col-6">
-    <% if (user) { %>
+    <% if (me) { %>
       <%- include components/new_tweet.ejs %>
     <% } else { %>
       <div class="box"></div>

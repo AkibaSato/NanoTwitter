@@ -29,7 +29,7 @@ module.exports.index = async (req, res) => {
     }
 
     res.render('index', {
-      me: req.user, user: req.user, tweets: timeline.data
+      me: req.user, user: req.user, tweets: timeline.data, API_TOKEN: req.API_TOKEN
     })
   } catch (err) {
     console.log(err)

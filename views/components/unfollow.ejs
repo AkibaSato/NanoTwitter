@@ -1,4 +1,4 @@
-<form method="post" action="/user/<%= user.id %>/unfollow">
+<form method="post" action="/api/v1/<%= API_TOKEN %>/user/<%= user.id %>/unfollow">
   <div class="box">
     <% if (me) { %>
       <button class="btn new-tweet__button" type="submit" style="float: right;">Unfollow</button>

@@ -11,10 +11,11 @@ module.exports.getSignup = (req, res) => {
 
 module.exports.follow = async (req, res) => {
   try {
+    console.log("HERE")
     var followeeId = parseInt(req.params.id);
     var followerId = req.user.id;
 
-    res.redirect('/api/v1/:API_TOKEN/user/' + followeeId);
+    res.redirect('/api/v1/' + req.API_TOKEN + '/user/' + followeeId);
 
     if (isNaN(followeeId)) {
       throw new Error("NaN parameter");
@@ -38,7 +39,7 @@ module.exports.unfollow = async (req, res) => {
     var followeeId = parseInt(req.params.id);
     var followerId = req.user.id;
 
-    res.redirect('/api/v1/:API_TOKEN/user/' + followeeId);
+    res.redirect('/api/v1/' + req.API_TOKEN + '/user/' + followeeId);
 
     if (isNaN(followeeId)) {
       throw new Error("NaN parameter");
@@ -78,7 +79,7 @@ module.exports.getUser = async (req, res) => {
     var [userData, tweetsData] = await axios.all([getUser, getTweets]);
 
     res.render('user', {
-      user: userData.data, tweets: tweetsData.data, me: req.user
+      user: userData.data, tweets: tweetsData.data, me: req.user, API_TOKEN: req.API_TOKEN
     })
   } catch (err) {
     res.status(404).send(err)
@@ -105,7 +106,7 @@ module.exports.getFolloweeTweets = async (req, res) => {
     var [userData, tweetsData] = await axios.all([getUser, getTweets]);
 
     res.render('followee_tweets', {
-      user: userData.data, tweets: tweetsData.data, me: req.user
+      user: userData.data, tweets: tweetsData.data, me: req.user, API_TOKEN: req.API_TOKEN
     })
   } catch (err) {
     res.status(404).send(err)
@@ -124,15 +125,15 @@ module.exports.getFollowees = async (req, res) => {
       data: { id: id }
     });
 
-    var getFollowees = axios.get(tweetServiceURL + '/followees', {
+    var getFollowees = axios.get(userServiceURL + '/followees', {
       data: { id: id }
     });
 
-    var [userData, followeeData] = await axios.all([getUser, getFollowees]);
+    var [userData, followerData] = await axios.all([getUser, getFollowees]);
 
 
     res.render('following', {
-      user: userData.data, followees: followees.data , me: req.user
+      user: userData.data, followees: followerData.data , me: req.user, API_TOKEN: req.API_TOKEN
     });
   } catch (err) {
     res.status(404).send(err)
@@ -152,16 +153,17 @@ module.exports.getFollowers =  async (req, res) => {
       data: { id: id }
     });
 
-    var getFollowers = axios.get(tweetServiceURL + '/followers', {
+    var getFollowers = axios.get(userServiceURL + '/followers', {
       data: { id: id }
     });
 
-    var [userData, followeeData] = await axios.all([getUser, getFollowers]);
+    var [userData, followerData] = await axios.all([getUser, getFollowers]);
 
     res.render('followers', {
-      user: userData.data, followers: followers.data , me: req.user
+      user: userData.data, followers: followerData.data , me: req.user, API_TOKEN: req.API_TOKEN
     })
   } catch (err) {
+    console.log(err)
     res.status(404).send(err)
   }
 };
