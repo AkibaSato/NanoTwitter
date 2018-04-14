@@ -25,6 +25,8 @@
   app.engine('ejs', require('express-ejs-extend'));
   app.set('view engine', 'ejs');
   app.set('views', path.join(__dirname, 'views'))
+  app.engine('ejs', require('ejs-locals'));
+
   // faster loadup - shrinks the HTTP load so it can be expanded by the browser.
   app.use(compression());
   // Show flash messages to the user.
