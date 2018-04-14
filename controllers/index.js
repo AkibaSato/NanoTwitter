@@ -29,13 +29,10 @@ module.exports.index = async (req, res) => {
       timeline = await axios.get(tweetServiceURL + '/timeline/global', {});
     }
 
-    console.log("API TOKEN IS", req.API_TOKEN)
-
     res.render('index', {
       me: req.user, user: req.user, tweets: timeline.data, API_TOKEN: req.API_TOKEN
     })
   } catch (err) {
-    console.log(err)
     res.status(404).send(err)
   }
 };

@@ -23,7 +23,7 @@ Non-logged-in: /api/v1/public/...
 3. Clients
 
 Loggedin: /api/v1/userID/...?username=xxxx&password=xxxx
-Set req.params.API_TOKEN to be the user id, req.query. to be the username, and
+Set req.params.API_TOKEN to be the user id, req.query.username to be the username, and
 req.query.password to be the password. These query parameters should be passed
 around even in redirection from the controllers.
 
@@ -50,7 +50,8 @@ module.exports = async (req, res, next) => {
     }
 
     /*====== 2. 3. If the request is from browser or another client. ======= */
-    userId = parseInt(req.params.API_TOKEN);
+
+    userId = parseInt(req.API_TOKEN);
 
     // Check the cache if the user has a session.
     var session = await redis.getAsync(userId);
@@ -66,14 +67,13 @@ module.exports = async (req, res, next) => {
     // If from the browser, authenticate using the browser cookie.
     // If from another client, authenticate using the password.
     if (!(req.cookies && session.ntSessionId == req.cookies.ntSessionId)
-    && !(req.body && user.password == req.body.password)) {
+    && !(req.query && user.password == req.query.password)) {
       return res.redirect('/api/v1/public/login');
     }
 
     req.user = user;
 
     return next();
-
 
   } catch (err) {
     next();

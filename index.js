@@ -38,12 +38,6 @@
       next();
   });
 
-  app.use(function (req, res, next) {
-    console.log("Received request for ", req);
-    next();
-  });
-
-
   // /* =============ROUTES============= */
   const login = require('./routes/login');
   const logout = require('./routes/logout');
@@ -56,8 +50,6 @@
   const populateUser = require('./middleware/populateUser');
 
   app.use('/api/v1/:API_TOKEN', function(req, res, next) {
-    console.log("ENtered");
-    console.log(req.params.API_TOKEN)
     req.API_TOKEN = req.params.API_TOKEN
     if (req.API_TOKEN == 'loaderio') {
       req.body = req.query;

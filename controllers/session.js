@@ -17,7 +17,6 @@ module.exports.logout = async (req, res) => {
 };
 
 module.exports.signup = async (req, res) => {
-  console.log("HERE IN SIGNUP")
   try {
     var user = await User.findOne({
       where: {
@@ -41,12 +40,12 @@ module.exports.signup = async (req, res) => {
     res.cookie('ntSessionId', ntSessionId);
     res.redirect('/api/v1/' + user.id + '/');
     await redis.setAsync(user.id, JSON.stringify(
-      { ntSessionId: ntSessionId, user: { id: user.id } }
+      { ntSessionId: ntSessionId,
+        user: { id: user.id, username: user.username, password: user.password }
+      }
     ));
 
   } catch (err) {
-    console.log(err)
-
     res.redirect('/api/v1/public/user/register');
 
   }
@@ -58,10 +57,12 @@ module.exports.login = async (req, res) => {
     var user = await User.findOne({
       where: {
         username: req.body.username
-      }
+      },
+      attributes: ['id', 'username', 'password']
     });
 
     if (!user || user.password != req.body.password) {
+
       return res.redirect('/api/v1/public/login');
     }
 
@@ -71,12 +72,10 @@ module.exports.login = async (req, res) => {
     res.redirect('/api/v1/' + user.id + '/');
 
     await redis.setAsync(user.id, JSON.stringify(
-      { ntSessionId: ntSessionId, user: { id: user.id } }
+      { ntSessionId: ntSessionId, user: user.get() }
     ));
 
   } catch (err) {
-
-    console.log(err)
     res.redirect('/api/v1/public/login');
 
   }
