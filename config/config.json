@@ -14,7 +14,7 @@
     "dialect": "postgres",
     "user_service": "https://ntusers-tjak.herokuapp.com",
     "tweet_service": "https://nttweets-tjak.herokuapp.com",
-    "tweet_service": "https://ntsearch-tjak.herokuapp.com"
+    "search_service": "https://ntsearch-tjak.herokuapp.com"
   },
   "test": {
     "username": "",
