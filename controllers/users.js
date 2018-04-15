@@ -71,7 +71,7 @@ module.exports.getUser = async (req, res) => {
       data: { id: id }
     });
 
-    var getTweets = axios.get(tweetServiceURL + '/timeline/user', {
+    var getTweets =await axios.get(tweetServiceURL + '/timeline/user', {
       data: { id: id }
     });
     console.log(getTweets.data)
