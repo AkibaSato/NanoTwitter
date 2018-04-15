@@ -60,6 +60,7 @@ module.exports.unfollow = async (req, res) => {
 
 // Added basic caching to user info and tweets.
 module.exports.getUser = async (req, res) => {
+  console.log("GET USERR")
   try {
     var id = parseInt(req.params.id);
 
@@ -70,10 +71,12 @@ module.exports.getUser = async (req, res) => {
     var getUser = axios.get(userServiceURL + '/user', {
       data: { id: id }
     });
-
-    var getTweets =await axios.get(tweetServiceURL + '/timeline/user', {
+    console.log("getting i")
+    console.log(id)
+    var getTweets = axios.get(tweetServiceURL + '/timeline/user', {
       data: { id: id }
     });
+
     console.log(getTweets.data)
 
     var [userData, tweetsData] = await axios.all([getUser, getTweets]);
