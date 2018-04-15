@@ -35,7 +35,7 @@
 
   app.use(function (req, res, next) {
       if (req.url.match(/^\/(css|js|img|font)\/.+/)) {
-          res.setHeader('Cache-Control', 'public, max-age=31557600'); // cache header
+          res.setHeader('Cache-Control', 'public, max-age=2h'); // cache header
       }
       next();
   });
