@@ -68,12 +68,12 @@ module.exports.getUser = async (req, res) => {
       throw new Error("NaN parameter");
     }
 
-    var getUser = axios.get(userServiceURL + '/user', {
+    var getUser = await axios.get(userServiceURL + '/user', {
       data: { id: id }
     });
     console.log("getting i")
     console.log(id)
-    var getTweets = axios.get(tweetServiceURL + '/timeline/user', {
+    var getTweets = await axios.get(tweetServiceURL + '/timeline/user', {
       data: { id: id }
     });
     console.log(getUser)
