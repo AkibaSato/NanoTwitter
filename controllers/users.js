@@ -76,10 +76,11 @@ module.exports.getUser = async (req, res) => {
     var getTweets = axios.get(tweetServiceURL + '/timeline/user', {
       data: { id: id }
     });
-
-    console.log(getTweets.data)
+    console.log(getUser)
+    console.log(getTweets)
 
     var [userData, tweetsData] = await axios.all([getUser, getTweets]);
+    console.log(tweetsData)
 
     res.render('user', {
       user: userData.data, tweets: tweetsData.data, me: req.user, API_TOKEN: req.API_TOKEN
