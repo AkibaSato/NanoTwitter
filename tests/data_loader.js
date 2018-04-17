@@ -29,7 +29,7 @@ module.exports.loadFollows= function(req, res) {
   fs.readFile('seeds/follows.csv', 'utf8', async function (err, data) {
     const dataA = data.split(/\r?\n/);  //Be careful if you are in a \r\n world...
     var size3  = dataA.length;
-    for(i=0; i<1 && dataA[i]; i++) {
+    for(i=0; i<size3 && dataA[i]; i++) {
       dataLine=dataA[i].split(",")
       followerID=parseInt(dataLine[0])
       followingID=parseInt(dataLine[1])

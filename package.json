@@ -47,6 +47,7 @@
     "express-session": "^1.15.6",
     "faker": "^4.1.0",
     "heroku-redis-client": "^0.3.3",
+    "http": "0.0.0",
     "modal-js": "^3.0.1",
     "newrelic": "^4.0.0",
     "node-sass": "^4.7.2",

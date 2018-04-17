@@ -5,6 +5,13 @@ require('newrelic')
   const port = process.env.PORT || 3000;
   const path    = require('path');
   const redis = require('redis');
+  var https = require('https');
+  https.globalAgent.maxSockets = Infinity;
+  app.https=http
+
+  var http = require('http');
+  https.globalAgent.maxSockets = Infinity;
+  app.http=http
 
   /* ===========PARSER=========== */
   const bodyParser = require('body-parser');
