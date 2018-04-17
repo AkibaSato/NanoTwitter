@@ -7,8 +7,8 @@ var axios = require('axios')
 
 module.exports.index = async (req, res) => {
   try {
-    var timeline
-    var user
+    // var timeline
+    // var user
     // if (req.user) {
     //   var getUser = axios.get(userServiceURL + '/user', {
     //     data: { id: req.user.id }
@@ -29,6 +29,7 @@ module.exports.index = async (req, res) => {
     //   timeline = await axios.get(tweetServiceURL + '/timeline/global', {});
     // }
     //
+    await axios.get(tweetServiceURL + '/timeline/global', {});
     res.render('index', {
       me: req.user, user: req.user, tweets: [
           {
@@ -42,8 +43,8 @@ module.exports.index = async (req, res) => {
               }
           }
       ], API_TOKEN: req.API_TOKEN
-    })
-    res.json({});
+    });
+    // res.json({});
   } catch (err) {
     res.status(404).send(err)
   }
