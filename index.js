@@ -5,18 +5,19 @@ const app = express();
 const port = process.env.PORT || 3000;
 const path    = require('path');
 const redis = require('redis');
-var WORKERS = process.env.WEB_CONCURRENCY || 1;
 var cluster = require('cluster');
+const numCPUs = require('os').cpus().length;
 
-
-
-// Code to run if we're in the master process
 if (cluster.isMaster) {
-  // Create a worker for each WORKERS
-  for (var i = 0; i < WORKERS; i += 1) {
+  console.log(`Master ${process.pid} is running`);
+  for (let i = 0; i < numCPUs; i++) {
+    console.log("Children are running")
     cluster.fork();
   }
-  // Code to run if we're in a worker process
+  cluster.on('exit', (worker, code, signal) => {
+    console.log(`worker ${worker.process.pid} died`);
+  });
+
 } else {
   var https = require('https');
   https.globalAgent.maxSockets = Infinity;
