@@ -2,7 +2,7 @@ var env = process.env.NODE_ENV || 'development';
 var config = require('../config/config.json')[env]
 var tweetServiceURL = config.tweet_service
 var userServiceURL = config.user_service
-
+var async=require('async')
 var axios = require('axios')
 
 module.exports.index = async (req, res) => {
@@ -10,6 +10,27 @@ module.exports.index = async (req, res) => {
     var timeline
     var user
     if (req.user) {
+
+      parellel.parallel({
+        users: function(callback) {
+          axios.get(userServiceURL + '/user', {
+            data: { id: req.user.id }
+          })
+          console.log("WOWO")
+        },
+        follow: function(callback) {
+          axios.get(tweetServiceURL + '/timeline/followees', {
+            data: { id: req.user.id }
+          })
+          console.log("WOWO")
+
+        }
+      },function(err, results) {
+        console.log(results)
+        console.log(err)
+      });
+
+
       var getUser = axios.get(userServiceURL + '/user', {
         data: { id: req.user.id }
       });

@@ -59,7 +59,7 @@ module.exports.loadUsers= async function(req, res) {
   fs.readFile('seeds/users.csv', 'utf8', function (err, data) {
     const dataArray = data.split(/\r?\n/);  //Be careful if you are in a \r\n world...
     var size  = dataArray.length;
-    for(i=0; i<1 && dataArray[i]; i++) {
+    for(i=0; i<size && dataArray[i]; i++) {
       dataLine=dataArray[i].split(",")
       data={id: parseInt(dataLine[0]), fname: dataLine[1].trim(), username: faker.internet.userName(), email: faker.internet.email(), password: faker.internet.password()};
       allUsers.push(data);
@@ -71,12 +71,10 @@ module.exports.loadUsers= async function(req, res) {
 }
 
 module.exports.fakeUserTweet = async function (req, res, users, tweets) {
-  console.log(users)
   userData=[];
   for(i=0; i<users; i++) {
     userData.push({fname: faker.name.firstName(),lname: faker.name.lastName(), username: faker.internet.userName(), email: faker.internet.email(), password: faker.internet.password()});
   }
-  console.log(userData)
   User.bulkCreate(req, userData).then(function(user){
     fs.readFile('seeds/tweets.csv', 'utf8', function (err, data) {
       const dataArray = data.split(/\r?\n/);
@@ -114,8 +112,6 @@ module.exports.createNTweets= async function(req, res, userID, tweets) {
 
 
 module.exports.randomFollow=async function(req, res, userID, follows){
-  console.log(userID)
-  console.log(follows)
   randomUsers=await User.randomUser(req, res, follows, userID)
   for(i=0; i<follows; i++) {
     user=randomUsers[i];
