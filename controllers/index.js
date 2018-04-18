@@ -11,26 +11,6 @@ module.exports.index = async (req, res) => {
     var user
     if (req.user) {
 
-      parellel.parallel({
-        users: function(callback) {
-          axios.get(userServiceURL + '/user', {
-            data: { id: req.user.id }
-          })
-          console.log("WOWO")
-        },
-        follow: function(callback) {
-          axios.get(tweetServiceURL + '/timeline/followees', {
-            data: { id: req.user.id }
-          })
-          console.log("WOWO")
-
-        }
-      },function(err, results) {
-        console.log(results)
-        console.log(err)
-      });
-
-
       var getUser = axios.get(userServiceURL + '/user', {
         data: { id: req.user.id }
       });
