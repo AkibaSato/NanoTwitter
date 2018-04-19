@@ -1,20 +1,29 @@
 require('newrelic')
 
-  const express = require('express');
-  const app = express();
-  const port = process.env.PORT || 3000;
-  const path    = require('path');
-  const redis = require('redis');
+const express = require('express');
+const app = express();
+const port = process.env.PORT || 3000;
+const path    = require('path');
+const redis = require('redis');
+const WORKERS = process.env.WEB_CONCURRENCY || 1;
+const cluster = require('cluster');
 
+// Code to run if we're in the master process
+if (cluster.isMaster) {
+  // Create a worker for each WORKERS
+  for (var i = 0; i < WORKERS; i += 1) {
+    console.log("Spawning workers")
+    cluster.fork();
+  }
+  // Code to run if we're in a worker process
+} else {
+  var https = require('https');
+  https.globalAgent.maxSockets = Infinity;
+  app.https=https
 
-
-    var https = require('https');
-    https.globalAgent.maxSockets = Infinity;
-    app.https=https
-
-    var http = require('http');
-    http.globalAgent.maxSockets = Infinity;
-    app.http=http
+  var http = require('http');
+  http.globalAgent.maxSockets = Infinity;
+  app.http=http
 
   /* ===========PARSER=========== */
   const bodyParser = require('body-parser');
@@ -46,10 +55,10 @@ require('newrelic')
   app.set('view cache', true);
 
   app.use(function (req, res, next) {
-      if (req.url.match(/^\/(css|js|img|font)\/.+/)) {
-          res.setHeader('Cache-Control', 'public, max-age=2h'); // cache header
-      }
-      next();
+    if (req.url.match(/^\/(css|js|img|font)\/.+/)) {
+      res.setHeader('Cache-Control', 'public, max-age=2h'); // cache header
+    }
+    next();
   });
 
   // /* =============ROUTES============= */
@@ -100,3 +109,5 @@ require('newrelic')
 
   app.listen(port);
   exports = module.exports = app;
+
+}
