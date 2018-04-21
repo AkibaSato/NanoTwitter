@@ -71,22 +71,15 @@ module.exports.getUser = async (req, res) => {
     var getUser = axios.get(userServiceURL + '/user', {
       data: { id: id }
     });
-    console.log("getting i")
-    console.log(id)
     var getTweets = axios.get(tweetServiceURL + '/timeline/user', {
       data: { id: id }
     });
-    console.log(getUser)
 
-    console.log(getTweets)
 
     var [userData, tweetsData] = await axios.all([getUser, getTweets]);
-    console.log(tweetsData.data)
-
     res.render('user', {
       user: userData.data, tweets: tweetsData.data, me: req.user
     });
-    console.log(tweetsData)
 
   } catch (err) {
     res.status(404).send(err)

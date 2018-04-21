@@ -49,6 +49,7 @@
     "heroku-redis-client": "^0.3.3",
     "http": "0.0.0",
     "modal-js": "^3.0.1",
+    "napajs": "^0.2.1",
     "newrelic": "^4.0.0",
     "node-sass": "^4.7.2",
     "os": "^0.1.1",

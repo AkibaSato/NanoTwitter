@@ -9,9 +9,11 @@ module.exports.getLogin = (req, res) => {
 module.exports.logout = async (req, res) => {
 
   try {
-    await this.client.delAsync(req.cookies.ntSessionId);
-  } catch (err) {}
-  res.redirect('/');
+    await redis.delAsync(req.cookies.ntSessionId);
+    res.redirect('/');
+  } catch (err) {
+  }
+
 };
 
 module.exports.signup = async (req, res) => {
