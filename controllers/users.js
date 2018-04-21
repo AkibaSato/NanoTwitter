@@ -84,7 +84,7 @@ module.exports.getUser = async (req, res) => {
     console.log(tweetsData.data)
 
     res.render('user', {
-      user: userData.data, tweets: tweetsData.data, me: req.user, API_TOKEN: req.API_TOKEN
+      user: userData.data, tweets: tweetsData.data, me: req.user
     });
     console.log(tweetsData)
 
@@ -113,7 +113,7 @@ module.exports.getFolloweeTweets = async (req, res) => {
     var [userData, tweetsData] = await axios.all([getUser, getTweets]);
 
     res.render('followee_tweets', {
-      user: userData.data, tweets: tweetsData.data, me: req.user, API_TOKEN: req.API_TOKEN
+      user: userData.data, tweets: tweetsData.data, me: req.user
     })
   } catch (err) {
     res.status(404).send(err)
@@ -140,7 +140,7 @@ module.exports.getFollowees = async (req, res) => {
 
 
     res.render('following', {
-      user: userData.data, followees: followerData.data , me: req.user, API_TOKEN: req.API_TOKEN
+      user: userData.data, followees: followerData.data , me: req.user
     });
   } catch (err) {
     res.status(404).send(err)
@@ -167,7 +167,7 @@ module.exports.getFollowers =  async (req, res) => {
     var [userData, followerData] = await axios.all([getUser, getFollowers]);
 
     res.render('followers', {
-      user: userData.data, followers: followerData.data , me: req.user, API_TOKEN: req.API_TOKEN
+      user: userData.data, followers: followerData.data , me: req.user
     })
   } catch (err) {
     console.log(err)

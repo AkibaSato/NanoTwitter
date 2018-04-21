@@ -9,7 +9,7 @@
     (function($){
         function profile__like_button( e ){
             $.ajax({
-                url: "/api/v1/<%= API_TOKEN %>/tweets/<%= tweets[i].id %>/like",
+                url: "/tweets/<%= tweets[i].id %>/like",
                 type: 'post',
                 data: $(this).serialize(),
                 success: function(data) {

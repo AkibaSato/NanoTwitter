@@ -12,7 +12,7 @@
         <div class="row">
           <h2><%= tweets[i].user.fname %> <%= tweets[i].user.lname %>  </h2>
           <% date = new Date(Date.parse(tweets[i].createdAt)) %>
-          <h3><span><a href="/api/v1/<%= API_TOKEN %>/user/<%= tweets[i].user.id %>"> @<%= tweets[i].user.username %></a></span> • <%= date.getDate() %> <%= date.getMonth() %> <%= date.getFullYear() %></h3>
+          <h3><span><a href="/user/<%= tweets[i].user.id %>"> @<%= tweets[i].user.username %></a></span> • <%= date.getDate() %> <%= date.getMonth() %> <%= date.getFullYear() %></h3>
 
         </div>
         <div class="row">
@@ -38,8 +38,8 @@
         </div>
         <div class="row">
           <div style="float: right;" class="retweet_button">
-            <span><a href="/api/v1/<%= API_TOKEN %>/tweets/<%= tweets[i].id %>/likes">Get Likes</a></span>
-            <span><a href="/api/v1/<%= API_TOKEN %>/tweets/<%= tweets[i].id %>/retweets">Get Retweets</a></span>
+            <span><a href="/tweets/<%= tweets[i].id %>/likes">Get Likes</a></span>
+            <span><a href="/tweets/<%= tweets[i].id %>/retweets">Get Retweets</a></span>
           </div>
         </div>
         <br>

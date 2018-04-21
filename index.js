@@ -68,27 +68,21 @@ if (cluster.isMaster) {
   const search = require('./routes/search')
   const tweets = require('./routes/tweets');
   const index = require('./routes/index');
-  const load = require('./tests/test_interface');
+  const api = require('./routes/api');
+  const test = require('./tests/test_interface');
 
   const populateUser = require('./middleware/populateUser');
 
-  app.use('/api/v1/:API_TOKEN', function(req, res, next) {
-    req.API_TOKEN = req.params.API_TOKEN
-    if (req.API_TOKEN == 'loaderio') {
-      req.body = req.query;
-    }
-    next();
-  });
+  app.use('/', populateUser);
 
-  app.use('/api/v1/:API_TOKEN', populateUser);
-
-  app.use('/api/v1/:API_TOKEN/login', login);
-  app.use('/api/v1/:API_TOKEN/logout', logout);
-  app.use('/api/v1/:API_TOKEN/user', users);
-  app.use('/api/v1/:API_TOKEN/search', search);
-  app.use('/api/v1/:API_TOKEN/tweets', tweets);
-  app.use('/api/v1/:API_TOKEN/', index);
-  app.use('/api/v1/:API_TOKEN/test', load);
+  app.use('/api/v1/:API_TOKEN/', api);
+  app.use('/login', login);
+  app.use('/logout', logout);
+  app.use('/user', users);
+  app.use('/search', search);
+  app.use('/tweets', tweets);
+  app.use('/', index);
+  app.use('/test', test);
 
   /* ===========ERROR HANDLER=========== */
   // Catch 404 and forward to error handler.

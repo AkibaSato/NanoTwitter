@@ -11,7 +11,7 @@ module.exports.search = async (req, res) => {
       data: { term: req.query.search }
     });
 
-    res.render("search", { tweets: tweets.data, me: req.user, API_TOKEN: req.API_TOKEN });
+    res.render("search", { tweets: tweets.data, me: req.user });
 
   } catch (err) {
     res.status(404).send(err)

@@ -8,7 +8,7 @@ var axios = require('axios')
 // TODO: Parse tweet content in background and insert into Hashtag and Mention.
 module.exports.tweet = async (req, res) => {
   try {
-    res.redirect('/api/v1/' + req.API_TOKEN + '/user/' + req.user.id);
+    res.redirect('/user/' + req.user.id);
 
     await axios.post(tweetServiceURL + '/tweet', {
         content: req.body.content,
@@ -34,8 +34,7 @@ module.exports.getTweet = async (req, res) => {
 
     res.render('tweet', {
       me: req.user,
-      tweet: tweet.data,
-      API_TOKEN: req.API_TOKEN
+      tweet: tweet.data
     });
   } catch (err) {
     res.status(404).send(err)
@@ -45,7 +44,7 @@ module.exports.getTweet = async (req, res) => {
 
 module.exports.like = async (req, res) => {
   try {
-    res.redirect('/api/v1/' + req.API_TOKEN + '/user/' + req.user.id);
+    res.redirect('/user/' + req.user.id);
 
     var id = parseInt(req.params.id);
 
@@ -64,7 +63,7 @@ module.exports.like = async (req, res) => {
 
 module.exports.unlike = async (req, res) => {
   try {
-    res.redirect('/api/v1/' + req.API_TOKEN + '/user/' + req.user.id);
+    res.redirect('/user/' + req.user.id);
 
     var id = parseInt(req.params.id);
 
@@ -93,7 +92,7 @@ module.exports.getLikes = async (req, res) => {
       data: { id: id }
     });
 
-    res.render('likes', { me: req.user, user: req.user, users: users, API_TOKEN: req.API_TOKEN })
+    res.render('likes', { me: req.user, user: req.user, users: users })
 
   } catch (err) {
     res.status(404).send(err)
@@ -102,7 +101,7 @@ module.exports.getLikes = async (req, res) => {
 
 module.exports.retweet = async (req, res) => {
   try {
-    res.redirect('/api/v1/' + req.API_TOKEN + '/user/' + req.user.id);
+    res.redirect('/user/' + req.user.id);
 
     var id = parseInt(req.params.id);
 
@@ -131,7 +130,7 @@ module.exports.getRetweets = async (req, res) => {
       data: { id: id }
     });
 
-    res.render('retweets', { me: req.user, user: req.user, retweets: retweets.data, API_TOKEN: req.API_TOKEN });
+    res.render('retweets', { me: req.user, user: req.user, retweets: retweets.data });
 
   } catch (err) {
     res.status(404).send(err)

@@ -42,7 +42,7 @@ module.exports.index = async (req, res) => {
                   "lname": "yoyo"
               }
           }
-        ], API_TOKEN: req.API_TOKEN
+        ]
     })
     // res.json({});
   } catch (err) {

@@ -20,7 +20,7 @@
     (function($){
         function profile__unfollow_button( e ){
             $.ajax({
-                url: "/api/v1/<%= API_TOKEN %>/user/<%= user.id %>/unfollow",
+                url: "/user/<%= user.id %>/unfollow",
                 type: 'post',
                 data: $(this).serialize(),
                 success: function(data) {
