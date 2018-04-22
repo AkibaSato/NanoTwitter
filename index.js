@@ -27,20 +27,38 @@ if (cluster.isMaster) {
 
   /* ===========PARSER=========== */
   const bodyParser = require('body-parser');
-  const cookieParser = require('cookie-parser')
+  const cookieParser = require('cookie-parser');
+
+  // function parallel(middlewares) {
+  //   return function (req, res, next) {
+  //       async.each(middlewares, function (mw, cb) {
+  //           mw(req, res, cb);
+  //       }, next);
+  //   };
+  // }
+  //
+  // app.use(parallel([
+  //       bodyParser.urlencoded({
+  //           extended: true
+  //       }),
+  //       bodyParser.json(),
+  //       express.static(config.staticFolder),
+  //       cookieParser(),
+  //       morgan('dev'),
+  //       compression()
+  //   ]));
 
   // Parse application/x-www-form-urlencoded
   app.use(bodyParser.urlencoded({ extended: false }));
   // Parse application/json
   app.use(bodyParser.json());
   // Parse application/vnd.api+json as json
-  app.use(bodyParser.json({ type: 'application/vnd.api+json' }));
+  // app.use(bodyParser.json({ type: 'application/vnd.api+json' }));
 
   app.use(cookieParser())
 
   /* =============VIEWS============= */
   const compression = require('compression');
-  const flash = require('connect-flash');
 
   app.use(express.static("public"));
   app.engine('ejs', require('express-ejs-extend'));
@@ -51,7 +69,6 @@ if (cluster.isMaster) {
   // faster loadup - shrinks the HTTP load so it can be expanded by the browser.
   app.use(compression());
   // Show flash messages to the user.
-  app.use(flash());
   app.set('view cache', true);
 
   app.use(function (req, res, next) {
@@ -72,6 +89,13 @@ if (cluster.isMaster) {
   const test = require('./tests/test_interface');
 
   const populateUser = require('./middleware/populateUser');
+
+  app.use(function(req, res, next) {
+    if (req.query && req.query.loaderio == "true") {
+      req.body = req.query
+    }
+    next();
+  })
 
   app.use('/', populateUser);
 
