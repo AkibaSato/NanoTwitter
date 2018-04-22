@@ -71,6 +71,11 @@ require('newrelic')
     next();
   });
 
+  app.use(function(req, res, next) {
+    console.log("got request")
+    next()
+  })
+
   app.use('/api/v1/:API_TOKEN', populateUser);
 
   app.use('/api/v1/:API_TOKEN/login', login);

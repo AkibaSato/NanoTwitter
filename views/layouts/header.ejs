@@ -26,7 +26,6 @@
                 <% if (me) { %>
                   <li><a href="/api/v1/<%= API_TOKEN %>/logout" title="Logout"><i class="fa fa-sign-out" aria-hidden="true"></i><span>Logout</span></a></li>
                   <li><div class="navbar_tweet_modal">
-                    <%- include ../components/modals/new_tweet_modal.ejs %>
                   </div></li>
                 <% } else { %>
                   <li><a href="/api/v1/public/login" title="Login"><i class="fa fa-sign-in" aria-hidden="true"></i><span>Login</span></a></li>

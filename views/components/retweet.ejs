@@ -1,0 +1,8 @@
+<form method="post" action="/api/v1/<%= API_TOKEN %>/tweets/<%= tweets[i].id %>/retweet">
+  <div class="box">
+    <div class="row">
+      <input type="hidden" name="content" value="<%= tweets[i].content %>">
+    </div>
+    <button class="btn new-tweet__button" type="submit">Retweet</button>
+  </div>
+</form>

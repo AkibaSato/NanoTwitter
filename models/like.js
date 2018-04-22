@@ -2,7 +2,7 @@
 module.exports = (sequelize, DataTypes) => {
   var Like = sequelize.define('Like', {}, {
     indexes: [
-      { fields: ['tweetId'] }
+      { fields: ['tweetId', 'userId'] }
     ],
     defaultScope: {
       order: [['createdAt', 'desc']]

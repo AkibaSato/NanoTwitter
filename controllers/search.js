@@ -10,7 +10,6 @@ module.exports.search = async (req, res) => {
     var tweets = await axios.get(searchServiceURL + '/search', {
       data: { term: req.query.search }
     });
-
     res.render("search", { tweets: tweets.data, me: req.user, API_TOKEN: req.API_TOKEN });
 
   } catch (err) {

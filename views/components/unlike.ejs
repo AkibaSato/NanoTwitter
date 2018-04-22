@@ -1,4 +1,5 @@
-
-<form method="post" action="/tweets/<%= tweets[i].id %>/unlike">
-  Unlike <button class="btn-default" type="submit"><i class="fa fa-heart"></i></button>
+<form method="post" action="/api/v1/<%= API_TOKEN %>/tweets/<%= tweets[i].id %>/unlike">
+  <div class="box">
+    <button class="btn new-tweet__button" type="submit">Unlike</button>
+  </div>
 </form>

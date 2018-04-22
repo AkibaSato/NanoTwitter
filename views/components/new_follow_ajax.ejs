@@ -1,6 +1,6 @@
 
 
-<% var count1 = parseInt(user.numFollowees); %>
+<% var count1 = parseInt(user.numFollowers); %>
 
 <div class="box">
   <form id="my-form1">
@@ -29,10 +29,12 @@
                 data: $(this).serialize(),
                 success: function(data) {
                   $("p1").text('Followed');
+                  $("p2").text('Unfollow');
                   $("f1").text("<%= count1 + 1 %>");
                   console.log('Followed the user');
                 },
                 error: function(data) {
+                  $("p1").text('Already Followed');
                   console.log('not sent');
                 }
             });

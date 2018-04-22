@@ -4,7 +4,7 @@
     <div class="tweet-box">
       <div class="tweets">
         <div class="row">
-          <h4><% if (tweets[i].originalId !== null) { %>
+          <h4><% if (tweets[i].originalId) { %>
             Retweeted from Tweet #<%= tweets[i].originalId %>
             <% } %>
           </h4>
@@ -22,7 +22,7 @@
         <div class="row">
           <div class="col-3">
             <div class="retweet_button">
-              <%- include modals/retweet_modal.ejs %>
+              <%- include retweet_ajax.ejs %>
             </div>
           </div>
           <div class="col-3">

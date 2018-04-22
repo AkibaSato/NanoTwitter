@@ -51,6 +51,7 @@ module.exports = async (req, res, next) => {
 
     /*====== 2. 3. If the request is from browser or another client. ======= */
 
+    console.log("populating user")
     userId = parseInt(req.API_TOKEN);
 
     // Check the cache if the user has a session.
@@ -70,6 +71,11 @@ module.exports = async (req, res, next) => {
     && !(req.query && user.password == req.query.password)) {
       return res.redirect('/api/v1/public/login');
     }
+
+    // console.log("verified user")
+    //
+    // console.log(user)
+    // console.log(req)
 
     req.user = user;
 
