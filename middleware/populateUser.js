@@ -61,31 +61,30 @@ module.exports = async (req, res, next) => {
     }
 
     /* ========== 2. If the request is from loaderio. ========== */
-    if (req.body.loaderio) {
-      req.user = { id: req.query.id };
+    if (req.body.loaderio == "true") {
+      if (req.body.public == "true") {
+        delete req.user;
+      } else {
+        req.user = { id: req.query.id };
+      }
       return next();
     }
 
     /* ====== 3. If the request is from browser ======= */
 
     if (!req.cookies) {
-      console.log("no cookies")
       delete req.user
       return next();
     }
-
 
     // Check the cache if the user has a session.
     var session = await redis.getAsync(req.cookies.ntSessionId);
 
     if (!session) { // If the user has no session, prompt to login.
-      console.log("no session");
-
       delete req.user
       return next();
     }
 
-  console.log("populated user");
     req.user = JSON.parse(session).user;
 
     return next();
