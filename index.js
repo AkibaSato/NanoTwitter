@@ -28,46 +28,35 @@ if (cluster.isMaster) {
   /* ===========PARSER=========== */
   const bodyParser = require('body-parser');
   const cookieParser = require('cookie-parser');
+  const compression = require('compression');
+  const async = require('async');
 
-  // function parallel(middlewares) {
-  //   return function (req, res, next) {
-  //       async.each(middlewares, function (mw, cb) {
-  //           mw(req, res, cb);
-  //       }, next);
-  //   };
-  // }
-  //
-  // app.use(parallel([
-  //       bodyParser.urlencoded({
-  //           extended: true
-  //       }),
-  //       bodyParser.json(),
-  //       express.static(config.staticFolder),
-  //       cookieParser(),
-  //       morgan('dev'),
-  //       compression()
-  //   ]));
+  function parallel(middlewares) {
+    return function (req, res, next) {
+        async.each(middlewares, function (mw, cb) {
+            mw(req, res, cb);
+        }, next);
+    };
+  }
 
-  // Parse application/x-www-form-urlencoded
-  app.use(bodyParser.urlencoded({ extended: false }));
-  // Parse application/json
-  app.use(bodyParser.json());
-  // Parse application/vnd.api+json as json
-  // app.use(bodyParser.json({ type: 'application/vnd.api+json' }));
-
-  app.use(cookieParser())
+  app.use(parallel([
+      // Parse application/x-www-form-urlencoded
+      bodyParser.urlencoded({ extended: false }),
+      // Parse application/json
+      bodyParser.json(),
+      express.static("public"),
+      cookieParser(),
+      // faster loadup - shrinks the HTTP load so it can be expanded by the browser.
+      compression()
+  ]));
 
   /* =============VIEWS============= */
-  const compression = require('compression');
 
-  app.use(express.static("public"));
   app.engine('ejs', require('express-ejs-extend'));
   app.set('view engine', 'ejs');
   app.set('views', path.join(__dirname, 'views'))
   app.engine('ejs', require('ejs-locals'));
 
-  // faster loadup - shrinks the HTTP load so it can be expanded by the browser.
-  app.use(compression());
   // Show flash messages to the user.
   app.set('view cache', true);
 
