@@ -1,7 +1,7 @@
 var env = process.env.NODE_ENV || 'development';
 var config = require('../config/config.json')[env]
 var tweetServiceURL = config.tweet_service
-
+var client=require('../config/redis.js')
 var axios = require('axios')
 
 
@@ -9,12 +9,12 @@ var axios = require('axios')
 module.exports.tweet = async (req, res) => {
   try {
     res.redirect('/api/v1/' + req.API_TOKEN + '/user/' + req.user.id);
-
     await axios.post(tweetServiceURL + '/tweet', {
         content: req.body.content,
         userId: req.user.id,
         parentId: req.body.parentId
     });
+    
   } catch (err) {
 
   }

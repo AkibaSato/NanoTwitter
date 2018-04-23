@@ -76,6 +76,7 @@ module.exports.login = async (req, res) => {
     ));
 
   } catch (err) {
+    console.log(err)
     res.redirect('/api/v1/public/login');
 
   }

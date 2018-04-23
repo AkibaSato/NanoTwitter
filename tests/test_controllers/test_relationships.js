@@ -12,7 +12,7 @@ module.exports.getAll=async function(req, res, next) {
 
 
 module.exports.bulkFollow = function (req, relationship) {
-  models.Relationship.bulkCreate(relationship).then(function(newRelationship) {
+  models.Relationship.bulkCreate(relationship, { individualHooks: true }).then(function(newRelationship) {
     return JSON.parse(JSON.stringify(newRelationship));
   }).catch(function(err) {
     console.log(err)
@@ -20,7 +20,7 @@ module.exports.bulkFollow = function (req, relationship) {
 };
 
 module.exports.destroyAll=function(req, res, next) {
-  models.Relationship.destroy({where: {}, truncate : true, cascade: true }).then(function () {});
+  return models.Relationship.destroy({where: {}, truncate : true, cascade: true });
 
 };
 

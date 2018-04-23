@@ -2,6 +2,7 @@ var env = process.env.NODE_ENV || 'development';
 var config = require('../config/config.json')[env]
 var tweetServiceURL = config.tweet_service
 var userServiceURL = config.user_service
+var client = require("../config/redis.js")
 
 var axios = require('axios');
 
@@ -10,12 +11,13 @@ module.exports.getSignup = (req, res) => {
 };
 
 module.exports.follow = async (req, res) => {
+  console.log("FOLLOW")
   try {
     var followeeId = parseInt(req.params.id);
     var followerId = req.user.id;
 
     res.redirect('/api/v1/' + req.API_TOKEN + '/user/' + followeeId);
-
+    
     if (isNaN(followeeId)) {
       throw new Error("NaN parameter");
     }
@@ -24,7 +26,7 @@ module.exports.follow = async (req, res) => {
       throw new Error("Can't follow myself");
     }
 
-    await axios.post(userServiceURL + '/follow', {
+    var newUser=await axios.post(userServiceURL + '/follow', {
       followerId: followerId,
       followeeId: followeeId
     });
@@ -34,6 +36,7 @@ module.exports.follow = async (req, res) => {
 };
 
 module.exports.unfollow = async (req, res) => {
+  console.log("UNFOLLOW")
   try {
     var followeeId = parseInt(req.params.id);
     var followerId = req.user.id;
@@ -61,25 +64,40 @@ module.exports.unfollow = async (req, res) => {
 // Added basic caching to user info and tweets.
 module.exports.getUser = async (req, res) => {
   console.log("GET USERR")
+  var key;
   try {
     var id = parseInt(req.params.id);
-
     if (isNaN(id)) {
       throw new Error("NaN parameter");
     }
+    if(!req.user) {
+      key='userPageHTML'+req.params.id.toString();
+      var userPage=await client.getAsync(key);
+      if(userPage) {
+        return res.send(userPage)
+      }
+    } 
+      var getUser = axios.get(userServiceURL + '/user', {
+        data: { id: id }
+      });
+      var getTweets = axios.get(tweetServiceURL + '/timeline/user', {
+        data: { id: id }
+      });
+    
 
-    var getUser = axios.get(userServiceURL + '/user', {
-      data: { id: id }
-    });
-    var getTweets = axios.get(tweetServiceURL + '/timeline/user', {
-      data: { id: id }
-    });
+      var [userData, tweetsData] = await axios.all([getUser, getTweets]);
+      res.render('user', {
+        user: userData.data, tweets: tweetsData.data, me: req.user, API_TOKEN: req.API_TOKEN
+      }, async function(err, htmlResponse){
+        if(!req.user) {
+          await client.setAsync(key, htmlResponse, 'ex', 60);
+        }
+        res.send(htmlResponse);
 
-
-    var [userData, tweetsData] = await axios.all([getUser, getTweets]);
-    res.render('user', {
-      user: userData.data, tweets: tweetsData.data, me: req.user, API_TOKEN: req.API_TOKEN
-    });
+      });
+      
+    
+    
 
   } catch (err) {
     res.status(404).send(err)
