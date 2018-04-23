@@ -74,15 +74,18 @@ module.exports.getUser = async (req, res) => {
     var getTweets = axios.get(tweetServiceURL + '/timeline/user', {
       data: { id: id }
     });
+    console.log("GET USERR2")
 
 
     var [userData, tweetsData] = await axios.all([getUser, getTweets]);
+    console.log("GET USERR3")
+
     res.render('user', {
       user: userData.data, tweets: tweetsData.data, me: req.user, API_TOKEN: req.API_TOKEN
     });
 
   } catch (err) {
-    res.status(404).send(err)
+
   }
 };
 
@@ -109,7 +112,7 @@ module.exports.getFolloweeTweets = async (req, res) => {
       user: userData.data, tweets: tweetsData.data, me: req.user, API_TOKEN: req.API_TOKEN
     })
   } catch (err) {
-    res.status(404).send(err)
+
   }
 };
 
@@ -136,7 +139,7 @@ module.exports.getFollowees = async (req, res) => {
       user: userData.data, followees: followerData.data , me: req.user, API_TOKEN: req.API_TOKEN
     });
   } catch (err) {
-    res.status(404).send(err)
+
   }
 
 };
@@ -163,7 +166,6 @@ module.exports.getFollowers =  async (req, res) => {
       user: userData.data, followers: followerData.data , me: req.user, API_TOKEN: req.API_TOKEN
     })
   } catch (err) {
-    console.log(err)
-    res.status(404).send(err)
+
   }
 };

@@ -7,8 +7,8 @@ var axios = require('axios')
 
 module.exports.index = async (req, res) => {
   try {
-    // var timeline
-    // var user
+    var timeline
+    var user
     // if (req.user) {
     //   var getUser = axios.get(userServiceURL + '/user', {
     //     data: { id: req.user.id }
@@ -26,27 +26,24 @@ module.exports.index = async (req, res) => {
     //
     // } else {
     //   // If you are not, you see the most recent tweets from randos.
-    //    timeline = await axios.get(tweetServiceURL + '/timeline/global', {});
+    //   timeline = await axios.get(tweetServiceURL + '/timeline/global', {});
     // }
-
+    //
     res.render('index', {
       me: req.user, user: req.user, tweets: [
           {
-              "content": "hello",
+              "id": 18,
+              "content": "hi",
               "createdAt": "2018-04-06T03:10:04.011Z",
               "user": {
                   "fullName": "yoyo yoyo",
                   "id": 1,
-                  "username": "yoyo",
-                  "fname": "yoyo",
-                  "lname": "yoyo"
-              },
-              "id" : 1
+                  "username": "yoyo"
+              }
           }
-
-        ], API_TOKEN: req.API_TOKEN
+      ], API_TOKEN: req.API_TOKEN
     })
-    // res.json({});
+    res.json({});
   } catch (err) {
     res.status(404).send(err)
   }
