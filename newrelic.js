@@ -11,13 +11,13 @@ exports.config = {
    *
    * @env NEW_RELIC_APP_NAME
    */
-  app_name: process.env.NEW_RELIC_APP_NAME,
+  app_name: "NanoTwitter",
   /**
    * The user's license key. Must be set by per-app configuration file.
    *
    * @env NEW_RELIC_LICENSE_KEY
    */
-  license_key: '',
+  license_key: '7b47b2413aa7beabe7cb873e34ffcbbc4efea148',
   /**
    * Hostname for the New Relic collector proxy.
    *
@@ -207,7 +207,7 @@ exports.config = {
      *
      * @env NEW_RELIC_LOG_ENABLED
      */
-    enabled: true,
+    enabled: false,
 
     /**
      * Enables extra debugging at `warn` level. No need to enable except under

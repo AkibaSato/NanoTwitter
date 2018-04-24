@@ -12,7 +12,7 @@
     $('#my-form5-<%= tweets[i].id %>').submit(function(event) {
         event.preventDefault();
 
-        var $form = $(this), url = "/api/v1/<%= API_TOKEN %>/tweets/<%= tweets[i].id %>/retweet";
+        var $form = $(this), url = "/tweets/<%= tweets[i].id %>/retweet";
         var posting = $.post( url, { content: $('#content').val() } );
 
         posting.done(function( data ) {

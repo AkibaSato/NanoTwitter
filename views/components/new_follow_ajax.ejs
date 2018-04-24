@@ -24,7 +24,7 @@
     (function($){
         function profile__follow_button( e ){
             $.ajax({
-                url: "/api/v1/<%= API_TOKEN %>/user/<%= user.id %>/follow",
+                url: "/user/<%= user.id %>/follow",
                 type: 'post',
                 data: $(this).serialize(),
                 success: function(data) {

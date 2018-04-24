@@ -1,0 +1,27 @@
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+<div class="container">
+  <ul class="nav nav-tabs">
+    <li class="active"><a href="#user">Your Timeline</a></li>
+    <li><a href="#global">Global Timeline</a></li>
+  </ul>
+
+  <div class="tab-content">
+    <div id="user" class="tab-pane fade in active">
+      <%- include tweets.ejs %>
+    </div>
+    <div id="global" class="tab-pane fade">
+      <%- include tweets2.ejs %>
+    </div>
+  </div>
+</div>
+
+<script>
+$(document).ready(function(){
+    $(".nav-tabs a").click(function(){
+        $(this).tab('show');
+    });
+});
+</script>

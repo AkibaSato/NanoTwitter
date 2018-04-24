@@ -8,7 +8,7 @@
     $('#my-form4-<%= tweets[i].id %>').submit(function(event) {
         event.preventDefault();
 
-        var $form = $(this), url = "/api/v1/<%= API_TOKEN %>/tweets/<%= tweets[i].id %>/unlike";
+        var $form = $(this), url = "/tweets/<%= tweets[i].id %>/unlike";
         var posting = $.post( url );
 
         posting.done(function( data ) {

@@ -12,7 +12,7 @@
     </div>
     <div class="col-6">
       <% if (me.id === user.id) { %>
-          <%- include components/new_tweet.ejs %>          
+          <%- include components/new_tweet.ejs %>
       <% } else { %>
         <%- include components/new_follow_ajax.ejs %>
         <%- include components/unfollow_ajax.ejs %>

@@ -1,55 +1,71 @@
 require('newrelic')
 
-  const express = require('express');
-  const app = express();
-  const port = process.env.PORT || 3000;
-  const path    = require('path');
-  const redis = require('redis');
+const express = require('express');
+const app = express();
+const port = process.env.PORT || 3000;
+const path    = require('path');
+const redis = require('redis');
+const WORKERS = process.env.WEB_CONCURRENCY || 1;
+const cluster = require('cluster');
 
 
+// Code to run if we're in the master process
+if (cluster.isMaster) {
+  // Create a worker for each WORKERS
+  for (var i = 0; i < WORKERS; i += 1) {
+    console.log("Spawning workers")
+    cluster.fork();
+  }
+  // Code to run if we're in a worker process
+} else {
+  var https = require('https');
+  https.globalAgent.maxSockets = Infinity;
+  app.https=https
 
-    var https = require('https');
-    https.globalAgent.maxSockets = Infinity;
-    app.https=https
-
-    var http = require('http');
-    http.globalAgent.maxSockets = Infinity;
-    app.http=http
+  var http = require('http');
+  http.globalAgent.maxSockets = Infinity;
+  app.http=http
 
   /* ===========PARSER=========== */
   const bodyParser = require('body-parser');
-  const cookieParser = require('cookie-parser')
+  const cookieParser = require('cookie-parser');
+  const compression = require('compression');
+  const async = require('async');
 
-  // Parse application/x-www-form-urlencoded
-  app.use(bodyParser.urlencoded({ extended: false }));
-  // Parse application/json
-  app.use(bodyParser.json());
-  // Parse application/vnd.api+json as json
-  app.use(bodyParser.json({ type: 'application/vnd.api+json' }));
+  function parallel(middlewares) {
+    return function (req, res, next) {
+        async.each(middlewares, function (mw, cb) {
+            mw(req, res, cb);
+        }, next);
+    };
+  }
 
-  app.use(cookieParser())
+  app.use(parallel([
+      // Parse application/x-www-form-urlencoded
+      bodyParser.urlencoded({ extended: false }),
+      // Parse application/json
+      bodyParser.json(),
+      express.static("public"),
+      cookieParser(),
+      // faster loadup - shrinks the HTTP load so it can be expanded by the browser.
+      compression()
+  ]));
 
   /* =============VIEWS============= */
-  const compression = require('compression');
-  const flash = require('connect-flash');
 
-  app.use(express.static("public"));
   app.engine('ejs', require('express-ejs-extend'));
   app.set('view engine', 'ejs');
   app.set('views', path.join(__dirname, 'views'))
   app.engine('ejs', require('ejs-locals'));
 
-  // faster loadup - shrinks the HTTP load so it can be expanded by the browser.
-  app.use(compression());
   // Show flash messages to the user.
-  app.use(flash());
   app.set('view cache', true);
 
   app.use(function (req, res, next) {
-      if (req.url.match(/^\/(css|js|img|font)\/.+/)) {
-          res.setHeader('Cache-Control', 'public, max-age=2h'); // cache header
-      }
-      next();
+    if (req.url.match(/^\/(css|js|img|font)\/.+/)) {
+      res.setHeader('Cache-Control', 'public, max-age=2h'); // cache header
+    }
+    next();
   });
 
   // /* =============ROUTES============= */
@@ -59,32 +75,28 @@ require('newrelic')
   const search = require('./routes/search')
   const tweets = require('./routes/tweets');
   const index = require('./routes/index');
-  const load = require('./tests/test_interface');
+  const api = require('./routes/api');
+  const test = require('./tests/test_interface');
 
   const populateUser = require('./middleware/populateUser');
 
-  app.use('/api/v1/:API_TOKEN', function(req, res, next) {
-    req.API_TOKEN = req.params.API_TOKEN
-    if (req.API_TOKEN == 'loaderio') {
-      req.body = req.query;
+  app.use(function(req, res, next) {
+    if (req.query && req.query.loaderio == "true") {
+      req.body = req.query
     }
     next();
-  });
-
-  app.use(function(req, res, next) {
-    console.log("got request")
-    next()
   })
 
-  app.use('/api/v1/:API_TOKEN', populateUser);
+  app.use('/', populateUser);
 
-  app.use('/api/v1/:API_TOKEN/login', login);
-  app.use('/api/v1/:API_TOKEN/logout', logout);
-  app.use('/api/v1/:API_TOKEN/user', users);
-  app.use('/api/v1/:API_TOKEN/search', search);
-  app.use('/api/v1/:API_TOKEN/tweets', tweets);
-  app.use('/api/v1/:API_TOKEN/', index);
-  app.use('/api/v1/:API_TOKEN/test', load);
+  app.use('/api/v1/:API_TOKEN/', api);
+  app.use('/login', login);
+  app.use('/logout', logout);
+  app.use('/user', users);
+  app.use('/search', search);
+  app.use('/tweets', tweets);
+  app.use('/', index);
+  app.use('/test', test);
 
   /* ===========ERROR HANDLER=========== */
   // Catch 404 and forward to error handler.
@@ -105,3 +117,5 @@ require('newrelic')
 
   app.listen(port);
   exports = module.exports = app;
+
+}

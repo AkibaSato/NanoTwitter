@@ -9,10 +9,10 @@ module.exports.getLogin = (req, res) => {
 module.exports.logout = async (req, res) => {
 
   try {
-    await this.client.delAsync(req.API_TOKEN);
-
-  } catch (err) {}
-  res.redirect('/api/v1/public/');
+    await redis.delAsync(req.cookies.ntSessionId);
+    res.redirect('/');
+  } catch (err) {
+  }
 
 };
 
@@ -25,7 +25,7 @@ module.exports.signup = async (req, res) => {
     });
 
     if (user) {
-      return res.redirect('/api/v1/public/user/register')
+      return res.redirect('/user/register')
     }
 
     user = await User.create({
@@ -38,15 +38,13 @@ module.exports.signup = async (req, res) => {
 
     var ntSessionId = generateUid();
     res.cookie('ntSessionId', ntSessionId);
-    res.redirect('/api/v1/' + user.id + '/');
-    await redis.setAsync(user.id, JSON.stringify(
-      { ntSessionId: ntSessionId,
-        user: { id: user.id, username: user.username, password: user.password }
-      }
-    ));
+    await redis.setAsync(ntSessionId, JSON.stringify({ user: {
+      username: user.username,  password: user.password, id: user.id
+    } }));
+    res.redirect('/user/' + user.id + '/');
 
   } catch (err) {
-    res.redirect('/api/v1/public/user/register');
+    res.redirect('/user/register');
 
   }
 }
@@ -63,20 +61,18 @@ module.exports.login = async (req, res) => {
 
     if (!user || user.password != req.body.password) {
 
-      return res.redirect('/api/v1/public/login');
+      return res.redirect('/login');
     }
 
     var ntSessionId = generateUid();
     res.cookie('ntSessionId', ntSessionId);
 
-    res.redirect('/api/v1/' + user.id + '/');
+    await redis.setAsync(ntSessionId, JSON.stringify({ user: user.get() }) );
 
-    await redis.setAsync(user.id, JSON.stringify(
-      { ntSessionId: ntSessionId, user: user.get() }
-    ));
+    res.redirect('/user/' + user.id);
 
   } catch (err) {
-    res.redirect('/api/v1/public/login');
+    res.redirect('/login');
 
   }
 }

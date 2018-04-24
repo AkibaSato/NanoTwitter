@@ -8,7 +8,11 @@ var axios = require('axios')
 // TODO: Parse tweet content in background and insert into Hashtag and Mention.
 module.exports.tweet = async (req, res) => {
   try {
-    res.redirect('/api/v1/' + req.API_TOKEN + '/user/' + req.user.id);
+    res.redirect('/user/' + req.user.id);
+
+    console.log("Entered")
+    console.log(req)
+    console.log(req.user.id)
 
     await axios.post(tweetServiceURL + '/tweet', {
         content: req.body.content,
@@ -34,8 +38,7 @@ module.exports.getTweet = async (req, res) => {
 
     res.render('tweet', {
       me: req.user,
-      tweet: tweet.data,
-      API_TOKEN: req.API_TOKEN
+      tweet: tweet.data
     });
   } catch (err) {
     res.status(404).send(err)
@@ -51,14 +54,14 @@ module.exports.like = async (req, res) => {
 
   try {
 
+    res.redirect('/user/' + req.user.id);
+
     var tweetId = parseInt(req.params.id);
     var userId = parseInt(req.user.id);
 
     console.log("TWEET ID: " + tweetId);
     console.log("USER ID: " + userId);
 
-
-    res.redirect('/api/v1/' + req.API_TOKEN + '/user/' + userId);
 
 
     if (isNaN(userId)) {
@@ -80,7 +83,8 @@ module.exports.unlike = async (req, res) => {
     var tweetId = parseInt(req.params.id);
     var userId = parseInt(req.user.id);
 
-    res.redirect('/api/v1/' + req.API_TOKEN + '/user/' + userId);
+    res.redirect('/user/' + req.user.id);
+
 
     if (isNaN(userId)) {
       throw new Error("NaN parameter");
@@ -113,9 +117,8 @@ module.exports.getLikes = async (req, res) => {
       data: { id: id }
     });
 
-    console.log("GET LIKES3");
 
-    res.render('likes', { me: req.user, user: req.user, users: likes.data, API_TOKEN: req.API_TOKEN })
+    res.render('likes', { me: req.user, user: req.user, users: users.data })
 
   } catch (err) {
     res.status(404).send(err)
@@ -124,6 +127,8 @@ module.exports.getLikes = async (req, res) => {
 
 module.exports.retweet = async (req, res) => {
   try {
+
+    res.redirect('/user/' + req.user.id);
 
     console.log("CONTENT: " + content);
 
@@ -135,7 +140,6 @@ module.exports.retweet = async (req, res) => {
     console.log("CONTENT: " + content);
 
 
-    res.redirect('/api/v1/' + req.API_TOKEN + '/user/' + userId);
 
     if (isNaN(userId)) {
       throw new Error("NaN parameter");

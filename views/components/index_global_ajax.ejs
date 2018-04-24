@@ -1,0 +1,13 @@
+<button id="global" class="btn-default" type="submit" value="Global"><p6 id="global">See the Global Timeline</p6></button>
+<br>
+
+
+<script>
+$(document).ready(function(){
+    $("#global").click(function(){
+        $.get("global", function(data, status){
+          $("#timeline").html(data);
+        });
+    });
+});
+</script>

@@ -5,6 +5,9 @@ var router = express.Router();
 var isLoggedIn = require('../middleware/isLoggedIn');
 var session = require('../controllers/session');
 
+var paginate = require('express-paginate');
+router.use(paginate.middleware(5, 50));
+
 router.get('/register', users.getSignup);
 router.get('/:id', users.getUser);
 router.get('/:id/tweets', users.getUser);

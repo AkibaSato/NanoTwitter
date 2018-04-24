@@ -3,6 +3,9 @@ var config = require('../config/config.json')[env]
 var tweetServiceURL = config.tweet_service
 var userServiceURL = config.user_service
 
+
+
+
 var axios = require('axios');
 
 module.exports.getSignup = (req, res) => {
@@ -14,7 +17,7 @@ module.exports.follow = async (req, res) => {
     var followeeId = parseInt(req.params.id);
     var followerId = req.user.id;
 
-    res.redirect('/api/v1/' + req.API_TOKEN + '/user/' + followeeId);
+    res.redirect('/user/' + followeeId);
 
     if (isNaN(followeeId)) {
       throw new Error("NaN parameter");
@@ -38,7 +41,7 @@ module.exports.unfollow = async (req, res) => {
     var followeeId = parseInt(req.params.id);
     var followerId = req.user.id;
 
-    res.redirect('/api/v1/' + req.API_TOKEN + '/user/' + followeeId);
+    res.redirect('/user/' + followeeId);
 
     if (isNaN(followeeId)) {
       throw new Error("NaN parameter");
@@ -80,8 +83,10 @@ module.exports.getUser = async (req, res) => {
     var [userData, tweetsData] = await axios.all([getUser, getTweets]);
     console.log("GET USERR3")
 
+
+
     res.render('user', {
-      user: userData.data, tweets: tweetsData.data, me: req.user, API_TOKEN: req.API_TOKEN
+      user: userData.data, tweets: tweetsData.data, me: req.user
     });
 
   } catch (err) {
@@ -109,7 +114,7 @@ module.exports.getFolloweeTweets = async (req, res) => {
     var [userData, tweetsData] = await axios.all([getUser, getTweets]);
 
     res.render('followee_tweets', {
-      user: userData.data, tweets: tweetsData.data, me: req.user, API_TOKEN: req.API_TOKEN
+      user: userData.data, tweets: tweetsData.data, me: req.user
     })
   } catch (err) {
 
@@ -136,7 +141,7 @@ module.exports.getFollowees = async (req, res) => {
 
 
     res.render('following', {
-      user: userData.data, followees: followerData.data , me: req.user, API_TOKEN: req.API_TOKEN
+      user: userData.data, followees: followerData.data , me: req.user
     });
   } catch (err) {
 
@@ -163,7 +168,7 @@ module.exports.getFollowers =  async (req, res) => {
     var [userData, followerData] = await axios.all([getUser, getFollowers]);
 
     res.render('followers', {
-      user: userData.data, followers: followerData.data , me: req.user, API_TOKEN: req.API_TOKEN
+      user: userData.data, followers: followerData.data , me: req.user
     })
   } catch (err) {
 

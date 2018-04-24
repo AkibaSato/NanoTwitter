@@ -1,0 +1,52 @@
+
+<div class="tweet-list">
+  <% for(var i = 0; i < tweets2.length; i++) { %>
+    <div class="tweet-box">
+      <div class="tweets">
+        <div class="row">
+          <h4><% if (tweets2[i].originalId) { %>
+            Retweeted from Tweet #<%= tweets2[i].originalId %>
+            <% } %>
+          </h4>
+        </div>
+        <div class="row">
+          <h2><%= tweets2[i].user.fname %> <%= tweets2[i].user.lname %>  </h2>
+          <% date = new Date(Date.parse(tweets2[i].createdAt)) %>
+          <h3><span><a href="/user/<%= tweets2[i].user.id %>"> @<%= tweets2[i].user.username %></a></span> • <%= date.getDate() %> <%= date.getMonth() %> <%= date.getFullYear() %></h3>
+
+        </div>
+        <div class="row">
+          <h4><%= tweets2[i].content %></h4>
+        </div>
+        <div class="tweet-border"></div>
+        <div class="row">
+          <div class="col-3">
+            <div class="retweet_button">
+              <%- include retweet_ajax2.ejs %>
+            </div>
+          </div>
+          <div class="col-3">
+            <div class="retweet_button">
+              <%- include like_ajax2.ejs %>
+            </div>
+          </div>
+          <div class="col-3">
+            <div class="retweet_button">
+              <%- include unlike_ajax2.ejs %>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div style="float: right;" class="retweet_button">
+            <span><a href="/tweets/<%= tweets2[i].id %>/likes">Get Likes</a></span>
+            <span><a href="/tweets/<%= tweets2[i].id %>/retweets">Get Retweets2</a></span>
+          </div>
+        </div>
+        <br>
+        <hr/>
+        <br>
+      </div>
+    </div>
+
+  <% } %>
+</div>

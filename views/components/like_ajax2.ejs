@@ -1,0 +1,17 @@
+<form id="my-form3-<%= tweets2[i].id %>">
+  <button id="new_like_ajax" class="btn-default" type="submit" value="Like"><p3 id="like-<%= tweets2[i].id %>">Like</p3></button>
+</form>
+
+<script>
+    $('#my-form3-<%= tweets2[i].id %>').submit(function(event) {
+        event.preventDefault();
+
+        var $form = $(this), url = "/tweets/<%= tweets2[i].id %>/like";
+        var posting = $.post( url );
+
+        posting.done(function( data ) {
+          $("#like-<%= tweets2[i].id %>").text('Liked');
+          $("#unlike-<%= tweets2[i].id %>").text('Unlike');
+        });
+    });
+</script>

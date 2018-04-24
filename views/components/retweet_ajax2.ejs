@@ -1,0 +1,23 @@
+<form id="my-form5-<%= tweets2[i].id %>" method="post">
+  <input type="hidden" id="content" name="content" value="<%= tweets2[i].content %>">
+  <button id="retweet_ajax" class="btn-default" type="submit" value="Retweet"><p5 id="retweet-<%= tweets2[i].id %>">Retweet</p5></button>
+</form>
+
+
+
+
+
+
+<script>
+    $('#my-form5-<%= tweets2[i].id %>').submit(function(event) {
+        event.preventDefault();
+
+        var $form = $(this), url = "/tweets/<%= tweets2[i].id %>/retweet";
+        var posting = $.post( url, { content: $('#content').val() } );
+
+        posting.done(function( data ) {
+          $("#retweet-<%= tweets2[i].id %>").text('Retweeted');
+          console.log('Retweeted');
+        });
+    });
+</script>
