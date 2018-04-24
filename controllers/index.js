@@ -2,11 +2,11 @@ var env = process.env.NODE_ENV || 'development';
 var config = require('../config/config.json')[env]
 var tweetServiceURL = config.tweet_service
 var userServiceURL = config.user_service
-var async=require('async')
+// var async=require('async')
 var axios = require('axios')
-var redis = require("redis")
-var REDIS_PORT = process.env.REDISCLOUD_URL || process.env.REDIS_PORT;
-var client = redis.createClient(REDIS_PORT);
+// var redis = require("redis")
+// var REDIS_PORT = process.env.REDISCLOUD_URL || process.env.REDIS_PORT;
+// var client = redis.createClient(REDIS_PORT);
 
 module.exports.index = async (req, res) => {
   try {
