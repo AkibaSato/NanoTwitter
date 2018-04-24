@@ -4,7 +4,9 @@ var tweetServiceURL = config.tweet_service
 var userServiceURL = config.user_service
 var async=require('async')
 var axios = require('axios')
-var client = require('../config/redis')
+var redis = require("redis")
+var REDIS_PORT = process.env.REDISCLOUD_URL || process.env.REDIS_PORT;
+var client = redis.createClient(REDIS_PORT);
 
 module.exports.index = async (req, res) => {
     client.get('homeHTML', async function (err, data) {

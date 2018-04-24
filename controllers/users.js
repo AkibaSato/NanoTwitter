@@ -5,6 +5,9 @@ var userServiceURL = config.user_service
 var client = require('../config/redis')
 
 var axios = require('axios');
+var redis = require("redis")
+var REDIS_PORT = process.env.REDISCLOUD_URL || process.env.REDIS_PORT;
+var client = redis.createClient(REDIS_PORT);
 
 module.exports.getSignup = (req, res) => {
   res.render('signup');
@@ -96,8 +99,13 @@ module.exports.getUser = async (req, res) => {
       res.render('user', {
         user: userData.data, tweets: tweetsData.data, me: req.user
       }, (err, html) => {
-        client.set(key, html, 'EX', 60)
-        res.send(html)
+        try {
+          client.set(key, html, 'EX', 60)
+          res.send(html)
+        } catch (e) {
+          console.log(e)
+        }
+
       });
 
     })
