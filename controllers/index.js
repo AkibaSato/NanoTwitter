@@ -9,16 +9,14 @@ var REDIS_PORT = process.env.REDISCLOUD_URL || process.env.REDIS_PORT;
 var client = redis.createClient(REDIS_PORT);
 
 module.exports.index = async (req, res) => {
-    client.get('homeHTML', async function (err, data) {
-      var timeline
-      var user
+    var timeline
+    var user
 
+    client.get('homeHTML', async function (err, data) {
       if(err) {
         res.send(err)
       } else if(!data) {
-
         if (req.user) {
-
           var getUser = axios.get(userServiceURL + '/user', {
             data: { id: req.user.id }
           });
@@ -29,7 +27,6 @@ module.exports.index = async (req, res) => {
           var [userData, timelineData] = await axios.all([getUser, getTimeline]);
           req.user = userData.data
           timeline = timelineData
-
         } else {
           // If you are not, you see the most recent tweets from randos.
           timeline = await axios.get(tweetServiceURL + '/timeline/global', {});
@@ -38,7 +35,7 @@ module.exports.index = async (req, res) => {
         res.render('index', {
           me: req.user, user: req.user, tweets: timeline.data
         }, function(err, html){
-          client.set('homeHTML', html, 'EX', 60, function(err, data){
+          client.set('homeHTML', html, function(err, data){
               if(err) {
                 res.send(err)
               } else {
@@ -50,5 +47,7 @@ module.exports.index = async (req, res) => {
         res.send(data);
       }
   })
+
+
 
 };
