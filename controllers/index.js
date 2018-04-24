@@ -35,7 +35,10 @@ module.exports.index = async (req, res) => {
       req.user = userData.data
       timeline = timelineData
 
-      callback = (err, html) => { redis.set(key, html, 'EX', 60) }
+      callback = (err, html) => {
+        redis.set('userpageHTML:' + req.user.id, html, 'EX', 60);
+        res.send(html);
+       }
 
     } else {
       var key = 'homepageHTML'
@@ -48,7 +51,10 @@ module.exports.index = async (req, res) => {
       // If you are not, you see the most recent tweets from randos.
        timeline = await axios.get(tweetServiceURL + '/timeline/global', {});
 
-       callback = (err, html) => { redis.set(key, html, 'EX', 60) }
+       callback = (err, html) => {
+         redis.set('homepageHTML', html, 'EX', 60);
+         res.send(html);
+       }
 
     }
 
