@@ -33,19 +33,7 @@ module.exports.index = async (req, res) => {
         }
 
         res.render('index', {
-          me: req.user, user: req.user, tweets: [
-              {
-                  "content": "hello",
-                  "createdAt": "2018-04-06T03:10:04.011Z",
-                  "user": {
-                      "fullName": "yoyo yoyo",
-                      "id": 1,
-                      "username": "yoyo",
-                      "fname": "yoyo",
-                      "lname": "yoyo"
-                  }
-              }
-            ], API_TOKEN: req.API_TOKEN
+          me: req.user, user: req.user, tweets: timeline.data, API_TOKEN: req.API_TOKEN
         }, function(err, html){
           client.set('homeHTML', html, function(err, data){
               if(err) {
