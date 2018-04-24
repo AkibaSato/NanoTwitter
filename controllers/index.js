@@ -9,45 +9,60 @@ var REDIS_PORT = process.env.REDISCLOUD_URL || process.env.REDIS_PORT;
 var client = redis.createClient(REDIS_PORT);
 
 module.exports.index = async (req, res) => {
-    var timeline
-    var user
+  try {
+  var timeline
+  var user
+  var callback
+  console.log()
+  if (req.user) {
+    var key = 'userHomeHTML:' + req.user.id
+    var html = await redis.getAsync(key);
 
-    client.get('homeHTML', async function (err, data) {
-      if(err) {
-        res.send(err)
-      } else if(!data) {
-        if (req.user) {
-          var getUser = axios.get(userServiceURL + '/user', {
-            data: { id: req.user.id }
-          });
-          // If you are logged in, you see tweets from the people you follow.
-          var getTimeline = axios.get(tweetServiceURL + '/timeline/followees', {
-            data: { id: req.user.id }
-          });
-          var [userData, timelineData] = await axios.all([getUser, getTimeline]);
-          req.user = userData.data
-          timeline = timelineData
-        } else {
-          // If you are not, you see the most recent tweets from randos.
-          timeline = await axios.get(tweetServiceURL + '/timeline/global', {});
-        }
+    if (html) {
+      return res.send(html)
+    }
 
-        res.render('index', {
-          me: req.user, user: req.user, tweets: timeline.data, API_TOKEN: req.API_TOKEN
-        }, function(err, html){
-          client.set('homeHTML', html, function(err, data){
-              if(err) {
-                res.send(err)
-              } else {
-                res.send(html);
-              }
-            })
-        })
-      } else {
-        res.send(data);
-      }
-  })
+    var getUser = axios.get(userServiceURL + '/user', {
+      data: { id: req.user.id }
+    });
 
+    // If you are logged in, you see tweets from the people you follow.
+    var getTimeline = axios.get(tweetServiceURL + '/timeline/followees', {
+      data: { id: req.user.id }
+    });
 
+    var [userData, timelineData] = await axios.all([getUser, getTimeline]);
 
+    req.user = userData.data
+    timeline = timelineData
+
+    callback = (err, html) => {
+      redis.set('userHomeHTML:' + req.user.id, html, 'EX', 60);
+      res.send(html);
+     }
+
+  } else {
+    var key = 'globalHomeHTML'
+    var html = await redis.getAsync(key);
+
+    if (html) {
+      return res.send(html)
+    }
+
+    // If you are not, you see the most recent tweets from randos.
+     timeline = await axios.get(tweetServiceURL + '/timeline/global', {});
+
+     callback = (err, html) => {
+       redis.set('globalHomeHTML', html, 'EX', 60);
+       res.send(html);
+     }
+
+  }
+
+  res.render('index', {
+    me: req.user, user: req.user, tweets: timeline.data }, callback)
+
+} catch (err) {
+  console.log(err)
+}
 };
