@@ -20,7 +20,7 @@ module.exports.bulkFollow = function (req, relationship) {
 };
 
 module.exports.destroyAll=function(req, res, next) {
-  models.Relationship.destroy({where: {}, truncate : true, cascade: true }).then(function () {});
+  return models.Relationship.destroy({where: {}, truncate : true, cascade: true });
 
 };
 

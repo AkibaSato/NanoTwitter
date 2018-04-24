@@ -34,7 +34,6 @@ module.exports.getFollowees=async function (req, res, id) {
   return models.Relationship.findAll(
     {attributes: ['followerId'], where: searchData}
   ).then(function(newRelationship) {
-    console.log(JSON.stringify(newRelationship))
     return JSON.parse(JSON.stringify(newRelationship));
   }).catch(function(err) {
     console.log(err)
@@ -51,15 +50,27 @@ module.exports.getUser = function (req, res, userID) {
     res.status(404).send(err)});
 };
 
+module.exports.findUserFromName = function (req, res, username) {
+  return models.User.findOne({where: {username: username}})
+  .then(function(user) {
+    return JSON.parse(JSON.stringify(user))})
+  .catch(function(err) {
+    res.status(404).send(err)});
+};
+
+
 
 
 module.exports.create=async function(req, user_data){
   return models.User.create(user_data)
-  .then(function(user) {return JSON.parse(JSON.stringify(user))});
+  .then(function(user) {
+    return JSON.parse(JSON.stringify(user)
+  )});
 };
 
+
 module.exports.bulkCreate=async function(req, user_data){
-  return models.User.bulkCreate(user_data, {individualHooks: true})
+  return models.User.bulkCreate(user_data, {returning: true})
   .then(function(user) {
     return JSON.parse(JSON.stringify(user)
   )})
@@ -83,7 +94,6 @@ module.exports.randomUser=async function(req, res, numberUsers, userID) {
 , limit: parseInt(numberUsers), offset: 1, where: {
     id: {not: parseInt(userID)}
   } }).then(function(user) {
-
     return JSON.parse(JSON.stringify(user))
   }).catch(function(err) {
       console.log(err)
@@ -95,8 +105,8 @@ module.exports.getAllCount=function(req, res, next) {
 };
 
 module.exports.destroyAll=function(req, res, next) {
-    // models.User.destroy({where: {}, truncate : true, cascade: true }).then(function () {});
-    models.User.truncate({ cascade: true });
+    return models.User.destroy({where: {}});
+    // models.User.truncate({ cascade: true });
 
 };
 //
@@ -114,7 +124,7 @@ module.exports.generate=async function(req, data) {
   return User.create(data).then(function(newUser) {
     return newUser;
   }).catch(function(err) {
-    return done(err);
+    console.log(err)
   });
 };
 
@@ -123,7 +133,7 @@ module.exports.bulkGenerate=async function(req, data) {
   return models.User.bulkCreate(data).then(function(newUser) {
     return JSON.parse(JSON.stringify(newUser));
   }).catch(function(err) {
-    return err;
+    console.log(err)
   });
 };
 
