@@ -4,7 +4,7 @@ var tweetServiceURL = config.tweet_service
 var userServiceURL = config.user_service
 // var async=require('async')
 var axios = require('axios')
-// var redis = require("redis")
+var redis = require('../config/redis')
 // var REDIS_PORT = process.env.REDISCLOUD_URL || process.env.REDIS_PORT;
 // var client = redis.createClient(REDIS_PORT);
 
