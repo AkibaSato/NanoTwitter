@@ -12,7 +12,7 @@ module.exports.getAll=async function(req, res, next) {
 
 
 module.exports.bulkFollow = function (req, relationship) {
-  models.Relationship.bulkCreate(relationship, { individualHooks: true }).then(function(newRelationship) {
+  models.Relationship.bulkCreate(relationship).then(function(newRelationship) {
     return JSON.parse(JSON.stringify(newRelationship));
   }).catch(function(err) {
     console.log(err)
