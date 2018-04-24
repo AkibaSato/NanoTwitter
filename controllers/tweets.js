@@ -118,7 +118,7 @@ module.exports.getLikes = async (req, res) => {
     });
 
 
-    res.render('likes', { me: req.user, user: req.user, users: users.data })
+    res.render('likes', { me: req.user, user: req.user, users: likes.data })
 
   } catch (err) {
     res.status(404).send(err)

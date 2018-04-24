@@ -12,7 +12,10 @@
   </div>
   <div class="col-6">
     <div class="box"></div>
+
     <div class="tweet-list">
+      <h2><span><a href="/user/<%= me.id %>/followee_tweets">Followee Tweets</a></span></h2><br>
+
       <% for(var i = 0; i < followees.length; i++) { %>
         <div class="tweets">
           <div class="row">

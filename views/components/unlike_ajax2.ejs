@@ -1,19 +1,19 @@
-<form id="my-form4-<%= tweets2[i].id %>">
-  <button id="unlike_ajax" class="btn-default" type="submit" value="Unlike"><p4 id="unlike-<%= tweets2[i].id %>">Unlike</p4></button>
+<form id="my-form4-<%= tweets3[i].id %>">
+  <button id="unlike_ajax" class="btn-default" type="submit" value="Unlike"><p4 id="unlike-<%= tweets3[i].id %>">Unlike</p4></button>
 </form>
 
 
 
 <script>
-    $('#my-form4-<%= tweets2[i].id %>').submit(function(event) {
+    $('#my-form4-<%= tweets3[i].id %>').submit(function(event) {
         event.preventDefault();
 
-        var $form = $(this), url = "/tweets/<%= tweets2[i].id %>/unlike";
+        var $form = $(this), url = "/tweets/<%= tweets3[i].id %>/unlike";
         var posting = $.post( url );
 
         posting.done(function( data ) {
-          $("#unlike-<%= tweets2[i].id %>").text('Unliked');
-          $("#like-<%= tweets2[i].id %>").text('Like');
+          $("#unlike-<%= tweets3[i].id %>").text('Unliked');
+          $("#like-<%= tweets3[i].id %>").text('Like');
         });
     });
 </script>

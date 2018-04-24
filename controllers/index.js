@@ -39,7 +39,7 @@ module.exports.index = async (req, res) => {
 
       if (html) {
         console.log("USING CACHED USER");
-        // return res.send(html)
+        return res.send(html)
       }
 
       var getUser = axios.get(userServiceURL + '/user', {
@@ -74,7 +74,7 @@ module.exports.index = async (req, res) => {
 
       if (html) {
         console.log("USING CACHED GLOBAL");
-        // return res.send(html);
+        return res.send(html);
       }
 
       // If you are not, you see the most recent tweets from randos.
@@ -92,7 +92,7 @@ module.exports.index = async (req, res) => {
     }
 
     res.render('index', {
-      // me: req.user, user: req.user, tweets: timeline.data, tweets2: timeline2.data }, callback)
+      // me: req.user, user: req.user, tweets: timeline.data, tweets3: timeline2.data }, callback)
 
       // me: req.user, user: req.user, tweets: timeline.data })
       me: req.user, user: req.user, tweets: timeline.data }, callback)
@@ -109,17 +109,53 @@ module.exports.getGlobalTimeline =  async (req, res) => {
 
     if (globalTimeline) {
       console.log("USING CACHED GLOBAL");
-      // return res.send(html);
+      return res.send(globalTimeline);
     }
     timeline = await axios.get(tweetServiceURL + '/timeline/global', {});
     redis.set('globalTimeline', globalTimeline);
 
     // res.json({tweets: timeline.data});
-    res.render('components/tweets2', {
-      tweets2: timeline.data
+    res.render('components/tweets3', {
+      tweets3: timeline.data
     });
 
   } catch (err) {
-    res.status(404).send(err);
+
+  }
+};
+
+module.exports.getFolloweesTimeline =  async (req, res) => {
+  try {
+
+    var followeesTimeline = await redis.getAsync('followeesTimeline');
+
+    if (followeesTimeline) {
+      return res.send(followeesTimeline);
+    }
+
+    var getUser = axios.get(userServiceURL + '/user', {
+      data: { id: req.user.id }
+    }, console.log("GOT INDEX USER"));
+    //
+    // // If you are logged in, you see tweets from the people you follow.
+    var getTimeline = axios.get(tweetServiceURL + '/timeline/followees', {
+      data: { id: req.user.id }
+    }, console.log("GOT INDEX TIMELINE"));
+
+
+
+    var [userData, timelineData] = await axios.all([getUser, getTimeline]);
+
+    req.user = userData.data;
+    timeline = timelineData;
+    redis.set('followeesTimeline', followeesTimeline);
+
+    // res.json({tweets: timeline.data});
+    res.render('components/tweets', {
+      tweets: timeline.data
+    });
+
+  } catch (err) {
+
   }
 };
