@@ -10,14 +10,10 @@ module.exports.tweet = async (req, res) => {
   try {
     res.redirect('/user/' + req.user.id);
 
-    console.log("Entered")
-    console.log(req)
-    console.log(req.user.id)
-
     await axios.post(tweetServiceURL + '/tweet', {
         content: req.body.content,
-        userId: req.user.id,
-        parentId: req.body.parentId
+        parentId: req.body.parentId,
+        user: req.user
     });
   } catch (err) {
 

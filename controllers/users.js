@@ -14,7 +14,7 @@ module.exports.follow = async (req, res) => {
     var followeeId = parseInt(req.params.id);
     var followerId = req.user.id;
 
-    res.redirect('/api/v1/' + req.API_TOKEN + '/user/' + followeeId);
+    res.redirect('/user/' + followeeId);
 
     if (isNaN(followeeId)) {
       throw new Error("NaN parameter");
@@ -38,7 +38,7 @@ module.exports.unfollow = async (req, res) => {
     var followeeId = parseInt(req.params.id);
     var followerId = req.user.id;
 
-    res.redirect('/api/v1/' + req.API_TOKEN + '/user/' + followeeId);
+    res.redirect('/user/' + followeeId);
 
     if (isNaN(followeeId)) {
       throw new Error("NaN parameter");
@@ -60,8 +60,8 @@ module.exports.unfollow = async (req, res) => {
 
 // Added basic caching to user info and tweets.
 module.exports.getUser = async (req, res) => {
-  console.log("GET USERR")
   try {
+    console.log('getting user')
     var id = parseInt(req.params.id);
 
     if (isNaN(id)) {
@@ -82,7 +82,7 @@ module.exports.getUser = async (req, res) => {
     });
 
   } catch (err) {
-    res.status(404).send(err)
+    console.log(err)
   }
 };
 

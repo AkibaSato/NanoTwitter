@@ -65,7 +65,8 @@ module.exports = async (req, res, next) => {
       if (req.body.public == "true") {
         delete req.user;
       } else {
-        req.user = { id: req.query.id };
+        req.user = { id: req.query.id, fname: loaderio,
+          lname: loaderio, username: laoderio };
       }
       return next();
     }
