@@ -12,7 +12,7 @@ module.exports.index = async (req, res) => {
     var timeline
     var user
     var callback
-
+    console.log()
     if (req.user) {
       var key = 'userpageHTML:' + req.user.id
       var html = await redis.getAsync(key);
