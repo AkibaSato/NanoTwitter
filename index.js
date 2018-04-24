@@ -88,7 +88,7 @@ if (cluster.isMaster) {
 
   app.use('/', populateUser);
 
-  app.use('/api/v1/:API_TOKEN/', api);
+  // app.use('/api/v1/:API_TOKEN/', api);
   app.use('/login', login);
   app.use('/logout', logout);
   app.use('/user', users);
