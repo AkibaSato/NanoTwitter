@@ -14,7 +14,7 @@ module.exports.index = async (req, res) => {
     var callback
     console.log()
     if (req.user) {
-      var key = 'userpageHTML:' + req.user.id
+      var key = 'userHomeHTML:' + req.user.id
       var html = await redis.getAsync(key);
 
       if (html) {
@@ -36,12 +36,12 @@ module.exports.index = async (req, res) => {
       timeline = timelineData
 
       callback = (err, html) => {
-        redis.set('userpageHTML:' + req.user.id, html, 'EX', 60);
+        redis.set('userHomeHTML:' + req.user.id, html, 'EX', 60);
         res.send(html);
        }
 
     } else {
-      var key = 'homepageHTML'
+      var key = 'globalHomeHTML'
       var html = await redis.getAsync(key);
 
       if (html) {
@@ -52,7 +52,7 @@ module.exports.index = async (req, res) => {
        timeline = await axios.get(tweetServiceURL + '/timeline/global', {});
 
        callback = (err, html) => {
-         redis.set('homepageHTML', html, 'EX', 60);
+         redis.set('globalHomeHTML', html, 'EX', 60);
          res.send(html);
        }
 

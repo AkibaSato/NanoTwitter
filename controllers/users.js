@@ -2,6 +2,7 @@ var env = process.env.NODE_ENV || 'development';
 var config = require('../config/config.json')[env]
 var tweetServiceURL = config.tweet_service
 var userServiceURL = config.user_service
+var client = require('../config/redis')
 
 var axios = require('axios');
 
@@ -61,11 +62,25 @@ module.exports.unfollow = async (req, res) => {
 // Added basic caching to user info and tweets.
 module.exports.getUser = async (req, res) => {
   try {
-    console.log('getting user')
     var id = parseInt(req.params.id);
 
     if (isNaN(id)) {
       throw new Error("NaN parameter");
+    }
+
+    var html
+    var key
+
+    if (req.user) {
+      key = 'INuserpageHTML:' + id
+      html = await client.getAsync(key)
+    } else {
+      key = 'OUTuserpageHTML:' + id
+      html = await client.getAsync(key)
+    }
+
+    if (html) {
+      return res.send(html)
     }
 
     var getUser = axios.get(userServiceURL + '/user', {
@@ -75,11 +90,15 @@ module.exports.getUser = async (req, res) => {
       data: { id: id }
     });
 
+    var callback = (err, html) => {
+      client.set(key, html)
+      res.send(html)
+    }
 
     var [userData, tweetsData] = await axios.all([getUser, getTweets]);
     res.render('user', {
       user: userData.data, tweets: tweetsData.data, me: req.user
-    });
+    }, callback);
 
   } catch (err) {
     console.log(err)
