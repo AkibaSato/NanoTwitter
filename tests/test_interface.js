@@ -16,7 +16,6 @@ var sequelize = require("../models/index").sequelize
    sequelize.sync({force: true}).then(() => {
      resetTestUser(req)
    }, (err) => {
-     res.status(404).send(err);
    });
    next();
 

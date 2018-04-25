@@ -104,7 +104,6 @@ module.exports.getLikes = async (req, res) => {
     res.json(users.data)
 
   } catch (err) {
-    res.status(404).send(err)
   }
 };
 
@@ -123,7 +122,6 @@ module.exports.getTweet = async (req, res) => {
     res.json(tweet.data);
 
   } catch (err) {
-    res.status(404).send(err)
   }
 
 };
@@ -143,7 +141,6 @@ module.exports.getLikes = async (req, res) => {
     res.json(users.data)
 
   } catch (err) {
-    res.status(404).send(err)
   }
 };
 
@@ -162,7 +159,6 @@ module.exports.getRetweets = async (req, res) => {
     res.json(retweets.data)
 
   } catch (err) {
-    res.status(404).send(err)
   }
 }
 
@@ -178,7 +174,6 @@ module.exports.search = async (req, res) => {
     res.json(tweets.data);
 
   } catch (err) {
-    res.status(404).send(err)
   }
 };
 
@@ -200,7 +195,6 @@ module.exports.getUserTweets = async (req, res) => {
     res.json(tweets.data)
 
   } catch (err) {
-    res.status(404).send(err)
   }
 };
 
@@ -219,7 +213,6 @@ module.exports.getUser = async (req, res) => {
     res.json(user.data)
 
   } catch (err) {
-    res.status(404).send(err)
   }
 };
 
@@ -239,7 +232,6 @@ module.exports.getFollowees = async (req, res) => {
     res.json(followees.data)
 
   } catch (err) {
-    res.status(404).send(err)
   }
 
 };
@@ -259,6 +251,5 @@ module.exports.getFollowers =  async (req, res) => {
     res.json(followers.data)
 
   } catch (err) {
-    res.status(404).send(err)
   }
 };

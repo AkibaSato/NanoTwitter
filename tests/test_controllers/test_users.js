@@ -13,7 +13,6 @@ module.exports.followUser = function (req, res, followeeId, followerId) {
   models.Relationship.create(relationship).then(function(newRelationship) {
     return JSON.parse(JSON.stringify(newRelationship));
   }).catch(function(err) {
-    // res.status(404).send(err);
   });
 };
 
@@ -48,7 +47,7 @@ module.exports.getUser = function (req, res, userID) {
     return JSON.parse(JSON.stringify(user))})
   .catch(function(err) {
     console.log(err)
-    res.status(404).send(err)});
+    });
 };
 
 

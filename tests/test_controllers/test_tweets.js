@@ -6,7 +6,6 @@ module.exports.bulkTweet=async function(res, tweets) {
     return JSON.parse(JSON.stringify(tweet))
   }).catch(function(err) {
     console.log(err);
-    res.status(404).send(err);
   });
 }
 
@@ -18,7 +17,6 @@ module.exports.generate = async function (res, tweetData) {
       return JSON.parse(JSON.stringify(tweet))
   }).catch(function(err) {
     console.log(err);
-    res.status(404).send(err);
   });
 };
 

@@ -82,7 +82,6 @@ module.exports.getUser = async (req, res) => {
     });
 
   } catch (err) {
-    res.status(404).send(err)
   }
 };
 
@@ -109,7 +108,6 @@ module.exports.getFolloweeTweets = async (req, res) => {
       user: userData.data, tweets: tweetsData.data, me: req.user
     })
   } catch (err) {
-    res.status(404).send(err)
   }
 };
 
@@ -136,7 +134,6 @@ module.exports.getFollowees = async (req, res) => {
       user: userData.data, followees: followerData.data , me: req.user
     });
   } catch (err) {
-    res.status(404).send(err)
   }
 
 };
@@ -163,7 +160,6 @@ module.exports.getFollowers =  async (req, res) => {
       user: userData.data, followers: followerData.data , me: req.user
     })
   } catch (err) {
-    console.log(err)
-    res.status(404).send(err)
+
   }
 };
