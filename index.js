@@ -3,7 +3,6 @@ const express = require('express');
 const app = express();
 const port = process.env.PORT || 3000;
 const path    = require('path');
-const redis = require('redis');
 const WORKERS = process.env.WEB_CONCURRENCY || 1;
 const cluster = require('cluster');
 
