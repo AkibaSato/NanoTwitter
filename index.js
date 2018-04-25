@@ -1,3 +1,4 @@
+// require('newrelic')
 
 const express = require('express');
 const app = express();
@@ -65,6 +66,9 @@ if (cluster.isMaster) {
     next();
   });
 
+  app.get('/loaderio-b8095d66b5b969efcbc4abb9a440ef2f', function(req, res){
+    res.send('loaderio-b8095d66b5b969efcbc4abb9a440ef2f')
+  })
   // /* =============ROUTES============= */
   const login = require('./routes/login');
   const logout = require('./routes/logout');
