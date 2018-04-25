@@ -2,13 +2,17 @@ var env = process.env.NODE_ENV || 'development';
 var config = require('../config/config.json')[env]
 var tweetServiceURL = config.tweet_service
 var userServiceURL = config.user_service
-var redis = require('../config/redis');
 var axios = require('axios')
+var redis = require("redis")
+var REDIS_PORT = process.env.REDIS_URL || process.env.REDIS_PORT;
+var client = redis.createClient(REDIS_PORT);
+
 
 
 module.exports.index = async (req, res) => {
-  var html = await redis.getAsync('homeHTML');
-  res.send(html)
+   client.get('homeHTML', function(err, html) {
+     res.send(html)
+   });
   // res.render('index', {
   //       me: req.user, user: req.user, tweets: [
   //           {
