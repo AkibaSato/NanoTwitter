@@ -3,25 +3,27 @@ var config = require('../config/config.json')[env]
 var tweetServiceURL = config.tweet_service
 var userServiceURL = config.user_service
 var redis = require('../config/redis');
-
 var axios = require('axios')
 
+
 module.exports.index = async (req, res) => {
-  res.render('index', {
-        me: req.user, user: req.user, tweets: [
-            {
-                "content": "hello",
-                "createdAt": "2018-04-06T03:10:04.011Z",
-                "user": {
-                    "fullName": "yoyo yoyo",
-                    "id": 1,
-                    "username": "yoyo",
-                    "fname": "yoyo",
-                    "lname": "yoyo"
-                }
-            }
-          ]}
-        )
+  var html = await redis.getAsync('homeHTML');
+  res.send(html)
+  // res.render('index', {
+  //       me: req.user, user: req.user, tweets: [
+  //           {
+  //               "content": "hello",
+  //               "createdAt": "2018-04-06T03:10:04.011Z",
+  //               "user": {
+  //                   "fullName": "yoyo yoyo",
+  //                   "id": 1,
+  //                   "username": "yoyo",
+  //                   "fname": "yoyo",
+  //                   "lname": "yoyo"
+  //               }
+  //           }
+  //         ]}
+  // )
   // try {
   //   var timeline
   //   var user
