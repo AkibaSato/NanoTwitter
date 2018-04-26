@@ -14,7 +14,6 @@ router.get('/tweet', (req, res, next) => {
 
 router.get('/', (req, res, next) => {
   req.params.id = 1
-  req.user = { id: 1, fname: 'loader', lname: 'loader', username: 'loader' };
   users.getUser(req, res)
 });
 
