@@ -66,6 +66,9 @@ if (cluster.isMaster) {
     next();
   });
 
+  app.get('/loaderio-9d36f82c9435286460a24d8c3048aeeb', function(req, res){
+    res.send('loaderio-9d36f82c9435286460a24d8c3048aeeb')
+  })
   app.get('/loaderio-b8095d66b5b969efcbc4abb9a440ef2f', function(req, res){
     res.send('loaderio-b8095d66b5b969efcbc4abb9a440ef2f')
   })
