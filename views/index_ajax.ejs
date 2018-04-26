@@ -20,10 +20,16 @@
   <div class="col-6">
     <% if (me) { %>
       <%- include components/new_tweet.ejs %>
+      <div class="row">
+        <%- include components/index_global_ajax.ejs %>
+        <%- include components/index_user_ajax.ejs %>
+      </div>
+      <p6 id="timeline"><%- include components/tweets.ejs %></p6>
+
+
     <% } else { %>
       <div class="box"></div>
-      <h3><a href="/global">Global Timeline</a></h3>
+      <%- include components/tweets.ejs %>
     <% } %>
-    <%- include components/tweets.ejs %>
   </div>
 </div>
