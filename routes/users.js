@@ -1,20 +1,8 @@
 var express = require('express');
 var users = require('../controllers/users');
-var passport = require('passport');
 var router = express.Router();
 var isLoggedIn = require('../middleware/isLoggedIn');
 var session = require('../controllers/session');
-
-router.get('/testuser', (req, res, next) => {
-  req.params.id = 1
-  users.getUser(req, res)
-});
-
-router.get('/testuser/tweet', (req, res, next) => {
-  req.body = req.query
-  req.params.id = 1
-  users.getUser(req, res)
-});
 
 router.get('/register', users.getSignup);
 router.get('/:id', users.getUser);

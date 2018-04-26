@@ -14,6 +14,6 @@ module.exports.search = async (req, res) => {
     res.render("search", { tweets: tweets.data, me: req.user });
 
   } catch (err) {
-    res.status(404).send(err)
+
   }
 };

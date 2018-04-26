@@ -9,26 +9,18 @@ function sleep(ms) {
 }
 
 
-module.exports.loadData=async function(req, res, tweets_num) {
+module.exports.loadData= async function(req, res, tweets, users, follows) {
   var current=this;
-  this.loadUsers(req, res).then(
-    current.loadTweets(req, res, tweets_num)
-    // current.loadFollows(req, res)
-
-  )
-
-
-  // console.log("done")
-  // this.loadTweets(req,res, tweets_num)
-    // this.loadFollows(req, res)
-  //   res.json({})
+  await current.loadUsers(req, res, users)
+  await current.loadTweets(req, res, tweets)
+  await current.loadFollows(req, res, follows)
 };
 
-module.exports.loadFollows= function(req, res) {
+module.exports.loadFollows= function(req, res, followCount) {
   allFollows=[]
-  fs.readFile('seeds/follows.csv', 'utf8', async function (err, data) {
+  fs.readFile('./seeds/follows.csv', 'utf8', async function (err, data) {
     const dataA = data.split(/\r?\n/);  //Be careful if you are in a \r\n world...
-    var size3  = dataA.length;
+    var size3  = (followCount || dataA.length)
     for(i=0; i<size3 && dataA[i]; i++) {
       dataLine=dataA[i].split(",")
       followerID=parseInt(dataLine[0])
@@ -36,67 +28,73 @@ module.exports.loadFollows= function(req, res) {
       var data = {followerId: followerID,  followeeId: followingID  }
       allFollows.push(data);
     };
-   Follows.bulkFollow(res, allFollows)
+   return Follows.bulkFollow(res, allFollows)
   });
 }
 
 module.exports.loadTweets= function(req, res, tweets_num) {
   allTweets=[]
-  fs.readFile('seeds/tweets.csv', 'utf8', function (err, data) {
+  fs.readFile('./seeds/tweets.csv', 'utf8', function (err, data) {
     const dataArray = data.split(/\r?\n/);  //Be careful if you are in a \r\n world...
-    var size2  = (tweets_num || dataArray.length);
-    for(i=0; i<1 && dataArray[i]; i++) {
+    var size1  = (tweets_num || dataArray.length);
+    for(i=0; i<size1 && dataArray[i] && dataArray[i]!=null; i++) {
       dataLine=dataArray[i].split(",")
       data={userId: parseInt(dataLine[0]), content: dataLine[1].trim()};
       allTweets.push(data);
     };
-    Tweet.bulkTweet(res, allTweets)
+    return Tweet.bulkTweet(res, allTweets)
   });
 }
 
-module.exports.loadUsers= async function(req, res) {
+module.exports.loadUsers= function(req, res, userCount) {
+
   allUsers=[]
   fs.readFile('seeds/users.csv', 'utf8', function (err, data) {
     const dataArray = data.split(/\r?\n/);  //Be careful if you are in a \r\n world...
-    var size  = dataArray.length;
-    for(i=0; i<size && dataArray[i]; i++) {
+    var user="";
+    for(i=0; i<dataArray.length-1 && dataArray[i]; i++) {
       dataLine=dataArray[i].split(",")
-      data={id: parseInt(dataLine[0]), fname: dataLine[1].trim(), username: faker.internet.userName(), email: faker.internet.email(), password: faker.internet.password()};
+      data={fname: dataLine[1].trim(),lane:"", username: user+i, email: faker.internet.email(), password: faker.internet.password()};
       allUsers.push(data);
-    };
+    };  
     return User.bulkGenerate(res, allUsers)
-
   });
+  
 
 }
-
 module.exports.fakeUserTweet = async function (req, res, users, tweets) {
+  
   userData=[];
+  
   for(i=0; i<users; i++) {
-    userData.push({fname: faker.name.firstName(),lname: faker.name.lastName(), username: faker.internet.userName(), email: faker.internet.email(), password: faker.internet.password()});
+    userData.push({fname: faker.name.firstName(),lane:"lastname", username: faker.internet.userName() , email: faker.internet.email(), password: faker.internet.password()});
   }
-  User.bulkCreate(req, userData).then(function(user){
+  User.bulkCreate(req, userData)
+  .then(function(user){
+    allTweets=[];
     fs.readFile('seeds/tweets.csv', 'utf8', function (err, data) {
       const dataArray = data.split(/\r?\n/);
       for(i=0; i<users; i++) {
         u_id=user[i]['id']
-          allTweets=[];
-          for(j=0; j<tweets; j++) {
+        for(j=0; j<tweets; j++) {
             line=dataArray[j].split(",");
-            allTweets.push({content: line[1], userId: u_id})
+            allTweets.push({content: line[1], userId: parseInt(u_id)})
           };
-          t= Tweet.bulkTweet(req, allTweets);
-      };
-    });
+        };
+        // console.log(allTweets)
+        Tweet.bulkTweet(req, allTweets);
+
+    })
+  }).catch(function(err){
+    console.log(err)
   })
 
 
 };
 
 module.exports.createNTweets= async function(req, res, userID, tweets) {
-
+  tweetData=[]  
   user= await User.getUser(req, res, userID)
-  tweetData=[]
   fs.readFile('seeds/tweets.csv', 'utf8', function (err, data) {
     const dataArray = data.split(/\r?\n/);  //Be careful if you are in a \r\n world...
     for(i=0; i<tweets; i++) {
@@ -125,8 +123,6 @@ module.exports.randomNFollowN = async function (req, res, numToFollow) {
   followingUsers=await User.randomUser(req, res, numToFollow, -1)
   for(i=0; i<followingUsers.length; i++) {
     userID=parseInt(followingUsers[i]['id'])
-    console.log(userID)
-    console.log(followingUsers.length)
     followerUsers=await User.randomUser(req, res, numToFollow, userID)
     for(j=0; j<followerUsers.length; j++) {
       followerID=parseInt(followerUsers[j]['id'])

@@ -38,11 +38,6 @@ Non-logged-in: /api/v1/public/...
 module.exports = async (req, res, next) => {
   try {
 
-    if (req.IS_LOADERIO) {
-      req.user = { id: 1, fname: 'loader', lname: 'loader', username: 'loader' };
-      return next();
-    }
-
     /* ====== 1. If the request is from client ======= */
 
     // If it is a public page, you don't have to populate the user.

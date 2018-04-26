@@ -60,9 +60,10 @@ module.exports.unfollow = async (req, res) => {
 
 // Added basic caching to user info and tweets.
 module.exports.getUser = async (req, res) => {
-  console.log("GET USERR")
   try {
+
     var id = parseInt(req.params.id);
+
 
     if (isNaN(id)) {
       throw new Error("NaN parameter");
@@ -82,7 +83,7 @@ module.exports.getUser = async (req, res) => {
     });
 
   } catch (err) {
-    res.status(404).send(err)
+    console.log(err)
   }
 };
 
@@ -109,7 +110,6 @@ module.exports.getFolloweeTweets = async (req, res) => {
       user: userData.data, tweets: tweetsData.data, me: req.user
     })
   } catch (err) {
-    res.status(404).send(err)
   }
 };
 
@@ -136,7 +136,6 @@ module.exports.getFollowees = async (req, res) => {
       user: userData.data, followees: followerData.data , me: req.user
     });
   } catch (err) {
-    res.status(404).send(err)
   }
 
 };
@@ -163,7 +162,6 @@ module.exports.getFollowers =  async (req, res) => {
       user: userData.data, followers: followerData.data , me: req.user
     })
   } catch (err) {
-    console.log(err)
-    res.status(404).send(err)
+
   }
 };

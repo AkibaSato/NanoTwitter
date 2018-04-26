@@ -5,13 +5,19 @@ let Tweet = require('./test_controllers/test_tweets');
 var Relationship = require('./test_controllers/test_relationships');
 let Follower = require('./test_controllers/test_relationships');
 let Loader=require('./data_loader');
-testuser=null;
 const index=require('./test_controllers/test_index');
 test_param={fname: "testuser",lname: "testuser", username: "testuser", email: "testuser@sample.com", password: "password"};
-test_id=-1;
 var sequelize = require("../models/index").sequelize
- //DONE
 
+
+
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+/**
+ * post request to url/reset/all that deletes all database information and creates testuser with id=1
+ */
  router.post('/reset/all',  (req, res, next) => {
    sequelize.sync({force: true}).then(() => {
      resetTestUser(req)
@@ -19,78 +25,88 @@ var sequelize = require("../models/index").sequelize
      res.status(404).send(err);
    });
    next();
-
  });
 
-//DONE
+
+/**
+ * post request to reset/testuser that deletes testuser information and creates new one 
+ */
 router.post('/reset/testuser', async function (req, res, next) {
-  if(testuser!=null) {
-    User.destroy(testuser['id'])
-    testuser=null
+  var testuser=await User.findUserFromName(req, res, "testuser");
+  if(testuser) {
+    var id=testuser['id']
+    await User.destroy(id)
+    await resetTestUser();
+    next();
+  } else {
+    await resetTestUser();
+    next();
   }
-  await resetTestUser();
-  next();
-
+  
 });
 
-//DONE
+/**
+ * gets full page report of database information of test user id, number tweets, number users, number follows
+ */
 router.get('/status', async function (req, res, next) {
-  res.json(await getStatus(req.id));
+  res.json(await getStatus(req, res));
 });
 
-//DONE
+/**
+ * gets full page report of version
+ */
 router.get('/version',  index.version);
 
 /**
-  If tweets parameter is included, only load n tweets from seed data, otherwise load all
-  Imports the complete set of standard seed data, see: Seed Data
-**/
-// NEED TO FIXX
-router.post('/reset/standard', function (req, res, next) {
-  resetAll().then(function(data){
-    Loader.loadData(req, res, req.query['tweets'])
-    next();
-
-  })
-
-
-  // if(tweetN) {
-  //   await Loader.loadTweets(req,res, tweetN);
-  // } else {
-  //   await Loader.loadTweets(req, res);
-  // }
+ * deletes all db data, resets and loads test data from seed data. If n param for tweests is included, loads n tweets.
+ */
+router.post('/reset/standard', async function (req, res, next) {
+  sequelize.sync({force: true}).then(async () => {
+    await Relationship.destroyAll(req, res, next);
+    await User.destroyAll(req, res, next);
+    await Tweet.destroyAll(req, res, next);
+    await Loader.loadData(req, res, req.query['tweets'], req.query['follows'], req.query['follows'])
+    await User.create(req, test_param);
+    res.sendStatus(200);
+    
+  }, (err) => {
+    res.status(404).send(err);
+  });
+  
 });
 
 /**
-create u (integer) fake Users using faker. Defaults to 1.
-each of those users gets c (integer) fake tweets. Defaults to zero.
-Example: /test/users/create?count=100&tweets=5
+  create u (integer) fake Users using faker. Defaults to 1.
+  each of those users gets c (integer) fake tweets. Defaults to zero.
+  Example: /test/users/create?count=100&tweets=5
 **/
+//help
 
-// DONE
 router.post('/users/create', function (req, res, next) {
     const count=(req.query['count'] || 1);
     const tweets=(req.query['tweets'] || 0);
+    console.log(count);
+    console.log(tweets)
     Loader.fakeUserTweet(req, res, count, tweets)
-    next();
+    res.sendStatus(200);
 });
 
 /**
-user u generates t(integer) new fake tweets
-if u=”testuser” then this refers to the TestUser
-**/
-//done
-router.post('/user/:id/tweets', function (req, res, next) {
-      const tweets=req.query.count
+ * user u generates t(integer) new fake tweets
+ * /test/user/testuser/tweets?tweets=100
+ */
+router.post('/user/:id/tweets', async function (req, res, next) {
+      const tweets=req.query['count']
+      var testuser=await User.findUserFromName(req, res, "testuser");
       const id=req.params.id
-      if (id=="testuser" && tweets) {
-        Loader.createNTweets(req, res, process.env.testid, tweets);
+      if (id=="testuser" && tweets && testuser) {
+        Loader.createNTweets(req, res, testuser['id'], tweets);
+        res.sendStatus(200)
+
       } else {
         Loader.createNTweets(req, res, id, tweets)
+        res.sendStatus(200)
       }
-      next();
-
-
 });
 /**
 n (integer) randomly selected users follow user u (integer)
@@ -98,11 +114,13 @@ if u=”testuser” then this refers to the TestUser
 Example: /test/user/22/follow?count=10
 **/
 //done
-router.post('/user/:id/follow', function (req, res, next) {
+router.post('/user/:id/follow', async function (req, res, next) {
   userID=req.params.id
   follows=req.query.count
   if(userID=="testuser") {
-    Loader.randomFollow(req, res, process.env.testid, follows)
+    var testuser=await User.findUserFromName(req, res, testuser);
+
+    Loader.randomFollow(req, res, testuser['id'], follows)
   } else {
     Loader.randomFollow(req, res, userID, follows)
   }
@@ -121,29 +139,24 @@ router.post('/user/follow', function (req, res, next) {
 
 });
 
+
 module.exports=router;
 
 
-async function getStatus() {
+async function getStatus(req, res) {
   users = await User.getAll() // wait till the promise resolves (*)
   tweets= await Tweet.getAll();
   follows= await Relationship.getAll();
-  return await { users: users.length, tweets: tweets.length, follows: follows.length, test_user_id: test_id};
+  test_id=await User.findUserFromName(req, res, "testuser")  
+  console.log(test_id)
+  return await { users: users.length, tweets: tweets.length, follows: follows.length, test_user_id: 1};
 };
 
 async function resetAll(req, res, next) {
-  await Relationship.destroyAll(req, res, next);
-  await User.destroyAll(req, res, next);
-  await Tweet.destroyAll(req, res, next);
-};
+  Promise.all([Relationship.destroyAll(req, res, next), User.destroyAll(req, res, next), Tweet.destroyAll(req, res, next)]);
+}
 
 
 async function resetTestUser(req) {
- testuser=await User.create(req, test_param)
- test_id=testuser['id']
- console.log(test_id)
- process.env.testuser=testuser
- process.env.testid=test_id
-
- return testuser;
+ return await User.create(req, test_param)
 };
