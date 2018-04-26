@@ -48,7 +48,10 @@ module.exports.index = async (req, res) => {
       // If you are not, you see the most recent tweets from randos.
        timeline = await axios.get(tweetServiceURL + '/timeline/global', {});
 
-       callback = (err, html) => { redis.set('homeHTML', html) }
+       callback = (err, html) => {
+         redis.set('homeHTML', html)
+         res.send(html)
+       }
 
     }
 
