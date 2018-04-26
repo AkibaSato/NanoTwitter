@@ -13,8 +13,7 @@ module.exports.index = async (req, res) => {
     var callback
 
     if (req.user) {
-      console.log("found user")
-      var html = await redis.getAsync('userHTML:' + req.user.id);
+      var html = await redis.getAsync('userhpHTML:' + req.user.id);
 
       if (html) {
         return res.send(html)
@@ -34,7 +33,7 @@ module.exports.index = async (req, res) => {
       req.user = userData.data
       timeline = timelineData
 
-      callback = (err, html) => { redis.set('userHTML:' + req.user.id, html) }
+      callback = (err, html) => { redis.set('userhpHTML:' + req.user.id, html) }
 
     } else {
       var html = await redis.getAsync('homeHTML');

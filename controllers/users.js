@@ -2,6 +2,7 @@ var env = process.env.NODE_ENV || 'development';
 var config = require('../config/config.json')[env]
 var tweetServiceURL = config.tweet_service
 var userServiceURL = config.user_service
+var redis = require('../config/redis');
 
 var axios = require('axios');
 
@@ -62,25 +63,63 @@ module.exports.unfollow = async (req, res) => {
 module.exports.getUser = async (req, res) => {
   try {
 
-    var id = parseInt(req.params.id);
+    if (req.user) {
+
+      var id = parseInt(req.params.id);
+
+      if (isNaN(id)) {
+        throw new Error("NaN parameter");
+      }
+
+      var html = await redis.getAsync('INuserpageHTML:' + id);
+
+      if (html) {
+        return res.send(html)
+      }
+
+      var getUser = axios.get(userServiceURL + '/user', {
+        data: { id: id }
+      });
+      var getTweets = axios.get(tweetServiceURL + '/timeline/user', {
+        data: { id: id }
+      });
 
 
-    if (isNaN(id)) {
-      throw new Error("NaN parameter");
+      var [userData, tweetsData] = await axios.all([getUser, getTweets]);
+
+      callback = (err, html) => { redis.set('INuserpageHTML:' + id, html) }
+
+    } else {
+      var id = parseInt(req.params.id);
+
+      if (isNaN(id)) {
+        throw new Error("NaN parameter");
+      }
+
+      var html = await redis.getAsync('OUTuserpageHTML:' + id);
+
+      if (html) {
+        return res.send(html)
+      }
+
+      var getUser = axios.get(userServiceURL + '/user', {
+        data: { id: id }
+      });
+
+      var getTweets = axios.get(tweetServiceURL + '/timeline/user', {
+        data: { id: id }
+      });
+
+
+      var [userData, tweetsData] = await axios.all([getUser, getTweets]);
+
+      callback = (err, html) => { redis.set('OUTuserpageHTML:' + id, html) }
+
     }
 
-    var getUser = axios.get(userServiceURL + '/user', {
-      data: { id: id }
-    });
-    var getTweets = axios.get(tweetServiceURL + '/timeline/user', {
-      data: { id: id }
-    });
-
-
-    var [userData, tweetsData] = await axios.all([getUser, getTweets]);
     res.render('user', {
-      user: userData.data, tweets: tweetsData.data, me: req.user
-    });
+     user: userData.data, tweets: tweetsData.data, me: req.user
+   }, callback);
 
   } catch (err) {
     console.log(err)
