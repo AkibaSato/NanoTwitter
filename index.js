@@ -1,9 +1,9 @@
+// require('newrelic')
 
 const express = require('express');
 const app = express();
 const port = process.env.PORT || 3000;
 const path    = require('path');
-const redis = require('redis');
 const WORKERS = process.env.WEB_CONCURRENCY || 1;
 const cluster = require('cluster');
 
@@ -66,6 +66,9 @@ if (cluster.isMaster) {
     next();
   });
 
+  app.get('/loaderio-b8095d66b5b969efcbc4abb9a440ef2f', function(req, res){
+    res.send('loaderio-b8095d66b5b969efcbc4abb9a440ef2f')
+  })
   // /* =============ROUTES============= */
   const login = require('./routes/login');
   const logout = require('./routes/logout');
@@ -84,7 +87,9 @@ if (cluster.isMaster) {
     }
     next();
   })
-
+  app.get('/loaderio-9d36f82c9435286460a24d8c3048aeeb', function(req, res){
+    res.send('loaderio-9d36f82c9435286460a24d8c3048aeeb')
+  })
   app.use('/', populateUser);
 
   app.use('/api/v1/:API_TOKEN/', api);
