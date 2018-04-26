@@ -84,6 +84,11 @@ if (cluster.isMaster) {
       req.body = req.query
     }
     next();
+  });
+
+  app.use('/user/testuser/', (req, res, next) => {
+    req.IS_LOADERIO = true
+    next();
   })
 
   app.use('/', populateUser);
