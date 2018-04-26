@@ -1,6 +1,7 @@
 var env = process.env.NODE_ENV || 'development';
 var config = require('../config/config.json')[env]
 var tweetServiceURL = config.tweet_service
+var redis = require('../config/redis');
 
 var axios = require('axios')
 
@@ -10,9 +11,7 @@ module.exports.tweet = async (req, res) => {
   try {
     res.redirect('/user/' + req.user.id);
 
-    console.log("Entered")
-    console.log(req)
-    console.log(req.user.id)
+    redis.del('INuserpageHTML:' + req.user.id);
 
     await axios.post(tweetServiceURL + '/tweet', {
         content: req.body.content,

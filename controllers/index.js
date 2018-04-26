@@ -33,7 +33,10 @@ module.exports.index = async (req, res) => {
       req.user = userData.data
       timeline = timelineData
 
-      callback = (err, html) => { redis.set('userhpHTML:' + req.user.id, html) }
+      callback = (err, html) => {
+        redis.set('userhpHTML:' + req.user.id, html)
+        res.send(html)
+      }
 
     } else {
       var html = await redis.getAsync('homeHTML');

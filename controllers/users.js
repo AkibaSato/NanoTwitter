@@ -65,6 +65,8 @@ module.exports.getUser = async (req, res) => {
 
     if (req.user) {
 
+      console.log(req.params.id)
+
       var id = parseInt(req.params.id);
 
       if (isNaN(id)) {
@@ -87,7 +89,13 @@ module.exports.getUser = async (req, res) => {
 
       var [userData, tweetsData] = await axios.all([getUser, getTweets]);
 
-      callback = (err, html) => { redis.set('INuserpageHTML:' + id, html) }
+      callback = (err, html) => {
+        redis.set('INuserpageHTML:' + id, html, 'EX', 60 * 5)
+        res.send(html)
+      }
+
+      console.log("finished in page")
+
 
     } else {
       var id = parseInt(req.params.id);
@@ -113,7 +121,12 @@ module.exports.getUser = async (req, res) => {
 
       var [userData, tweetsData] = await axios.all([getUser, getTweets]);
 
-      callback = (err, html) => { redis.set('OUTuserpageHTML:' + id, html) }
+      callback = (err, html) => {
+        redis.set('OUTuserpageHTML:' + id, html, 'EX', 60 * 5)
+        res.send(html)
+      }
+
+      console.log("finished out page")
 
     }
 

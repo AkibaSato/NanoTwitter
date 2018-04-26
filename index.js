@@ -82,13 +82,6 @@ if (cluster.isMaster) {
 
   const populateUser = require('./middleware/populateUser');
 
-  app.use(function(req, res, next) {
-    if (req.query && req.query.loaderio == "true") {
-      req.body = req.query
-    }
-    next();
-  });
-
   app.get('/loaderio-9d36f82c9435286460a24d8c3048aeeb', function(req, res){
     res.send('loaderio-9d36f82c9435286460a24d8c3048aeeb')
   })

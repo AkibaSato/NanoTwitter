@@ -37,6 +37,8 @@ Non-logged-in: /api/v1/public/...
 
 module.exports = async (req, res, next) => {
   try {
+    console.log("populating user")
+
 
     /* ====== 1. If the request is from client ======= */
 
@@ -74,6 +76,7 @@ module.exports = async (req, res, next) => {
       delete req.user
       return next();
     }
+    console.log("found session")
 
     req.user = JSON.parse(session).user;
 
