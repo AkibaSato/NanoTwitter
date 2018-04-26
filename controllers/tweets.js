@@ -11,10 +11,6 @@ module.exports.tweet = async (req, res) => {
   try {
     res.redirect('/user/' + req.user.id);
 
-    console.log("tweeted")
-
-    redis.del('INuserpageHTML:' + req.user.id);
-
     await axios.post(tweetServiceURL + '/tweet', {
         content: req.body.content,
         userId: req.user.id,
