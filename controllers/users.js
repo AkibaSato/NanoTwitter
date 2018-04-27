@@ -73,39 +73,34 @@ module.exports.getUser = async (req, res) => {
       throw new Error("NaN parameter");
     }
 
-    var key
-
-    if (req.user) {
-      key = 'INuserpageHTML:' + id
-    } else {
-      key = 'OUTuserpageHTML:' + id
-    }
-
-    client.get(key, async (err, html) => {
-      if (err) {
-        return res.send(err)
-      }
+    if (!req.user) {
+      var html = await client.getAsync('userpageHTML:' + id)
       if (html) {
         return res.send(html)
       }
+    }
 
-      var getUser = axios.get(userServiceURL + '/user', {
-        data: { id: id }
-      });
-      var getTweets = axios.get(tweetServiceURL + '/timeline/user', {
-        data: { id: id }
-      });
+    var getUser = axios.get(userServiceURL + '/user', {
+      data: { id: id }
+    });
+    var getTweets = axios.get(tweetServiceURL + '/timeline/user', {
+      data: { id: id }
+    });
 
-      var [userData, tweetsData] = await axios.all([getUser, getTweets]);
+    var [userData, tweetsData] = await axios.all([getUser, getTweets]);
 
+    if (!req.user) {
       res.render('user', {
         user: userData.data, tweets: tweetsData.data, me: req.user
       }, (err, html) => {
         client.set(key, html, 'EX', 60)
         res.send(html)
       });
-
-    })
+    } else {
+      res.render('user', {
+        user: userData.data, tweets: tweetsData.data, me: req.user
+      });
+    }
 
   } catch (err) {
     console.log(err)
