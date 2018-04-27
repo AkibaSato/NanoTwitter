@@ -75,20 +75,15 @@ if (cluster.isMaster) {
   const tweets = require('./routes/tweets');
   const index = require('./routes/index');
   const api = require('./routes/api');
+  const loader = require('./routes/loader');
   const test = require('./tests/test_interface');
 
   const populateUser = require('./middleware/populateUser');
 
-  app.use(function(req, res, next) {
-    if (req.query && req.query.loaderio == "true") {
-      req.body = req.query
-    }
-    next();
-  })
-
+  app.use('/user/testuser', loader);
   app.use('/', populateUser);
 
-  // app.use('/api/v1/:API_TOKEN/', api);
+  app.use('/api/v1/:API_TOKEN/', api);
   app.use('/login', login);
   app.use('/logout', logout);
   app.use('/user', users);

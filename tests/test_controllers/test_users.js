@@ -71,8 +71,8 @@ module.exports.create=async function(req, user_data){
 
 module.exports.bulkCreate=async function(req, user_data){
   return models.User.bulkCreate(user_data, {returning: true})
-  .then(function(user) {
-    return JSON.parse(JSON.stringify(user)
+  .then(function(users) {
+    return JSON.parse(JSON.stringify(users)
   )})
 };
 

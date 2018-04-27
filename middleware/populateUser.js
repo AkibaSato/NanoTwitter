@@ -37,7 +37,6 @@ Non-logged-in: /api/v1/public/...
 
 module.exports = async (req, res, next) => {
   try {
-
     /* ====== 1. If the request is from client ======= */
 
     // If it is a public page, you don't have to populate the user.
@@ -60,20 +59,8 @@ module.exports = async (req, res, next) => {
       return next()
     }
 
-    /* ========== 2. If the request is from loaderio. ========== */
-    if (req.body.loaderio == "true") {
-      if (req.body.public == "true") {
-        delete req.user;
-      } else {
-        req.user = { id: req.body.id, fname: 'loaderio',
-          lname: 'loaderio', username: 'loaderio' };
-      }
-      return next();
-    }
-
-    /* ====== 3. If the request is from browser ======= */
-
-    if (!req.cookies) {
+    /* ====== 2. If the request is from browser ======= */
+    if (!req.cookies || !req.cookies.ntSessionId) {
       delete req.user
       return next();
     }

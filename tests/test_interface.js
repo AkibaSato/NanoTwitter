@@ -65,7 +65,7 @@ router.post('/reset/standard', async function (req, res, next) {
     await Relationship.destroyAll(req, res, next);
     await User.destroyAll(req, res, next);
     await Tweet.destroyAll(req, res, next);
-    await Loader.loadData(req, res, req.query['tweets'])
+    await Loader.loadData(req, res, req.query['tweets'], req.query['follows'], req.query['follows'])
     await User.create(req, test_param);
     res.sendStatus(200);
     
@@ -107,8 +107,6 @@ router.post('/user/:id/tweets', async function (req, res, next) {
         Loader.createNTweets(req, res, id, tweets)
         res.sendStatus(200)
       }
-
-
 });
 /**
 n (integer) randomly selected users follow user u (integer)
@@ -140,6 +138,7 @@ router.post('/user/follow', function (req, res, next) {
     next();
 
 });
+
 
 module.exports=router;
 

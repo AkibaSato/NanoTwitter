@@ -2,12 +2,9 @@ var env = process.env.NODE_ENV || 'development';
 var config = require('../config/config.json')[env]
 var tweetServiceURL = config.tweet_service
 var userServiceURL = config.user_service
-var client = require('../config/redis')
+var client = require('../config/redis');
 
-var axios = require('axios');
-var redis = require("redis")
-var REDIS_PORT = process.env.REDISCLOUD_URL || process.env.REDIS_PORT;
-var client = redis.createClient(REDIS_PORT);
+var axios = require('axios')
 
 module.exports.getSignup = (req, res) => {
   res.render('signup');
@@ -28,10 +25,13 @@ module.exports.follow = async (req, res) => {
       throw new Error("Can't follow myself");
     }
 
+    redis.del('userhomeHTML:' + req.user.id);
+
     await axios.post(userServiceURL + '/follow', {
       followerId: followerId,
       followeeId: followeeId
     });
+
   } catch (err) {
 
   }
@@ -51,6 +51,8 @@ module.exports.unfollow = async (req, res) => {
     if(followeeId === followerId) {
       throw new Error("Can't unfollow myself");
     }
+
+    redis.del('userhomeHTML:' + req.user.id);
 
     await axios.post(userServiceURL + '/unfollow', {
       followerId: followerId,
@@ -99,13 +101,8 @@ module.exports.getUser = async (req, res) => {
       res.render('user', {
         user: userData.data, tweets: tweetsData.data, me: req.user
       }, (err, html) => {
-        try {
-          client.set(key, html, 'EX', 60)
-          res.send(html)
-        } catch (e) {
-          console.log(e)
-        }
-
+        client.set(key, html, 'EX', 60)
+        res.send(html)
       });
 
     })
@@ -138,7 +135,7 @@ module.exports.getFolloweeTweets = async (req, res) => {
       user: userData.data, tweets: tweetsData.data, me: req.user
     })
   } catch (err) {
-    res.status(404).send(err)
+
   }
 };
 
@@ -165,7 +162,7 @@ module.exports.getFollowees = async (req, res) => {
       user: userData.data, followees: followerData.data , me: req.user
     });
   } catch (err) {
-    res.status(404).send(err)
+
   }
 
 };
@@ -192,7 +189,6 @@ module.exports.getFollowers =  async (req, res) => {
       user: userData.data, followers: followerData.data , me: req.user
     })
   } catch (err) {
-    console.log(err)
-    res.status(404).send(err)
+
   }
 };

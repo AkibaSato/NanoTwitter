@@ -37,7 +37,7 @@ module.exports.getTweet = async (req, res) => {
       tweet: tweet.data
     });
   } catch (err) {
-    res.status(404).send(err)
+
   }
 
 };
@@ -95,7 +95,7 @@ module.exports.getLikes = async (req, res) => {
     res.render('likes', { me: req.user, user: req.user, users: users.data })
 
   } catch (err) {
-    res.status(404).send(err)
+
   }
 };
 
@@ -133,6 +133,6 @@ module.exports.getRetweets = async (req, res) => {
     res.render('retweets', { me: req.user, user: req.user, retweets: retweets.data, API_TOKEN: req.API_TOKEN });
 
   } catch (err) {
-    res.status(404).send(err)
+
   }
 }
