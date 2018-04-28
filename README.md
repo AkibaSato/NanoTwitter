@@ -2,6 +2,12 @@
 # nanoTwitter
 
 Team Japan and Kevin
+###Portfolio Page
+https://akibasato.github.io/NanoTwitter/
+
+## Portfolio
+**Portfolio Page**
+* Link: https://akibasato.github.io/NanoTwitter/
 
 ## Services
 **Main application**
