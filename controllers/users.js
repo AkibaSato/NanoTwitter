@@ -25,7 +25,7 @@ module.exports.follow = async (req, res) => {
       throw new Error("Can't follow myself");
     }
 
-    redis.del('userhomeHTML:' + req.user.id);
+    client.del('userhomeHTML:' + req.user.id);
 
     await axios.post(userServiceURL + '/follow', {
       followerId: followerId,
@@ -52,7 +52,7 @@ module.exports.unfollow = async (req, res) => {
       throw new Error("Can't unfollow myself");
     }
 
-    redis.del('userhomeHTML:' + req.user.id);
+    client.del('userhomeHTML:' + req.user.id);
 
     await axios.post(userServiceURL + '/unfollow', {
       followerId: followerId,
@@ -93,7 +93,7 @@ module.exports.getUser = async (req, res) => {
       res.render('user', {
         user: userData.data, tweets: tweetsData.data, me: req.user
       }, (err, html) => {
-        client.set(key, html, 'EX', 60)
+        client.set('userpageHTML:' + id, html, 'EX', 60)
         res.send(html)
       });
     } else {
@@ -103,7 +103,7 @@ module.exports.getUser = async (req, res) => {
     }
 
   } catch (err) {
-    console.log(err)
+
   }
 };
 
