@@ -21,7 +21,7 @@ router.get('/tweets/:id', api.getTweet);
 router.get('/search', api.search);
 
 /* ============= Session ============= */
-router.post('/user/register', api.signup);
+router.post('/users/register', api.signup);
 router.post('/logout', api.logout);
 router.post('/login', api.login);
 

@@ -37,6 +37,7 @@ Non-logged-in: /api/v1/public/...
 
 module.exports = async (req, res, next) => {
   try {
+
     /* ====== 2. If the request is from browser ======= */
     if (!req.cookies || !req.cookies.ntSessionId) {
       delete req.user

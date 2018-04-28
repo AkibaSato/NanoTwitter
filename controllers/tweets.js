@@ -49,6 +49,7 @@ module.exports.like = async (req, res) => {
     res.redirect('/user/' + req.user.id);
 
     var id = parseInt(req.params.id);
+    console.log(id)
 
     if (isNaN(id)) {
       throw new Error("NaN parameter");
@@ -59,7 +60,7 @@ module.exports.like = async (req, res) => {
       tweetId: id
     });
   } catch (err) {
-
+    console.log(err)
    }
 };
 
