@@ -77,11 +77,17 @@ module.exports.login = async (req, res) => {
 
 module.exports.tweet = async (req, res) => {
   try {
+    var id = parseInt(req.API_TOKEN)
+
+    if (isNaN(id)) {
+      throw new Error("NaN parameter");
+    }
+
     res.sendStatus(200);
 
     await axios.post(tweetServiceURL + '/tweet', {
         content: req.body.content,
-        userId: req.user.id,
+        userId: id,
         parentId: req.body.parentId
     });
   } catch (err) {
@@ -104,6 +110,7 @@ module.exports.getLikes = async (req, res) => {
     res.json(users.data)
 
   } catch (err) {
+    res.status(404).send(err)
   }
 };
 
@@ -122,6 +129,32 @@ module.exports.getTweet = async (req, res) => {
     res.json(tweet.data);
 
   } catch (err) {
+    res.status(404).send(err)
+  }
+
+};
+
+module.exports.getTimeline = async (req, res) => {
+  try {
+    var tweets
+    if (req.API_TOKEN) {
+      var id = parseInt(req.API_TOKEN)
+
+      if (isNaN(id)) {
+        throw new Error("NaN parameter")
+      }
+
+      tweets = await axios.get(tweetServiceURL + '/timeline/user', {
+        data: { id: id }
+      });
+    } else {
+      tweets = await axios.get(tweetServiceURL + '/timeline/global');
+    }
+
+    res.json(tweets.data);
+
+  } catch (err) {
+    res.status(404).send(err)
   }
 
 };
@@ -141,6 +174,7 @@ module.exports.getLikes = async (req, res) => {
     res.json(users.data)
 
   } catch (err) {
+    res.status(404).send(err)
   }
 };
 
@@ -159,6 +193,7 @@ module.exports.getRetweets = async (req, res) => {
     res.json(retweets.data)
 
   } catch (err) {
+    res.status(404).send(err)
   }
 }
 
@@ -174,6 +209,7 @@ module.exports.search = async (req, res) => {
     res.json(tweets.data);
 
   } catch (err) {
+    res.status(404).send(err)
   }
 };
 
@@ -195,6 +231,7 @@ module.exports.getUserTweets = async (req, res) => {
     res.json(tweets.data)
 
   } catch (err) {
+    res.status(404).send(err)
   }
 };
 
@@ -213,6 +250,7 @@ module.exports.getUser = async (req, res) => {
     res.json(user.data)
 
   } catch (err) {
+    res.status(404).send(err)
   }
 };
 
@@ -232,6 +270,7 @@ module.exports.getFollowees = async (req, res) => {
     res.json(followees.data)
 
   } catch (err) {
+    res.status(404).send(err)
   }
 
 };
@@ -251,5 +290,6 @@ module.exports.getFollowers =  async (req, res) => {
     res.json(followers.data)
 
   } catch (err) {
+    res.status(404).send(err)
   }
 };

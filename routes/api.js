@@ -5,17 +5,17 @@ var router = express.Router();
 // router.get('/', index.index);
 
 /* ============= Users ============= */
-router.get('/user/:id/tweets', api.getUser);
-router.get('/user/:id/followees', api.getFollowees);
-router.get('/user/:id/followers', api.getFollowers);
-router.get('/user/:id', api.getUser);
+router.get('/users/:id/tweets', api.getUserTweets);
+router.get('/users/:id/followees', api.getFollowees);
+router.get('/users/:id/followers', api.getFollowers);
+router.get('/users/:id', api.getUser);
 
 /* ============= Tweets ============= */
 router.post('/tweets/new', api.tweet);
+router.get('/tweets/recent', api.getTimeline);
 router.get('/tweets/:id/likes', api.getLikes);
 router.get('/tweets/:id/retweets', api.getRetweets);
 router.get('/tweets/:id', api.getTweet);
-router.get('/tweets/recent', api.getTweet);
 
 /* ============= Search ============= */
 router.get('/search', api.search);

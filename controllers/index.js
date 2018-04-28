@@ -2,9 +2,8 @@ var env = process.env.NODE_ENV || 'development';
 var config = require('../config/config.json')[env]
 var tweetServiceURL = config.tweet_service
 var userServiceURL = config.user_service
-var redis = require('../config/redis');
-
 var axios = require('axios')
+var redis = require('../config/redis')
 
 module.exports.index = async (req, res) => {
   try {
@@ -13,7 +12,7 @@ module.exports.index = async (req, res) => {
     var callback
 
     if (req.user) {
-      var html = await redis.getAsync('userhpHTML:' + req.user.id);
+      var html = await redis.getAsync('userhomeHTML:' + req.user.id);
 
       if (html) {
         return res.send(html)
@@ -34,7 +33,7 @@ module.exports.index = async (req, res) => {
       timeline = timelineData
 
       callback = (err, html) => {
-        redis.set('userhpHTML:' + req.user.id, html)
+        redis.set('userhomeHTML:' + req.user.id, html, 'EX', 60)
         res.send(html)
       }
 
@@ -48,10 +47,8 @@ module.exports.index = async (req, res) => {
       // If you are not, you see the most recent tweets from randos.
        timeline = await axios.get(tweetServiceURL + '/timeline/global', {});
 
-       console.log(timeline.data)
-
        callback = (err, html) => {
-         redis.set('homeHTML', html)
+         redis.set('homeHTML', html, 'EX', 60)
          res.send(html)
        }
 
@@ -61,8 +58,6 @@ module.exports.index = async (req, res) => {
       me: req.user, user: req.user, tweets: timeline.data }, callback)
 
   } catch (err) {
-
+    console.log(err)
   }
-
-
 };

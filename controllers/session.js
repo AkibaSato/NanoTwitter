@@ -40,7 +40,8 @@ module.exports.signup = async (req, res) => {
     var ntSessionId = generateUid();
     res.cookie('ntSessionId', ntSessionId);
     await redis.setAsync(ntSessionId, JSON.stringify({ user: {
-      username: user.username,  password: user.password, id: user.id
+      username: user.username, fname: user.fname, lname: user.lname,
+      id: user.id, password: user.password
     } }));
     res.redirect('/user/' + user.id + '/');
 
@@ -59,11 +60,10 @@ module.exports.login = async (req, res) => {
       where: {
         username: req.body.username
       },
-      attributes: ['id', 'username', 'password']
+      attributes: ['id', 'username', 'password', 'fname', 'lname']
     });
 
     if (!user || user.password != req.body.password) {
-
       return res.redirect('/login');
     }
 
@@ -76,7 +76,6 @@ module.exports.login = async (req, res) => {
 
   } catch (err) {
     res.redirect('/login');
-
   }
 }
 

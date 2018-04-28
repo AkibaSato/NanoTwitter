@@ -13,8 +13,8 @@ module.exports.tweet = async (req, res) => {
 
     await axios.post(tweetServiceURL + '/tweet', {
         content: req.body.content,
-        userId: req.user.id,
-        parentId: req.body.parentId
+        parentId: req.body.parentId,
+        user: req.user
     });
   } catch (err) {
     console.log(err)
