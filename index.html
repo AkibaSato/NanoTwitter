@@ -4,50 +4,106 @@
 
 <h1>NanoTwitter Porfolio Page</h1>
 
-<h3>Overview</h3>
-<p>My first paragraph.</p>
+<h2>Team</h2>
+Akiba Sato, Kevin Wang, Meg Kobashi
 
-<h3>Tech Stack</h3>
-Node.js, Express, Redis, Postgres, Sequelize as ORM
+<h2>Overview</h2>
+<p>This application is a miniature version of Twitter. Users can post tweets and explore other users' profiles and tweets. Our primary focus for our project was scaling, and used various techniques such as caching, multiprocessessing, and service oriented architecture to achieve maximum performance when getting a high load of requests. In this report, we detail the various scaling techniques and report real results from executing load tests performed with loader.io. </p>
 
-<h3> System Components</h3>
-Main application
-User service
-Tweet service
-Search service
-Writer service
+<h2>Tech Stack</h2>
+<ul>
+  <li>Node.js</li>
+  <li>Express</li>
+  <li>Redis</li>
+  <li>Postgres</li>
+  <li>Sequelize (Postgres ORM)</li>
+</ul>
 
 
-<h3> System Components</h3>
-Server-Side Caching
-HTML caching
+<img src="doc/sysdiagram.png" alt="System Diagram">
+
+<h2> System Components</h2>
+<ul>
+  <li>Main application</li>
+  <li>User service</li>
+  <li>Tweet service</li>
+  <li>Search service</li>
+  <li>Writer service</li>
+</ul>
+
+<h2> Scaling techniques</h2>
+This section contains the scaling techniques we used and their performance improvements. Note that we wanted to make the experiment setup as simple as possible - in some experiments, we only serve the homepage with a single hard-coded tweet. While this does not reflect a realistic scenario and thus is not indicative of our real application performance, we believe this controlled environment was the best to demonstrate the benefits of our scaling techniques.
+<h3> Server-side caching</h3>
+<h4> 1. HTML caching</h4>
 We used in-memory cache provided by Redis for server-side caching of raw HTML and database objects. The raw HTML was cached to allow the main application to serve a page without contacting any of the microservices, eliminating the HTTP latency. Specifically, the logged-in/logged-out homepage and logged-out user pages were cached. We foresee that Redis capacity can pose a problem for caching user-specific pages; therefore, we implemented a TTL of 60 seconds for the pages.
-
+<br />
+<br />
 Note that we are relying on the TTL to evict the page and get the updated view. While this could be concerning if a user wishes to see fresh tweets right away, we decided that the user experience would not take a hit as long as the user sees their own tweets right away. Therefore, the choice of the pages to cache is justified: the user is unlikely to visit the logged-out homepage and their own logged-out user page after tweeting; the logged-in homepage for the user only displays the followees’ tweets, not the user’s tweets.
-
-Database Object Caching
-We also cache database data on the microservice that is responsible for serving that object to the main application. Some of the data include user profiles and timelines, which is a list of tweets that the user sees on user pages and the homepage. Querying for the timelines on Postgres can be expensive; therefore, this is cached as a queue in Redis. When there is a new tweet, the oldest tweet would be evicted.
-
-Client-Side Caching
-We also employed client side caching of static assets such as CSS, images, etc. with a TTL of 2 hours.
-
-<h3> Reducing front end packages? </h3>
-
-
-Clustering
-We increased the number of processes running on each dyno by increasing the Heroku configuration variable WEB_CONCURRENCY from the default value of 1 to 5. This helps us optimize dyno usage and allowed greater concurrency for our application. The baseline of the experiment is the load time for the homepage with a single hard-coded tweet. While this does not reflect a realistic scenario, it is sufficient to demonstrate the benefits of clustering. Our average response time decreased by ~40% and the number of successes improved by ~215%.
-
+<br />
+<br />
+The performance benefits are clear - the average response time decreased by ~35%, and the number of successes increased by ~157%.
+<br />
+<br />
+GET /
+<br />
+Maintain Client Load: 0-2000 clients
+<br />
 Before:
-
+<div style="width: 600px;">
+<iframe width='600' height='300' frameborder='0' src='//share.loader.io/reports/d54b598bdd749dd3fcff418d5cd0fb3d/widget/results/6654c04184d3ed10f67ce78d73a819a4'></iframe>
+<div style="width: 100%; text-align: right;">
+<a href="http://loader.io/reports/d54b598bdd749dd3fcff418d5cd0fb3d/results/6654c04184d3ed10f67ce78d73a819a4" target="_blank" style="padding: 0 10px 10px 0; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; font-size: 14px;">View on loader.io</a>
+</div></div>
 
 After:
+<div style="width: 600px;">
+<iframe width='600' height='300' frameborder='0' src='//share.loader.io/reports/be23d45b5b28a742509b83cd9f48f4ac/widget/results/4d0fda553a7d9910451530cbef099a6c'></iframe>
+<div style="width: 100%; text-align: right;">
+<a href="http://loader.io/reports/be23d45b5b28a742509b83cd9f48f4ac/results/4d0fda553a7d9910451530cbef099a6c" target="_blank" style="padding: 0 10px 10px 0; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; font-size: 14px;">View on loader.io</a>
+</div></div>
 
+<h4> 2. Database object caching</h4>
+We also cache database data on the microservice that is responsible for serving that object to the main application. Some of the data include user profiles and timelines, which is a list of tweets that the user sees on user pages and the homepage. Querying for the timelines on Postgres can be expensive; therefore, this is cached as a queue in Redis. When there is a new tweet, the oldest tweet would be evicted.
+
+<h3> Client-side caching</h3>
+We also employed client side caching of static assets such as CSS, images, etc. with a TTL of 2 hours.
+
+<h3> Clustering </h3>
+We increased the number of processes running on each dyno by increasing the Heroku configuration variable WEB_CONCURRENCY from the default value of 1 to 5. This helps us optimize dyno usage and allowed greater concurrency for our application. Our average response time decreased by ~40% and the number of successes increased by ~215%.
+
+<br />
+<br />
+GET /
+<br />
+Maintain Client Load: 0-2000 clients
+<br />
+Before:
+<div style="width: 600px;">
+<iframe width='600' height='300' frameborder='0' src='//share.loader.io/reports/7b783ee84cc1a515ae32344265289cb8/widget/results/810fc280485fc954cb484b22b29d69c0'></iframe>
+<div style="width: 100%; text-align: right;">
+<a href="http://loader.io/reports/7b783ee84cc1a515ae32344265289cb8/results/810fc280485fc954cb484b22b29d69c0" target="_blank" style="padding: 0 10px 10px 0; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; font-size: 14px;">View on loader.io</a>
+</div></div>
+
+After:
+<div style="width: 600px;">
+<iframe width='600' height='300' frameborder='0' src='//share.loader.io/reports/b5f1122be93bcb725e290ae1be54125f/widget/results/e4fe9a14583b0717e7f2c4e5f0bc5e59'></iframe>
+<div style="width: 100%; text-align: right;">
+<a href="http://loader.io/reports/b5f1122be93bcb725e290ae1be54125f/results/e4fe9a14583b0717e7f2c4e5f0bc5e59" target="_blank" style="padding: 0 10px 10px 0; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; font-size: 14px;">View on loader.io</a>
+</div></div>
 
 <h3> Batch writes and Heroku scheduler </h3>
-Writing to the database upon every tweet poses a fatal bottleneck for our application, considering tweets take up a large portion of our application data. Initially, we would insert the tweet into the database and update the timeline caches appropriately; however, since the tweet will still be visible to users with the presence of the cache, the database update logic can be flexible. Therefore, we implemented a batch write service, which polls X number of tweets from the cache periodically and batch write to the database. Note that this service only handles tweets but can be used for any type of data that requires a large number of writes. This service is hosted on Heroku and configured to run every minute using the Heroku scheduler. It is possible that the we prematurely cache a tweet that does not conform to our database constraints (e.g. tweet content cannot be null), as we only perform sanity checking when inserting into the database. However, we decided that we should value high availability over correctness.
+Writing to the database upon every tweet poses a fatal bottleneck for our application, considering tweets take up a large portion of our application data.
+<br />
+<br />
+Initially, we would insert the tweet into the database and update the timeline caches appropriately; however, since the tweet will still be visible to users with the presence of the cache, the database update logic can be flexible. Therefore, we implemented a batch write service, which polls X number of tweets from the cache periodically and batch writes to the database. Note that this service only handles tweets but can be used for any type of data that requires a large number of writes. This service is hosted on Heroku and configured to run every minute using the Heroku scheduler.
+<br />
+<br />
+It is possible that the we prematurely cache a tweet that does not conform to our database constraints (e.g. tweet content cannot be null), as we only perform sanity checking when inserting into the database. However, we decided that we should value high availability over correctness.
 
-<h3> Modles </h3>
+<h3> Models </h3>
 We introduced indexes on our Postgres data models. Some notable ones include an index on the timestamp of creation for tweets and relationships, so the timeline and list of followers/followees can be efficiently ordered by timestamp upon retrieval.
+<br />
+<br />
 Users contained columns for number of tweets, number of followers and number of followees. When a tweet or relationship was created or destroyed, the values in the corresponding row for the user would be adjusted accordingly. User info had to be generated at every user’s page, but instead of doing join tables while loading user data, the integer values of those counts were shown instead. When a follow was generated or destroyed, asynchronous communication pushed the follow request and count incrementation/decrementation and artificially adjusted the count on the user page through AJAX.
 
 
@@ -55,35 +111,87 @@ Users contained columns for number of tweets, number of followers and number of 
 Due to the asynchronous nature of Node JS, async calls are incredibly easy to make so that if, for example, two pieces of data can be pulled from the database or cache in parallel. However, it’s necessary to ensure that the appropriate promises or callbacks wait until completion to then progress to avoid race conditions.
 
 
-
 <h3> Parallelizing and removing expensive packages </h3>
 Whenever a client sends a request, their request is passed through a pipeline of middleware. They are merely functions that make changes to the request object before passing it to the routers.These functions can be expensive, slowing down the request-response cycle before even reaching the main application logic. Initially, we were executing these middleware sequentially, but we parallelized these calls using the Node async package. The average response time improved by ~53%, and the number of successes improved by ~190%.
-
+<br />
+<br />
 We also found that Express sessions and Passport authentication middleware were bottlenecks for many applications. We decided to create a custom session management system using redis and manually setting browser cookies. This caused a lot of lost engineering time and refactoring, since the mechanics of authentication were completely abstracted by packages before; however, this gave us greater control over the data that we store in sessions.
 
+<br />
+<br />
+GET /
+<br />
+Maintain Client Load: 0-2000 clients
+<br />
+Before:
+<div style="width: 600px;">
+<iframe width='600' height='300' frameborder='0' src='//share.loader.io/reports/d54b598bdd749dd3fcff418d5cd0fb3d/widget/results/6654c04184d3ed10f67ce78d73a819a4'></iframe>
+<div style="width: 100%; text-align: right;">
+<a href="http://loader.io/reports/d54b598bdd749dd3fcff418d5cd0fb3d/results/6654c04184d3ed10f67ce78d73a819a4" target="_blank" style="padding: 0 10px 10px 0; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; font-size: 14px;">View on loader.io</a>
+</div></div>
 
-<h3> Design alternatives</h3>
-<h5> MongoDB </h5>
+After:
+<div style="width: 600px;">
+<iframe width='600' height='300' frameborder='0' src='//share.loader.io/reports/46d3b7faae7b2f12f9ac6618db56586a/widget/results/df00c613f8816eabdf09820aabd40adf'></iframe>
+<div style="width: 100%; text-align: right;">
+<a href="http://loader.io/reports/46d3b7faae7b2f12f9ac6618db56586a/results/df00c613f8816eabdf09820aabd40adf" target="_blank" style="padding: 0 10px 10px 0; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; font-size: 14px;">View on loader.io</a>
+</div></div>
+
+
+<h2> Design alternatives</h2>
+<h3> MongoDB </h3>
 Various Node JS tutorials suggest implementing MongoDB, a NoSQL store, as the database due to the general ease of implementation and various existing documentation. We went with Sequelize, a promise-based ORM, and its PostgresSQL dialect, due to the nature of the difficulty of joins between Tweets and Users, for example, in a document-oriented storage, and due to the structure of the project.
 
-<h5> Multiple Dynos </h5>
-One way that we could have improved performance is by using mulitple dyanos to support more concurrency with our various requests. Throughout this semester and the final week when we ran the loader tests, we saw good performance for the team that used multiple dynos to balance the load of the applicaiton. However, one trade off with using multiple dyanos was that that we would have to use multiple routes, define the setup for each dyno, and do a project for x number of dynos. In addition, since each dyno is located across a seperate server, we would have to consider whether or not to partition the database. Since there would be much more requests coming in that suceed, there would be a bottlneck from either fetching from redis or writing to the database.
+<h3> Multiple Dynos </h3>
+One way that we could have improved performance is by using mulitple dynos to support more concurrency with our various requests. Throughout this semester and the final week when we ran the loader tests, we saw good performance for the team that used multiple dynos to balance the load of the applicaiton. However, one trade off with using multiple dyanos was that  we would have to use multiple routes, define the setup for each dyno, and do a project for x number of dynos. In addition, since each dyno is located across a seperate server, we would have to consider whether or not to partition the database. Since there would be much more requests coming in that suceed, there would be a bottlneck from either fetching from redis or writing to the database.
 
-<h3> Final performance </h3>
+<h2> Final performance </h2>
 
 
-<h3> Future improvements </h3>
+GET /
+<br />
+Maintain Client Load: 0-2000 clients
+<br />
+Before:
+<div style="width: 600px;">
+<iframe width='600' height='300' frameborder='0' src='//share.loader.io/reports/dd86cfc9c7370faee7f9dbe69340e9d1/widget/results/b81291313a5a0e417e094a0e9e2c2d10'></iframe>
+<div style="width: 100%; text-align: right;">
+<a href="http://loader.io/reports/dd86cfc9c7370faee7f9dbe69340e9d1/results/b81291313a5a0e417e094a0e9e2c2d10" target="_blank" style="padding: 0 10px 10px 0; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; font-size: 14px;">View on loader.io</a>
+</div></div>
 
-<h5> Fragmentation </h5>
+GET /user/testuser
+<br />
+Maintain Client Load: 0-2000 clients
+<br />
+After:
+<div style="width: 600px;">
+<iframe width='600' height='300' frameborder='0' src='//share.loader.io/reports/7ca4f9fe23d4c76596f48d7c9c3385ac/widget/results/eb7d97db5bc31837d765bfc4d8102eac'></iframe>
+<div style="width: 100%; text-align: right;">
+<a href="http://loader.io/reports/7ca4f9fe23d4c76596f48d7c9c3385ac/results/eb7d97db5bc31837d765bfc4d8102eac" target="_blank" style="padding: 0 10px 10px 0; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; font-size: 14px;">View on loader.io</a>
+</div></div>
+
+POST /tweet/new
+<br />
+Clients per test: 1000 clients
+
+<div style="width: 600px;">
+<iframe width='600' height='300' frameborder='0' src='//share.loader.io/reports/45cd6b3ce722abb74b2b71b14e9f7f63/widget/results/8d276b9625a0ddd442459e9bff8bc20c'></iframe>
+<div style="width: 100%; text-align: right;">
+<a href="http://loader.io/reports/45cd6b3ce722abb74b2b71b14e9f7f63/results/8d276b9625a0ddd442459e9bff8bc20c" target="_blank" style="padding: 0 10px 10px 0; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; font-size: 14px;">View on loader.io</a>
+</div></div>
+
+
+<h2> Future improvements </h2>
+
+<h3> Fragmentation </h3>
 The Sequelize ORM doesn’t support neither horizontal nor vertical fragmentation. In our app, due to the generally small-scale, it’s not so simple to know where to horizontally split due to lack of data. On the other hand, vertical fragmentation would have allowed for less costly joins depending on what data is fragmented and needed. If the ORM supported it or if there was a switch that one that allowed it, it would add another level of scalability.
 
 
-<h5> RabbitMQ </h5>
+<h3> RabbitMQ </h3>
 With a structured message broker system like RabbitMQ, a middleman can be generated between services to reduce load and delivery times since this would perform these tasks as opposed to the app.
 
-</br>
-</br>
-</br>
-a
+<h2> Links </h2>
+<a href="https://github.com/AkibaSato/NanoTwitter">Github Repo</a>
+<a href="https://docs.google.com/presentation/d/1eF8EA6_xLcDi99jV8tzV4m0x_qxW5eq3eBzocgVdz80/edit?usp=sharing">Scalability Presentation on Node.js</a><br \>
 </body>
 </html>
