@@ -37,27 +37,6 @@ Non-logged-in: /api/v1/public/...
 
 module.exports = async (req, res, next) => {
   try {
-    /* ====== 1. If the request is from client ======= */
-
-    // If it is a public page, you don't have to populate the user.
-    if (req.params.API_TOKEN == 'public') {
-      delete req.user;
-      return next();
-    }
-
-    if (req.params.API_TOKEN) {
-      id = parseInt(req.API_TOKEN);
-
-      // Check the cache if the user has a session.
-      var session = await redis.getAsync(id);
-      if (!session) {
-        return res.sendStatus(400)
-      }
-      session = JSON.parse(session);
-      req.user = session.user;
-
-      return next()
-    }
 
     /* ====== 2. If the request is from browser ======= */
     if (!req.cookies || !req.cookies.ntSessionId) {

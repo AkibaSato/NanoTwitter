@@ -25,6 +25,7 @@ module.exports.signup = async (req, res) => {
     });
 
     if (user) {
+      console.log("existing user")
       return res.redirect('/user/register')
     }
 
@@ -45,6 +46,8 @@ module.exports.signup = async (req, res) => {
     res.redirect('/user/' + user.id + '/');
 
   } catch (err) {
+    console.log("something is wrong")
+    console.log(err)
     res.redirect('/user/register');
 
   }

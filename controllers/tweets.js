@@ -1,6 +1,7 @@
 var env = process.env.NODE_ENV || 'development';
 var config = require('../config/config.json')[env]
 var tweetServiceURL = config.tweet_service
+var redis = require('../config/redis');
 
 var axios = require('axios')
 
@@ -16,7 +17,8 @@ module.exports.tweet = async (req, res) => {
         user: req.user
     });
   } catch (err) {
-
+    console.log(err)
+    console.log("HERE")
   }
 };
 
@@ -47,6 +49,7 @@ module.exports.like = async (req, res) => {
     res.redirect('/user/' + req.user.id);
 
     var id = parseInt(req.params.id);
+    console.log(id)
 
     if (isNaN(id)) {
       throw new Error("NaN parameter");
@@ -57,7 +60,7 @@ module.exports.like = async (req, res) => {
       tweetId: id
     });
   } catch (err) {
-
+    console.log(err)
    }
 };
 

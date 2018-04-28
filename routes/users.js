@@ -1,6 +1,5 @@
 var express = require('express');
 var users = require('../controllers/users');
-var passport = require('passport');
 var router = express.Router();
 var isLoggedIn = require('../middleware/isLoggedIn');
 var session = require('../controllers/session');

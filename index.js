@@ -81,9 +81,15 @@ if (cluster.isMaster) {
   const populateUser = require('./middleware/populateUser');
 
   app.use('/user/testuser', loader);
-  app.use('/', populateUser);
+
+  app.use('/api/v1/:API_TOKEN/', (req, res, next) => {
+    req.API_TOKEN = req.params.API_TOKEN
+    next();
+  })
 
   app.use('/api/v1/:API_TOKEN/', api);
+  app.use('/', populateUser);
+
   app.use('/login', login);
   app.use('/logout', logout);
   app.use('/user', users);
