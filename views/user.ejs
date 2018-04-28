@@ -11,12 +11,11 @@
         </div>
     </div>
     <div class="col-6">
-      <% if (me) { %>
+      <% if (me.id === user.id) { %>
           <%- include components/new_tweet.ejs %>
-          <% if (me.id != user.id) { %>
-            <%- include components/new_follow_ajax.ejs %>
-            <%- include components/unfollow_ajax.ejs %>
-          <% } %>
+      <% } else { %>
+        <%- include components/new_follow_ajax.ejs %>
+        <%- include components/unfollow_ajax.ejs %>
       <% } %>
       <%- include components/tweets.ejs %>
     </div>

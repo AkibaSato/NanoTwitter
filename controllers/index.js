@@ -61,3 +61,72 @@ module.exports.index = async (req, res) => {
     console.log(err)
   }
 };
+
+module.exports.getGlobalTimeline =  async (req, res) => {
+  try {
+
+    var globalTimeline = await redis.getAsync('globalTimeline');
+
+    if (globalTimeline) {
+      console.log("USING CACHED GLOBAL");
+      return res.send(globalTimeline);
+    }
+    timeline = await axios.get(tweetServiceURL + '/timeline/global', {},  console.log("GOT GLOBAL TIMELINE"));
+
+    callback = (err, data) => {
+      redis.set('globalTimeline', timeline);
+      res.send(data);
+    }
+
+
+    console.log("GLOBALTIMELINE");
+    // res.json({tweets: timeline.data});
+    res.render('components/tweets', {
+      tweets: timeline.data
+    });
+
+  } catch (err) {
+
+  }
+};
+
+module.exports.getFolloweesTimeline =  async (req, res) => {
+  try {
+
+    var followeesTimeline = await redis.getAsync('followeesTimeline');
+
+    if (followeesTimeline) {
+      console.log("USING CACHED USER");
+      return res.send(followeesTimeline);
+    }
+
+    var getUser = axios.get(userServiceURL + '/user', {
+      data: { id: req.user.id }
+    }, console.log("GOT INDEX USER"));
+    //
+    // // If you are logged in, you see tweets from the people you follow.
+    var getTimeline = axios.get(tweetServiceURL + '/timeline/followees', {
+      data: { id: req.user.id }
+    }, console.log("GOT INDEX TIMELINE"));
+
+
+
+    var [userData, timelineData] = await axios.all([getUser, getTimeline]);
+    req.user = userData.data;
+    timeline = timelineData;
+
+    callback = (err, data) => {
+      redis.set('followeesTimeline', timeline);
+      res.send(data);
+    }
+
+
+    // res.json({tweets: timeline.data});
+    res.render('components/tweets', {
+      tweets: timeline.data
+    });
+
+  } catch (err) {
+
+  }
+};

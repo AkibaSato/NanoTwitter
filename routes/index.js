@@ -3,6 +3,9 @@ var index = require('../controllers/index');
 var router = express.Router();
 
 router.get('/', index.index);
+router.get('/global', index.getGlobalTimeline);
+router.get('/followees', index.getFolloweesTimeline);
+
 router.get('loaderio-9d36f82c9435286460a24d8c3048aeeb', function(req, res){
   res.send('loaderio-9d36f82c9435286460a24d8c3048aeeb')
 })
