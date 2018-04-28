@@ -1,0 +1,13 @@
+<button id="followees" class="btn-default" type="submit" value="Followees"><p7 id="yours">See Your Timeline</p7></button>
+<br>
+
+
+<script>
+$(document).ready(function(){
+    $("#followees").click(function(){
+        $.get("followees", function(data2, status){
+          $("#timeline").html(data2);
+        });
+    });
+});
+</script>

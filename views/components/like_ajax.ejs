@@ -1,29 +1,17 @@
 <form id="my-form3-<%= tweets[i].id %>">
-  <p3 id="like-<%= tweets[i].id %>">Like </p3><button id="new_like_ajax" class="btn-default" type="submit" value="Like"><i class="fa fa-thumbs-up"></i></button>
+  <button id="new_like_ajax" class="btn-default" type="submit" value="Like"><p3 id="like-<%= tweets[i].id %>">Like</p3></button>
 </form>
 
-
-
-
 <script>
-    (function($){
-        function profile__like_button( e ){
-            $.ajax({
-                url: "/tweets/<%= tweets[i].id %>/like",
-                type: 'post',
-                data: $(this).serialize(),
-                success: function(data) {
-                  $("#like-<%= tweets[i].id %>").text('Liked ');
-                  console.log('Liked the tweet');
-                },
-                error: function(data) {
-                  console.log('not sent');
-                }
-            });
+    $('#my-form3-<%= tweets[i].id %>').submit(function(event) {
+        event.preventDefault();
 
-            e.preventDefault();
-        }
+        var $form = $(this), url = "/tweets/<%= tweets[i].id %>/like";
+        var posting = $.post( url );
 
-        $('#my-form3-<%= tweets[i].id %>').submit( profile__like_button );
-    })
+        posting.done(function( data ) {
+          $("#like-<%= tweets[i].id %>").text('Liked');
+          $("#unlike-<%= tweets[i].id %>").text('Unlike');
+        });
+    });
 </script>

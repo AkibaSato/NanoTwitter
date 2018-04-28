@@ -29,6 +29,7 @@
                 data: $(this).serialize(),
                 success: function(data) {
                   $("p1").text('Followed');
+                  $("p2").text('Unfollow');
                   $("f1").text("<%= count1 + 1 %>");
                   console.log('Followed the user');
                 },

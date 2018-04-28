@@ -1,29 +1,19 @@
 <form id="my-form4-<%= tweets[i].id %>">
-  <p4 id="unlike-<%= tweets[i].id %>">Unlike </p4><button id="unlike_ajax" class="btn-default" type="submit" value="Like"><i class="fa fa-thumbs-down"></i></button>
+  <button id="unlike_ajax" class="btn-default" type="submit" value="Unlike"><p4 id="unlike-<%= tweets[i].id %>">Unlike</p4></button>
 </form>
 
 
 
-
 <script>
-    (function($){
-        function profile__unlike_button( e ){
-            $.ajax({
-                url: "/tweets/<%= tweets[i].id %>/unlike",
-                type: 'post',
-                data: $(this).serialize(),
-                success: function(data) {
-                  $("#unlike-<%= tweets[i].id %>").text('Unliked ');
-                  console.log('Unliked the tweet');
-                },
-                error: function(data) {
-                  console.log('not sent');
-                }
-            });
+    $('#my-form4-<%= tweets[i].id %>').submit(function(event) {
+        event.preventDefault();
 
-            e.preventDefault();
-        }
+        var $form = $(this), url = "/tweets/<%= tweets[i].id %>/unlike";
+        var posting = $.post( url );
 
-        $('#my-form4-<%= tweets[i].id %>').submit( profile__unlike_button );
+        posting.done(function( data ) {
+          $("#unlike-<%= tweets[i].id %>").text('Unliked');
+          $("#like-<%= tweets[i].id %>").text('Like');
+        });
     });
 </script>
