@@ -8,7 +8,7 @@
 Akiba Sato, Kevin Wang, Meg Kobashi
 
 <h2>Overview</h2>
-<p>This application is a miniature version of Twitter. Users can post tweets and explore other users' profiles and tweets. Our primary focus for our project was scaling, and used various techniques such as caching, multiprocessessing, and service oriented architecture to achieve maximum performance when getting a high load of requests. We detail the various </p>
+<p>This application is a miniature version of Twitter. Users can post tweets and explore other users' profiles and tweets. Our primary focus for our project was scaling, and used various techniques such as caching, multiprocessessing, and service oriented architecture to achieve maximum performance when getting a high load of requests. In this report, we detail the various scaling techniques and report real results from executing load tests performed with loader.io. </p>
 
 <h2>Tech Stack</h2>
 <ul>
@@ -29,12 +29,33 @@ Akiba Sato, Kevin Wang, Meg Kobashi
 </ul>
 
 <h2> Scaling techniques</h2>
+This section contains the scaling techniques we used and their performance improvements. Note that we wanted to make the experiment setup as simple as possible - in some experiments, we only serve the homepage with a single hard-coded tweet. While this does not reflect a realistic scenario and thus is not indicative of our real application performance, we believe this controlled environment was the best to demonstrate the benefits of our scaling techniques.
 <h3> Server-side caching</h3>
 <h4> 1. HTML caching</h4>
 We used in-memory cache provided by Redis for server-side caching of raw HTML and database objects. The raw HTML was cached to allow the main application to serve a page without contacting any of the microservices, eliminating the HTTP latency. Specifically, the logged-in/logged-out homepage and logged-out user pages were cached. We foresee that Redis capacity can pose a problem for caching user-specific pages; therefore, we implemented a TTL of 60 seconds for the pages.
 <br />
 <br />
 Note that we are relying on the TTL to evict the page and get the updated view. While this could be concerning if a user wishes to see fresh tweets right away, we decided that the user experience would not take a hit as long as the user sees their own tweets right away. Therefore, the choice of the pages to cache is justified: the user is unlikely to visit the logged-out homepage and their own logged-out user page after tweeting; the logged-in homepage for the user only displays the followees’ tweets, not the user’s tweets.
+
+<br />
+<br />
+GET /
+<br />
+Maintain Client Load: 0-2000 clients
+<br />
+Before:
+<div style="width: 600px;">
+<iframe width='600' height='300' frameborder='0' src='//share.loader.io/reports/d54b598bdd749dd3fcff418d5cd0fb3d/widget/results/6654c04184d3ed10f67ce78d73a819a4'></iframe>
+<div style="width: 100%; text-align: right;">
+<a href="http://loader.io/reports/d54b598bdd749dd3fcff418d5cd0fb3d/results/6654c04184d3ed10f67ce78d73a819a4" target="_blank" style="padding: 0 10px 10px 0; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; font-size: 14px;">View on loader.io</a>
+</div></div>
+
+After:
+<div style="width: 600px;">
+<iframe width='600' height='300' frameborder='0' src='//share.loader.io/reports/be23d45b5b28a742509b83cd9f48f4ac/widget/results/4d0fda553a7d9910451530cbef099a6c'></iframe>
+<div style="width: 100%; text-align: right;">
+<a href="http://loader.io/reports/be23d45b5b28a742509b83cd9f48f4ac/results/4d0fda553a7d9910451530cbef099a6c" target="_blank" style="padding: 0 10px 10px 0; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; font-size: 14px;">View on loader.io</a>
+</div></div>
 
 <h4> 2. Database object caching</h4>
 We also cache database data on the microservice that is responsible for serving that object to the main application. Some of the data include user profiles and timelines, which is a list of tweets that the user sees on user pages and the homepage. Querying for the timelines on Postgres can be expensive; therefore, this is cached as a queue in Redis. When there is a new tweet, the oldest tweet would be evicted.
@@ -43,13 +64,27 @@ We also cache database data on the microservice that is responsible for serving 
 We also employed client side caching of static assets such as CSS, images, etc. with a TTL of 2 hours.
 
 <h3> Clustering </h3>
-We increased the number of processes running on each dyno by increasing the Heroku configuration variable WEB_CONCURRENCY from the default value of 1 to 5. This helps us optimize dyno usage and allowed greater concurrency for our application. The baseline of the experiment is the load time for the homepage with a single hard-coded tweet. While this does not reflect a realistic scenario, it is sufficient to demonstrate the benefits of clustering. Our average response time decreased by ~40% and the number of successes improved by ~215%.
+We increased the number of processes running on each dyno by increasing the Heroku configuration variable WEB_CONCURRENCY from the default value of 1 to 5. This helps us optimize dyno usage and allowed greater concurrency for our application. Our average response time decreased by ~40% and the number of successes improved by ~215%.
 
+<br />
+<br />
+GET /
+<br />
+Maintain Client Load: 0-2000 clients
+<br />
 Before:
-
+<div style="width: 600px;">
+<iframe width='600' height='300' frameborder='0' src='//share.loader.io/reports/7b783ee84cc1a515ae32344265289cb8/widget/results/810fc280485fc954cb484b22b29d69c0'></iframe>
+<div style="width: 100%; text-align: right;">
+<a href="http://loader.io/reports/7b783ee84cc1a515ae32344265289cb8/results/810fc280485fc954cb484b22b29d69c0" target="_blank" style="padding: 0 10px 10px 0; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; font-size: 14px;">View on loader.io</a>
+</div></div>
 
 After:
-
+<div style="width: 600px;">
+<iframe width='600' height='300' frameborder='0' src='//share.loader.io/reports/b5f1122be93bcb725e290ae1be54125f/widget/results/e4fe9a14583b0717e7f2c4e5f0bc5e59'></iframe>
+<div style="width: 100%; text-align: right;">
+<a href="http://loader.io/reports/b5f1122be93bcb725e290ae1be54125f/results/e4fe9a14583b0717e7f2c4e5f0bc5e59" target="_blank" style="padding: 0 10px 10px 0; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; font-size: 14px;">View on loader.io</a>
+</div></div>
 
 <h3> Batch writes and Heroku scheduler </h3>
 Writing to the database upon every tweet poses a fatal bottleneck for our application, considering tweets take up a large portion of our application data.
@@ -77,6 +112,26 @@ Whenever a client sends a request, their request is passed through a pipeline of
 <br />
 We also found that Express sessions and Passport authentication middleware were bottlenecks for many applications. We decided to create a custom session management system using redis and manually setting browser cookies. This caused a lot of lost engineering time and refactoring, since the mechanics of authentication were completely abstracted by packages before; however, this gave us greater control over the data that we store in sessions.
 
+<br />
+<br />
+GET /
+<br />
+Maintain Client Load: 0-2000 clients
+<br />
+Before:
+<div style="width: 600px;">
+<iframe width='600' height='300' frameborder='0' src='//share.loader.io/reports/d54b598bdd749dd3fcff418d5cd0fb3d/widget/results/6654c04184d3ed10f67ce78d73a819a4'></iframe>
+<div style="width: 100%; text-align: right;">
+<a href="http://loader.io/reports/d54b598bdd749dd3fcff418d5cd0fb3d/results/6654c04184d3ed10f67ce78d73a819a4" target="_blank" style="padding: 0 10px 10px 0; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; font-size: 14px;">View on loader.io</a>
+</div></div>
+
+After:
+<div style="width: 600px;">
+<iframe width='600' height='300' frameborder='0' src='//share.loader.io/reports/46d3b7faae7b2f12f9ac6618db56586a/widget/results/df00c613f8816eabdf09820aabd40adf'></iframe>
+<div style="width: 100%; text-align: right;">
+<a href="http://loader.io/reports/46d3b7faae7b2f12f9ac6618db56586a/results/df00c613f8816eabdf09820aabd40adf" target="_blank" style="padding: 0 10px 10px 0; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; font-size: 14px;">View on loader.io</a>
+</div></div>
+
 
 <h2> Design alternatives</h2>
 <h3> MongoDB </h3>
@@ -91,7 +146,8 @@ One way that we could have improved performance is by using mulitple dyanos to s
 GET /
 <br />
 Maintain Client Load: 0-2000 clients
-
+<br />
+Before:
 <div style="width: 600px;">
 <iframe width='600' height='300' frameborder='0' src='//share.loader.io/reports/dd86cfc9c7370faee7f9dbe69340e9d1/widget/results/b81291313a5a0e417e094a0e9e2c2d10'></iframe>
 <div style="width: 100%; text-align: right;">
@@ -101,7 +157,8 @@ Maintain Client Load: 0-2000 clients
 GET /user/testuser
 <br />
 Maintain Client Load: 0-2000 clients
-
+<br />
+After:
 <div style="width: 600px;">
 <iframe width='600' height='300' frameborder='0' src='//share.loader.io/reports/7ca4f9fe23d4c76596f48d7c9c3385ac/widget/results/eb7d97db5bc31837d765bfc4d8102eac'></iframe>
 <div style="width: 100%; text-align: right;">
