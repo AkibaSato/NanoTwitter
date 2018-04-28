@@ -32,6 +32,7 @@ Team Japan and Kevin
 * Github: https://github.com/mgkbsh/ntClient
 
 NOTE: The following service is no longer used.
+
 **Cache Service**
 * Github: https://github.com/kwang30/nt-cache
 * Heroku: http://ntsearch-tjak.herokuapp.com/
