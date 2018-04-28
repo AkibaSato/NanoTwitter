@@ -54,8 +54,6 @@ module.exports.index = async (req, res) => {
 
     }
 
-    console.log(req.user)
-
     res.render('index', {
       me: req.user, user: req.user, tweets: timeline.data }, callback)
 
